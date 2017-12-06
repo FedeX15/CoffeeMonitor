@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Coffee Monitor</string>
+    <string name="aggiungitxt">Aggiungi</string>
+    <string name="desc">Descrizione</string>
+    <string name="liquid">Liquido</string>
+    <string name="liters">Litri/Milligrammi</string>
+    <string name="name">Nome</string>
+    <string name="resetdb">Reset Database</string>
+    <string name="showstat">Mostra statistiche</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_preferences">Preferenze</string>
+    <string name="title_statistics">Statistiche</string>
+    <string name="sostanza">Sostanza</string>
+    <string name="addtype">Aggiungi tipologia</string>
+    <string name="placeholder">Dati vari placeholder</string>
+    <string name="Tazzebevutepertipo">Tazze bevute per tipo</string>
+</resources>

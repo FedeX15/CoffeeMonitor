@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">Coffee Monitor</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_preferences">Preferences</string>
+    <string name="title_statistics">Statistics</string>
+    <string name="apppkg" translatable="false">com.fexed.coffeemonitor</string>
+    <string name="aggiungitxt">Add</string>
+    <string name="name">Name</string>
+    <string name="desc">Description</string>
+    <string name="liters">Liters/Milligrams</string>
+    <string name="liquid">Liquid</string>
+    <string name="resetdb">Reset Database</string>
+    <string name="showstat">Show statistics</string>
+    <string name="sostanza">Sostanza</string>
+    <string name="addtype">Aggiungi tipologia</string>
+    <string name="placeholder">Dati vari placeholder</string>
+    <string name="Tazzebevutepertipo">Tazze bevute per tipo</string>
+</resources>
