@@ -20,6 +20,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.PopupMenu;
+import android.widget.TextView;
 import android.widget.ViewFlipper;
 
 import com.google.android.gms.ads.AdRequest;
@@ -31,6 +32,7 @@ import com.jjoe64.graphview.series.BarGraphSeries;
 import com.jjoe64.graphview.series.DataPoint;
 
 import java.util.List;
+import java.util.Random;
 import java.util.Vector;
 
 public class Dashboard extends AppCompatActivity {
@@ -58,6 +60,14 @@ public class Dashboard extends AppCompatActivity {
 
                     if (vf.getDisplayedChild() != 1) {
                         setTitle(R.string.title_dashboard);
+
+                        String[] funfacts = getResources().getStringArray(R.array.funfacts);
+                        Random rnd = new Random();
+                        int i = rnd.nextInt(funfacts.length);
+
+                        TextView funfactstxtv = findViewById(R.id.funfacttxt);
+                        funfactstxtv.setText(funfacts[i]);
+
                         vf.setDisplayedChild(1);
                     }
 
@@ -250,10 +260,10 @@ public class Dashboard extends AppCompatActivity {
     }
 
     public void adInitializer() {
-        MobileAds.initialize(this, "ca-app-pub-9387595638685451~9345692620");
+        /*MobileAds.initialize(this, "ca-app-pub-9387595638685451~9345692620");
         AdView mAdView = findViewById(R.id.banner1);
         AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);
+        mAdView.loadAd(adRequest);*/
     }
 
     public void graphInitializer() {
