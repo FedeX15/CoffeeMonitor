@@ -29,14 +29,16 @@ public class Coffeetype {
     @ColumnInfo(name = "sostanza")
     private String sostanza;
 
+    private int price;
 
-    public Coffeetype(String name, double liters, String desc, boolean liquido, String sostanza) {
+    public Coffeetype(String name, double liters, String desc, boolean liquido, String sostanza, int price) {
         this.liters = liters;
         this.name = name;
         this.desc = desc;
         this.liquido = liquido;
         this.sostanza = sostanza;
         this.qnt = 0;
+        this.price = price;
     }
 
     public int getQnt() {
@@ -94,6 +96,14 @@ public class Coffeetype {
     @Override
     public String toString() {
         return getName() + "\n" + getDesc() + "\nSostanza: " + getSostanza().toLowerCase() + "\n" + getLiters() + ((isLiquido()) ? " l" : " mg");
+    }
+
+    public int getPrice() {
+        return price;
+    }
+
+    public void setPrice(int price) {
+        this.price = price;
     }
 
 }

@@ -58,4 +58,5 @@
     </string-array>
 
     <string name="sources">gizzeta.it, cafestival.it, momondo.co.uk</string>
+    <string name="notif">Notifiche</string>
 </resources>

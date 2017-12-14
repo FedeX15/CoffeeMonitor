@@ -19,7 +19,7 @@
             </intent-filter>
         </activity>
         <activity android:name="com.fexed.coffeecounter.Stat" />
-        <activity android:name="com.fexed.coffeecounter.dash" />
+        <activity android:name="com.fexed.coffeecounter.types" />
         <activity android:name="com.fexed.coffeecounter.pref"></activity>
         <!-- <receiver android:name="AddWidgetPrvdr" >
             <intent-filter>

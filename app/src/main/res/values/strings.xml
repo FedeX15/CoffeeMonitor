@@ -55,7 +55,22 @@
         <item>"In Olanda c'è il Koffie Verkeerd, che consiste in una dose di caffè espresso e due dosi di latte caldo. Verkeerd significa sbagliato in olandese, proprio perché la maggior part degli olandesi ritiene che il caffè debba essere servito con molto meno latte."</item>
         <item>"La legge turca un tempo concedeva il divorzio alle donne il cui marito si rifiutava o dimenticava di servire loro il caffè!"</item>
         <item>"Alcuni ricercatori riconducono l'alta aspettativa di vita registrata sull'isola greca di Ikaria all'abitudine di bere una tazza di caffè al giorno."</item>
+        <item>"Il caffè è il secondo bene più scambiato al mondo. Il primo è il petrolio"</item>
+        <item>"In Africa, i chicchi di caffè vengono lasciati ammollo nell'acqua, mixati con spezie e poi serviti come caramelle."</item>
+        <item>"Il Brasile è il più grande produttore di caffè al mondo, con 44 milioni di sacchi di caffè l'anno."</item>
+        <item>"Il caffè nero senza zucchero o altri additivi contiene 0 calorie."</item>
+        <item>"Un esperto nella preparazione del caffè turco viene chiamato <i>kahveci</i>"</item>
+        <item>"Sia la rivoluzione francese che quella americana sono state ideate dentro delle caffetterie."</item>
+        <item>"Ci sono tantissime varietà di tè al mondo ma vengono tutte da un'unica pianta: la <i>camellia sinensis</i>.</item>
+        <item>"Dopo l'acqua, la bevanda più bevuta al mondo è il tè. Questo perché è molto facile produrlo ed è tipico di paesi molto popolosi."</item>
+        <item>"La teina e la caffeina sono in realtà la stessa identica cosa."</item>
+        <item>"Nel volume <i>The Etiquette of Modern Society</i>, del 1841, si suggeriva di offrire biscotti con il tè agli ospiti perché <i>essi potevano essere consumati più facilmente dei sandwich e senza doversi togliere i guanti</i>."</item>
+        <item>"Esistono all'incirca 1.500 varietà di tè."</item>
+        <item>"In media, i britannici bevono tre tazze di tè al giorno."</item>
+        <item>"Negli Emirati Arabi si consumano in media annualmente 6.24Kg di tè pro capite."</item>
+        <item>"L'inventore delle bustine per il tè è un newyorkese di nome Thomas Sullivan, che le inventò agli inizi del 20esimo secolo."</item>
     </string-array>
 
-    <string name="sources">gizzeta.it, cafestival.it, momondo.co.uk</string>
+    <string name="sources">gizzeta.it, cafestival.it, momondo.co.uk, .essentialwonders.com</string>
+    <string name="notif">Notifications</string>
 </resources>

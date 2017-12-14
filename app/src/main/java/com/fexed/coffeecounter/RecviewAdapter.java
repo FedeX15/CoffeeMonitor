@@ -1,6 +1,10 @@
 package com.fexed.coffeecounter;
 
 import android.content.DialogInterface;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.BitmapDrawable;
+import android.renderscript.RenderScript;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -41,11 +45,6 @@ public class RecviewAdapter extends RecyclerView.Adapter<RecviewAdapter.ViewHold
 
         final TextView cupstxtv = holder.cupsTextView;
         cupstxtv.setText("" + mDataset.get(position).getQnt());
-        /*try {
-
-        } catch (Resources.NotFoundException ex) {
-            Log.d("NotFoundEx, " + mDataset.get(position).getName(), mDataset.get(position).getQnt() + "");
-        }*/
 
         Button addbtn = holder.mCardView.findViewById(R.id.addbtn);
         addbtn.setOnClickListener(new View.OnClickListener() {
@@ -145,5 +144,14 @@ public class RecviewAdapter extends RecyclerView.Adapter<RecviewAdapter.ViewHold
         notifyItemRemoved(position);
         notifyItemRangeChanged(position, mDataset.size());
     }
+
+    public static Bitmap getBitmapFromView(View view) {
+        Bitmap bitmap = Bitmap.createBitmap(view.getWidth(), view.getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas c = new Canvas(bitmap);
+        view.layout(view.getLeft(), view.getTop(), view.getRight(), view.getBottom());
+        view.draw(c);
+        return bitmap;
+    }
+
 
 }
