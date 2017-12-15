@@ -73,4 +73,5 @@
 
     <string name="sources">gizzeta.it, cafestival.it, momondo.co.uk, .essentialwonders.com</string>
     <string name="notif">Notifications</string>
+    <string name="favs">Favourites</string>
 </resources>

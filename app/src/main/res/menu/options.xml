@@ -2,15 +2,21 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/action_notifs"
-        android:orderInCategory="200"
-        android:title="@string/notif"
-        android:icon="@drawable/ic_notifications"
-        app:showAsAction="ifRoom"/>
-    <item
         android:id="@+id/action_add"
-        android:orderInCategory="100"
+        android:orderInCategory="300"
         android:title="@string/aggiungitxt"
         android:icon="@drawable/ic_add"
         app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_favs"
+        android:orderInCategory="200"
+        android:title="@string/favs"
+        android:icon="@drawable/ic_favstar"
+        app:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/action_notifs"
+        android:orderInCategory="100"
+        android:title="@string/notif"
+        android:icon="@drawable/ic_notifications"
+        app:showAsAction="ifRoom"/>
 </menu>

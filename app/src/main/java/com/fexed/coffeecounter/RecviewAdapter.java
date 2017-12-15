@@ -46,6 +46,9 @@ public class RecviewAdapter extends RecyclerView.Adapter<RecviewAdapter.ViewHold
         final TextView cupstxtv = holder.cupsTextView;
         cupstxtv.setText("" + mDataset.get(position).getQnt());
 
+        TextView desctxtv = holder.descTextView;
+        desctxtv.setText(mDataset.get(position).toString()/*+ "\n\n\n" + db.cupDAO().getAll(mDataset.get(position).getKey()).toString()*/);
+
         Button addbtn = holder.mCardView.findViewById(R.id.addbtn);
         addbtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -89,17 +92,6 @@ public class RecviewAdapter extends RecyclerView.Adapter<RecviewAdapter.ViewHold
             }
         });
 
-        Button descbtn = holder.mCardView.findViewById(R.id.selectbtn);
-        descbtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AlertDialog.Builder dlg = new AlertDialog.Builder(v.getContext());
-                dlg.setMessage(mDataset.get(position).toString() + "\n\n" + db.cupDAO().getAll(mDataset.get(position).getKey()).toString())
-                        .setPositiveButton("Ok", null);
-                dlg.create(); dlg.show();
-            }
-        });
-
         holder.nameTextView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
@@ -130,11 +122,13 @@ public class RecviewAdapter extends RecyclerView.Adapter<RecviewAdapter.ViewHold
         public CardView mCardView;
         public TextView nameTextView;
         public TextView cupsTextView;
+        public TextView descTextView;
         public ViewHolder(CardView v) {
             super(v);
             mCardView = v;
             nameTextView = mCardView.findViewById(R.id.nameTxtV);
             cupsTextView = mCardView.findViewById(R.id.cups_textv);
+            descTextView = mCardView.findViewById(R.id.desctxtv);
         }
     }
 

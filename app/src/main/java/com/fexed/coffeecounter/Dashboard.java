@@ -1,17 +1,15 @@
 package com.fexed.coffeecounter;
 
-import android.app.ActionBar;
 import android.arch.persistence.room.Room;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Handler;
-import android.support.annotation.NonNull;
-import android.support.design.widget.BottomNavigationView;
-import android.support.design.widget.FloatingActionButton;
+import android.support.design.internal.NavigationMenu;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.view.SupportMenuInflater;
+import android.support.v7.view.menu.MenuPopupHelper;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.LinearSnapHelper;
 import android.support.v7.widget.RecyclerView;
@@ -27,6 +25,7 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 
+import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Random;
 
@@ -201,56 +200,6 @@ public class Dashboard extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.options, menu);
-
-        new Handler().post(new Runnable() {
-            @Override
-            public void run() {
-                View v = findViewById(R.id.action_add);
-                v.setOnLongClickListener(new View.OnLongClickListener() {
-                    @Override
-                    public boolean onLongClick(View v) {
-                        //TODO implementare aggiunta tipi secondo Mad
-                        AlertDialog.Builder dialogbuilder = new AlertDialog.Builder(v.getContext());
-                        final View form = getLayoutInflater().inflate(R.layout.addtypedialog, null);
-                        dialogbuilder.setView(form)
-                                .setTitle(getString(R.string.addtype))
-                                .setPositiveButton(getString(R.string.aggiungitxt), new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int id) {
-                                        EditText nameedittxt = form.findViewById(R.id.nametxt);
-                                        EditText descedittxt = form.findViewById(R.id.desctxt);
-                                        EditText litersedittxt = form.findViewById(R.id.literstxt);
-                                        EditText sostedittxt = form.findViewById(R.id.sosttxt);
-                                        CheckBox liquidckbx = form.findViewById(R.id.liquidcheck);
-
-                                        String name = nameedittxt.getText().toString();
-                                        double liters;
-                                        try {
-                                            liters = Double.parseDouble(litersedittxt.getText().toString());
-                                        } catch (Exception ex) {
-                                            liters = 0;
-                                        }
-                                        String desc = descedittxt.getText().toString();
-                                        String sostanza = sostedittxt.getText().toString();
-
-                                        boolean liquid = liquidckbx.isChecked();
-                                        Coffeetype newtype = new Coffeetype(name, liters, desc, liquid, sostanza, 0);
-
-                                        db.coffetypeDao().insert(newtype);
-
-                                        recview.setAdapter(new RecviewAdapter(db));
-                                        Snackbar.make(findViewById(R.id.container), "Tipo " + newtype.getName() + " aggiunto", Snackbar.LENGTH_SHORT).show();
-                                    }
-                                })
-                                .setNegativeButton("Annulla", null);
-                        dialogbuilder.create();
-                        dialogbuilder.show();
-                        return true;
-                    }
-                });
-            }
-        });
-
         return true;
     }
 
@@ -260,7 +209,7 @@ public class Dashboard extends AppCompatActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         switch (item.getItemId()) {
-            case R.id.action_add:
+            case R.id.action_favs:
                 PopupMenu popup = new PopupMenu(findViewById(R.id.action_add).getContext(), findViewById(R.id.action_add));
                 final List<Coffeetype> list = db.coffetypeDao().getAll();
                 for (Coffeetype type : list)
@@ -282,10 +231,48 @@ public class Dashboard extends AppCompatActivity {
                 break;
             case R.id.action_notifs:
                 //TODO implementare consigli e notifiche
+                break;
 
+            case R.id.action_add:
+                //TODO implementare aggiunta tipi secondo Mad
+                AlertDialog.Builder dialogbuilder = new AlertDialog.Builder(findViewById(R.id.action_favs).getContext());
+                final View form = getLayoutInflater().inflate(R.layout.addtypedialog, null);
+                dialogbuilder.setView(form)
+                        .setTitle(getString(R.string.addtype))
+                        .setPositiveButton(getString(R.string.aggiungitxt), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int id) {
+                                EditText nameedittxt = form.findViewById(R.id.nametxt);
+                                EditText descedittxt = form.findViewById(R.id.desctxt);
+                                EditText litersedittxt = form.findViewById(R.id.literstxt);
+                                EditText sostedittxt = form.findViewById(R.id.sosttxt);
+                                CheckBox liquidckbx = form.findViewById(R.id.liquidcheck);
+
+                                String name = nameedittxt.getText().toString();
+                                double liters;
+                                try {
+                                    liters = Double.parseDouble(litersedittxt.getText().toString());
+                                } catch (Exception ex) {
+                                    liters = 0;
+                                }
+                                String desc = descedittxt.getText().toString();
+                                String sostanza = sostedittxt.getText().toString();
+
+                                boolean liquid = liquidckbx.isChecked();
+                                Coffeetype newtype = new Coffeetype(name, liters, desc, liquid, sostanza, 0);
+
+                                db.coffetypeDao().insert(newtype);
+
+                                recview.setAdapter(new RecviewAdapter(db));
+                                Snackbar.make(findViewById(R.id.container), "Tipo " + newtype.getName() + " aggiunto", Snackbar.LENGTH_SHORT).show();
+                            }
+                        })
+                        .setNegativeButton("Annulla", null);
+                dialogbuilder.create();
+                dialogbuilder.show();
                 break;
         }
-        return false;
+        return true;
     }
 
     public void adInitializer() {
