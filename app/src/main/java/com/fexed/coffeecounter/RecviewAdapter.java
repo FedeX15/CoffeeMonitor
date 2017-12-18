@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
@@ -111,6 +112,17 @@ public class RecviewAdapter extends RecyclerView.Adapter<RecviewAdapter.ViewHold
                 return true;
             }
         });
+
+        holder.favbtn.setImageResource((mDataset.get(position).isFav()) ? R.drawable.ic_favstarfull : R.drawable.ic_favstarempty);
+        holder.favbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mDataset.get(position).setFav(!(mDataset.get(position).isFav()));
+                db.coffetypeDao().update(mDataset.get(position));
+                ImageButton btn = (ImageButton) v;
+                btn.setImageResource((mDataset.get(position).isFav()) ? R.drawable.ic_favstarfull : R.drawable.ic_favstarempty);
+            }
+        });
     }
 
     @Override
@@ -123,12 +135,14 @@ public class RecviewAdapter extends RecyclerView.Adapter<RecviewAdapter.ViewHold
         public TextView nameTextView;
         public TextView cupsTextView;
         public TextView descTextView;
+        public ImageButton favbtn;
         public ViewHolder(CardView v) {
             super(v);
             mCardView = v;
             nameTextView = mCardView.findViewById(R.id.nameTxtV);
             cupsTextView = mCardView.findViewById(R.id.cups_textv);
             descTextView = mCardView.findViewById(R.id.desctxtv);
+            favbtn = mCardView.findViewById(R.id.favbtn);
         }
     }
 

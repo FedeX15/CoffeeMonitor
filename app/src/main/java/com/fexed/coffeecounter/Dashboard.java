@@ -3,6 +3,7 @@ package com.fexed.coffeecounter;
 import android.arch.persistence.room.Room;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.media.Image;
 import android.os.Bundle;
 import android.support.design.internal.NavigationMenu;
 import android.support.design.widget.Snackbar;
@@ -20,7 +21,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
@@ -190,9 +193,9 @@ public class Dashboard extends AppCompatActivity {
 
     private void insertStandardTypes() {
         if (db.coffetypeDao().getAll().size() == 0) {
-            db.coffetypeDao().insert(new Coffeetype("Caffè espresso", 0.03, "Tazzina di caffè da bar o da moka.", true, "Caffeina", 0));
-            db.coffetypeDao().insert(new Coffeetype("Cappuccino", 0.15, "Tazza di cappuccino da bar.", true, "Caffeina", 0));
-            db.coffetypeDao().insert(new Coffeetype("Caffè ristretto", 0.016, "Tazzina di caffè ristretto.", true, "Caffeina", 0));
+            db.coffetypeDao().insert(new Coffeetype("Caffè espresso", 30, "Tazzina di caffè da bar o da moka.", true, "Caffeina", 0));
+            db.coffetypeDao().insert(new Coffeetype("Cappuccino", 150, "Tazza di cappuccino da bar.", true, "Caffeina", 0));
+            db.coffetypeDao().insert(new Coffeetype("Caffè ristretto", 16, "Tazzina di caffè ristretto.", true, "Caffeina", 0));
         }
     }
 
@@ -211,7 +214,7 @@ public class Dashboard extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.action_favs:
                 PopupMenu popup = new PopupMenu(findViewById(R.id.action_add).getContext(), findViewById(R.id.action_add));
-                final List<Coffeetype> list = db.coffetypeDao().getAll();
+                final List<Coffeetype> list = db.coffetypeDao().getFavs();
                 for (Coffeetype type : list)
                     popup.getMenu().add(1, list.indexOf(type), 0, type.getName());
                 popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
@@ -235,41 +238,89 @@ public class Dashboard extends AppCompatActivity {
 
             case R.id.action_add:
                 //TODO implementare aggiunta tipi secondo Mad
-                AlertDialog.Builder dialogbuilder = new AlertDialog.Builder(findViewById(R.id.action_favs).getContext());
+                final AlertDialog.Builder dialogbuilder = new AlertDialog.Builder(findViewById(R.id.action_favs).getContext());
                 final View form = getLayoutInflater().inflate(R.layout.addtypedialog, null);
-                dialogbuilder.setView(form)
-                        .setTitle(getString(R.string.addtype))
-                        .setPositiveButton(getString(R.string.aggiungitxt), new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int id) {
-                                EditText nameedittxt = form.findViewById(R.id.nametxt);
-                                EditText descedittxt = form.findViewById(R.id.desctxt);
-                                EditText litersedittxt = form.findViewById(R.id.literstxt);
-                                EditText sostedittxt = form.findViewById(R.id.sosttxt);
-                                CheckBox liquidckbx = form.findViewById(R.id.liquidcheck);
+                final TextView literstxt = form.findViewById(R.id.ltrsmgtext);
+                CheckBox liquidckbx = form.findViewById(R.id.liquidcheck);
 
-                                String name = nameedittxt.getText().toString();
-                                double liters;
-                                try {
-                                    liters = Double.parseDouble(litersedittxt.getText().toString());
-                                } catch (Exception ex) {
-                                    liters = 0;
-                                }
-                                String desc = descedittxt.getText().toString();
-                                String sostanza = sostedittxt.getText().toString();
+                editor.putInt("qnt", 0);
+                editor.putString("suffix", (liquidckbx.isChecked()) ? " ml" : " mg");
+                editor.commit();
+                literstxt.setText(state.getInt("qnt", 0) + state.getString("suffix", " ml"));
 
-                                boolean liquid = liquidckbx.isChecked();
-                                Coffeetype newtype = new Coffeetype(name, liters, desc, liquid, sostanza, 0);
+                ImageButton addbtn = form.findViewById(R.id.incrbtn);
+                addbtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        int qnt = state.getInt("qnt", 0);
+                        qnt += 5;
+                        editor.putInt("qnt", qnt);
+                        editor.commit();
+                        literstxt.setText(qnt + state.getString("suffix", " ml"));
+                    }
+                });
 
-                                db.coffetypeDao().insert(newtype);
+                ImageButton rmvbtn = form.findViewById(R.id.decrbtn);
+                rmvbtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        int qnt = state.getInt("qnt", 0);
+                        qnt = (qnt == 0) ? 0 : qnt - 5;
+                        editor.putInt("qnt", qnt);
+                        editor.commit();
+                        literstxt.setText(qnt + state.getString("suffix", " ml"));
+                    }
+                });
 
-                                recview.setAdapter(new RecviewAdapter(db));
-                                Snackbar.make(findViewById(R.id.container), "Tipo " + newtype.getName() + " aggiunto", Snackbar.LENGTH_SHORT).show();
-                            }
-                        })
-                        .setNegativeButton("Annulla", null);
+                liquidckbx.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                        editor.putString("suffix", (isChecked) ? " ml" : " mg");
+                        editor.commit();
+                        literstxt.setText(state.getInt("qnt", 0) + state.getString("suffix", " ml"));
+                    }
+                });
+
+                dialogbuilder.setView(form);
                 dialogbuilder.create();
-                dialogbuilder.show();
+                final AlertDialog dialog = dialogbuilder.show();
+
+                Button positive = form.findViewById(R.id.confirmbtn);
+                positive.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        EditText nameedittxt = form.findViewById(R.id.nametxt);
+                        EditText descedittxt = form.findViewById(R.id.desctxt);
+                        EditText sostedittxt = form.findViewById(R.id.sosttxt);
+                        CheckBox liquidckbx = form.findViewById(R.id.liquidcheck);
+
+                        String name = nameedittxt.getText().toString();
+                        if (name.isEmpty()) {
+                            Snackbar.make(findViewById(R.id.container), "Il nome non può essere vuoto", Snackbar.LENGTH_SHORT).show();
+                        } else {
+                            int liters = state.getInt("qnt", 0);
+                            String desc = descedittxt.getText().toString();
+                            String sostanza = sostedittxt.getText().toString();
+
+                            boolean liquid = liquidckbx.isChecked();
+                            Coffeetype newtype = new Coffeetype(name, liters, desc, liquid, sostanza, 0);
+
+                            db.coffetypeDao().insert(newtype);
+
+                            recview.setAdapter(new RecviewAdapter(db));
+                            Snackbar.make(findViewById(R.id.container), "Tipo " + newtype.getName() + " aggiunto", Snackbar.LENGTH_SHORT).show();
+
+                            dialog.dismiss();
+                        }
+                    }
+                });
+
+                Button negative = form.findViewById(R.id.cancelbtn);
+                negative.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                    }
+                });
                 break;
         }
         return true;

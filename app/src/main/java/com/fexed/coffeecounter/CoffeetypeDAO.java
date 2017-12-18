@@ -17,6 +17,10 @@ public interface CoffeetypeDAO {
     @Query("SELECT * FROM coffeetype")
     List<Coffeetype> getAll();
 
+    //1 = true, 0 = false
+    @Query("SELECT * FROM coffeetype WHERE fav = 1")
+    List<Coffeetype> getFavs();
+
     @Insert
     void insertAll(Coffeetype... types);
 

@@ -11,7 +11,7 @@ public class Coffeetype {
     private int qnt;
 
     @ColumnInfo(name = "liters")
-    private double liters;
+    private int liters;
 
     @ColumnInfo(name = "name")
     private String name;
@@ -29,9 +29,11 @@ public class Coffeetype {
     @ColumnInfo(name = "sostanza")
     private String sostanza;
 
+    private boolean fav;
+
     private int price;
 
-    public Coffeetype(String name, double liters, String desc, boolean liquido, String sostanza, int price) {
+    public Coffeetype(String name, int liters, String desc, boolean liquido, String sostanza, int price) {
         this.liters = liters;
         this.name = name;
         this.desc = desc;
@@ -39,6 +41,7 @@ public class Coffeetype {
         this.sostanza = sostanza;
         this.qnt = 0;
         this.price = price;
+        this.fav = false;
     }
 
     public int getQnt() {
@@ -49,11 +52,11 @@ public class Coffeetype {
         this.qnt = qnt;
     }
 
-    public double getLiters() {
+    public int getLiters() {
         return liters;
     }
 
-    public void setLiters(double liters) {
+    public void setLiters(int liters) {
         this.liters = liters;
     }
 
@@ -95,7 +98,7 @@ public class Coffeetype {
 
     @Override
     public String toString() {
-        return "Nome: " + getName() + "\n" + getDesc() + "\nSostanza: " + getSostanza().toLowerCase() + "\nQuantità: " + getLiters() + ((isLiquido()) ? " l" : " mg");
+        return "Nome: " + getName() + "\n" + getDesc() + "\n" + getPrice() + "€\n" + "\nSostanza: " + getSostanza().toLowerCase() + "\nQuantità: " + getLiters() + ((isLiquido()) ? " ml" : " mg");
     }
 
     public int getPrice() {
@@ -104,6 +107,14 @@ public class Coffeetype {
 
     public void setPrice(int price) {
         this.price = price;
+    }
+
+    public boolean isFav() {
+        return fav;
+    }
+
+    public void setFav(boolean fav) {
+        this.fav = fav;
     }
 
 }

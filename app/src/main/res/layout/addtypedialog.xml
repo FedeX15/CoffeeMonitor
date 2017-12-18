@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:alpha="100"
     android:background="@color/colorBg"
     android:orientation="vertical">
 
@@ -24,24 +25,53 @@
         android:id="@+id/imageView2"
         android:layout_width="150dp"
         android:layout_height="150dp"
-        app:srcCompat="@mipmap/coffeeicon" />
-
-    <EditText
-        android:id="@+id/literstxt"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:layout_marginBottom="4dp"
         android:layout_marginLeft="4dp"
         android:layout_marginRight="4dp"
         android:layout_marginTop="16dp"
-        android:background="@color/transparent"
-        android:hint="@string/liters"
-        android:inputType="numberDecimal"
-        android:textAlignment="center" />
+        app:srcCompat="@mipmap/coffeeicon" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:layout_marginTop="16dp"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/decrbtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="0"
+            android:background="@color/transparent"
+            app:srcCompat="@drawable/ic_remove_circle" />
+
+        <TextView
+            android:id="@+id/ltrsmgtext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_weight="0"
+            android:text="TextView"
+            android:textAlignment="center" />
+
+        <ImageButton
+            android:id="@+id/incrbtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="0"
+            android:background="@color/transparent"
+            app:srcCompat="@drawable/ic_add_circle" />
+    </LinearLayout>
 
     <CheckBox
         android:id="@+id/liquidcheck"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:checked="true"
@@ -53,12 +83,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="4dp"
-        android:layout_marginLeft="4dp"
-        android:layout_marginRight="4dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
         android:layout_marginTop="16dp"
         android:background="#961A1151"
         android:hint="@string/desc"
-        android:inputType="text"
+        android:inputType="text|textMultiLine"
+        android:singleLine="false"
         android:textAlignment="center" />
 
     <EditText
@@ -73,6 +104,33 @@
         android:hint="@string/sostanza"
         android:inputType="text"
         android:textAlignment="center" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="0"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/cancelbtn"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Annulla"
+            android:textAppearance="@style/TextAppearance.AppCompat" />
+
+        <Button
+            android:id="@+id/confirmbtn"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Conferma"
+            android:textAppearance="@style/TextAppearance.AppCompat"
+            android:textSize="14sp" />
+
+    </LinearLayout>
 
 
 </LinearLayout>
