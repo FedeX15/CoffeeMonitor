@@ -3,14 +3,10 @@ package com.fexed.coffeecounter;
 import android.arch.persistence.room.Room;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
-import android.media.Image;
 import android.os.Bundle;
-import android.support.design.internal.NavigationMenu;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.view.SupportMenuInflater;
-import android.support.v7.view.menu.MenuPopupHelper;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.LinearSnapHelper;
 import android.support.v7.widget.RecyclerView;
@@ -28,7 +24,6 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 
-import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Random;
 
@@ -237,7 +232,6 @@ public class Dashboard extends AppCompatActivity {
                 break;
 
             case R.id.action_add:
-                //TODO implementare aggiunta tipi secondo Mad
                 final AlertDialog.Builder dialogbuilder = new AlertDialog.Builder(findViewById(R.id.action_favs).getContext());
                 final View form = getLayoutInflater().inflate(R.layout.addtypedialog, null);
                 final TextView literstxt = form.findViewById(R.id.ltrsmgtext);

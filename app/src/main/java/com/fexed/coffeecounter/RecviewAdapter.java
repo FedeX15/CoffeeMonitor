@@ -3,8 +3,6 @@ package com.fexed.coffeecounter;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.drawable.BitmapDrawable;
-import android.renderscript.RenderScript;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -15,22 +13,27 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * Created by fedex on 01/12/2017.
  */
 
 public class RecviewAdapter extends RecyclerView.Adapter<RecviewAdapter.ViewHolder> {
-    private List<Coffeetype> mDataset;
     AppDatabase db;
+    private List<Coffeetype> mDataset;
 
     public RecviewAdapter(AppDatabase db) {
         this.mDataset = db.coffetypeDao().getAll();
         this.db = db;
+    }
+
+    public static Bitmap getBitmapFromView(View view) {
+        Bitmap bitmap = Bitmap.createBitmap(view.getWidth(), view.getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas c = new Canvas(bitmap);
+        view.layout(view.getLeft(), view.getTop(), view.getRight(), view.getBottom());
+        view.draw(c);
+        return bitmap;
     }
 
     @Override
@@ -130,6 +133,13 @@ public class RecviewAdapter extends RecyclerView.Adapter<RecviewAdapter.ViewHold
         return mDataset.size();
     }
 
+    public void removeAt(int position) {
+        db.coffetypeDao().delete(mDataset.get(position));
+        mDataset.remove(position);
+        notifyItemRemoved(position);
+        notifyItemRangeChanged(position, mDataset.size());
+    }
+
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public CardView mCardView;
         public TextView nameTextView;
@@ -144,21 +154,6 @@ public class RecviewAdapter extends RecyclerView.Adapter<RecviewAdapter.ViewHold
             descTextView = mCardView.findViewById(R.id.desctxtv);
             favbtn = mCardView.findViewById(R.id.favbtn);
         }
-    }
-
-    public void removeAt(int position) {
-        db.coffetypeDao().delete(mDataset.get(position));
-        mDataset.remove(position);
-        notifyItemRemoved(position);
-        notifyItemRangeChanged(position, mDataset.size());
-    }
-
-    public static Bitmap getBitmapFromView(View view) {
-        Bitmap bitmap = Bitmap.createBitmap(view.getWidth(), view.getHeight(), Bitmap.Config.ARGB_8888);
-        Canvas c = new Canvas(bitmap);
-        view.layout(view.getLeft(), view.getTop(), view.getRight(), view.getBottom());
-        view.draw(c);
-        return bitmap;
     }
 
 
