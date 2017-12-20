@@ -3,6 +3,8 @@ package com.fexed.coffeecounter;
 import android.arch.persistence.room.Room;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
@@ -14,6 +16,7 @@ import android.support.v7.widget.SnapHelper;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.SurfaceView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -63,6 +66,20 @@ public class Dashboard extends AppCompatActivity {
                                 if (vf.getDisplayedChild() != 0) {
                                     graphUpdater();
                                     vf.setDisplayedChild(0);
+
+                                    SurfaceView sf = findViewById(R.id.surfaceView);
+
+                                    Canvas canvas = new Canvas();
+                                    Paint paint = new Paint();
+                                    paint.setStyle(Paint.Style.FILL);
+
+                                    paint.setColor(getResources().getColor(R.color.colorBgDark));
+                                    canvas.drawPaint(paint);
+
+                                    paint.setColor(getResources().getColor(R.color.colorPrimary));
+                                    canvas.drawCircle(20, 20, 15, paint);
+
+                                    sf.draw(canvas);
                                 }
 
                                 return true;
@@ -333,5 +350,4 @@ public class Dashboard extends AppCompatActivity {
     public void graphUpdater() {
 
     }
-
 }
