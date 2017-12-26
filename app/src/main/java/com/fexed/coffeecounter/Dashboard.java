@@ -3,8 +3,6 @@ package com.fexed.coffeecounter;
 import android.arch.persistence.room.Room;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
-import android.graphics.Canvas;
-import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
@@ -16,7 +14,6 @@ import android.support.v7.widget.SnapHelper;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.SurfaceView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -27,8 +24,14 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 
+import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.helper.StaticLabelsFormatter;
+import com.jjoe64.graphview.series.BarGraphSeries;
+import com.jjoe64.graphview.series.DataPoint;
+
 import java.util.List;
 import java.util.Random;
+import java.util.Vector;
 
 public class Dashboard extends AppCompatActivity {
     public SharedPreferences state;
@@ -66,20 +69,6 @@ public class Dashboard extends AppCompatActivity {
                                 if (vf.getDisplayedChild() != 0) {
                                     graphUpdater();
                                     vf.setDisplayedChild(0);
-
-                                    SurfaceView sf = findViewById(R.id.surfaceView);
-
-                                    Canvas canvas = new Canvas();
-                                    Paint paint = new Paint();
-                                    paint.setStyle(Paint.Style.FILL);
-
-                                    paint.setColor(getResources().getColor(R.color.colorBgDark));
-                                    canvas.drawPaint(paint);
-
-                                    paint.setColor(getResources().getColor(R.color.colorPrimary));
-                                    canvas.drawCircle(20, 20, 15, paint);
-
-                                    sf.draw(canvas);
                                 }
 
                                 return true;
@@ -345,9 +334,55 @@ public class Dashboard extends AppCompatActivity {
     }
 
     public void graphInitializer() {
+        GraphView grapha = findViewById(R.id.grapha);
+        grapha.getGridLabelRenderer().setGridColor(getResources().getColor(R.color.colorText));
+        grapha.getGridLabelRenderer().setLabelsSpace(0);
+        grapha.getGridLabelRenderer().setHorizontalLabelsColor(getResources().getColor(R.color.colorText));
+        grapha.getGridLabelRenderer().setVerticalLabelsColor(getResources().getColor(R.color.colorText));
+        grapha.getViewport().setScrollable(true);
+        grapha.getViewport().setScalable(true);
+
+        GraphView graphb = findViewById(R.id.graphb);
+        graphb.getGridLabelRenderer().setGridColor(getResources().getColor(R.color.colorText));
+        graphb.getGridLabelRenderer().setLabelsSpace(0);
+        graphb.getGridLabelRenderer().setHorizontalLabelsColor(getResources().getColor(R.color.colorText));
+        graphb.getGridLabelRenderer().setVerticalLabelsColor(getResources().getColor(R.color.colorText));
+        graphb.getViewport().setScrollable(true);
+        graphb.getViewport().setScalable(true);
+
     }
 
     public void graphUpdater() {
+        GraphView grapha = findViewById(R.id.grapha);
+        grapha.removeAllSeries();
+        List<Coffeetype> types = db.coffetypeDao().getAll();
+        Vector<String> names = new Vector<>(1, 1);
+        BarGraphSeries<DataPoint> series = new BarGraphSeries<>();
+        for (int i = 0; i < types.size(); i++) {
+            names.add(types.get(i).getName());
+            series.appendData(new DataPoint(i, types.get(i).getQnt()), true, 5, false);
+        }
+        StaticLabelsFormatter staticLabelsFormatter = new StaticLabelsFormatter(grapha);
+        String[] strings = names.toArray(new String[names.size()]);
+        staticLabelsFormatter.setHorizontalLabels(strings);
+        grapha.getGridLabelRenderer().setLabelFormatter(staticLabelsFormatter);
+        series.setSpacing(5);
+        grapha.addSeries(series);
 
+        GraphView graphb = findViewById(R.id.graphb);
+        graphb.removeAllSeries();
+        List<String> dates = db.cupDAO().getDays();
+        Vector<String> datesv = new Vector<>(1, 1);
+        BarGraphSeries<DataPoint> seriesb = new BarGraphSeries<>();
+        for (int i = 0; i < types.size(); i++) {
+            datesv.add(dates.get(i));
+            seriesb.appendData(new DataPoint(i, db.cupDAO().getAll(dates.get(i)).size()), true, 5, false);
+        }
+        StaticLabelsFormatter staticLabelsFormatterb = new StaticLabelsFormatter(graphb);
+        String[] stringsb = datesv.toArray(new String[datesv.size()]);
+        staticLabelsFormatterb.setHorizontalLabels(stringsb);
+        graphb.getGridLabelRenderer().setLabelFormatter(staticLabelsFormatterb);
+        seriesb.setSpacing(5);
+        grapha.addSeries(seriesb);
     }
 }

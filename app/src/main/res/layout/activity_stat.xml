@@ -15,11 +15,15 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-
-            <SurfaceView
-                android:id="@+id/surfaceView"
+            <com.jjoe64.graphview.GraphView
+                android:id="@+id/grapha"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="200dip" />
+
+            <com.jjoe64.graphview.GraphView
+                android:id="@+id/graphb"
+                android:layout_width="match_parent"
+                android:layout_height="200dip" />
 
         </LinearLayout>
     </ScrollView>
