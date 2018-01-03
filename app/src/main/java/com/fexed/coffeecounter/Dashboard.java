@@ -373,17 +373,18 @@ public class Dashboard extends AppCompatActivity {
         grapha.getGridLabelRenderer().setLabelFormatter(staticLabelsFormatter);
         series.setSpacing(5);
         grapha.addSeries(series);
+        grapha.getGridLabelRenderer().setNumHorizontalLabels((types.size() > 4) ? 4 : types.size());
 
         GraphView graphb = findViewById(R.id.graphb);
         graphb.removeAllSeries();
-        BarGraphSeries<DataPoint> seriesb;
+        BarGraphSeries<DataPoint> seriesb = null;
         List<String> daysfromdb = db.cupDAO().getDays();
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MMM/yy", Locale.getDefault());
         if (daysfromdb.size() == 0) {
-            SimpleDateFormat sdf = new SimpleDateFormat("dd/MMM/yy", Locale.getDefault());
-            Calendar dt = Calendar.getInstance();
-            String date1 = sdf.format(dt.getTime());
-            dt.add(Calendar.DATE, -1);
-            String date2 = sdf.format(dt.getTime());
+            Calendar cld = Calendar.getInstance();
+            String date1 = sdf.format(cld.getTime());
+            cld.add(Calendar.DATE, -1);
+            String date2 = sdf.format(cld.getTime());
             daysfromdb.add(date2);
             daysfromdb.add(date1);
             seriesb = new BarGraphSeries<>(new DataPoint[]{
@@ -393,33 +394,33 @@ public class Dashboard extends AppCompatActivity {
         } else if (daysfromdb.size() == 1) {
             //TODO prendi quel giorno e il precedente
             String first = daysfromdb.get(0);
-            SimpleDateFormat sdf = new SimpleDateFormat("dd/MMM/yy", Locale.getDefault());
             try {
                 Date dt = sdf.parse(first);
-
-            } catch (ParseException e) {
-                Calendar dt = Calendar.getInstance();
-                String date1 = sdf.format(dt.getTime());
-                dt.add(Calendar.DATE, -1);
-                String date2 = sdf.format(dt.getTime());
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(dt);
+                cal.add(Calendar.DATE, -1);
+                String date2 = sdf.format(cal.getTime());
                 daysfromdb.add(date2);
-                daysfromdb.add(date1);
+            } catch (ParseException e) {
+                //TODO errore interpretazione db
             }
-            seriesb = new BarGraphSeries<>(new DataPoint[]{
-                    new DataPoint(0, 0),
-                    new DataPoint(1, 0)
-            });
+            seriesb = new BarGraphSeries<>();
+            seriesb.appendData(new DataPoint(0, db.cupDAO().perDay(daysfromdb.get(0))), true, 5, false);
+            seriesb.appendData(new DataPoint(1, 0), true, 5, false);
         } else {
             //TODO prendili tutti
             seriesb = new BarGraphSeries<>(new DataPoint[]{
                     new DataPoint(0, 0),
-                    new DataPoint(1, 0)
+                    new DataPoint(1, 3)
             });
         }
         graphb.addSeries(seriesb);
         StaticLabelsFormatter staticLabelsFormatterb = new StaticLabelsFormatter(graphb);
         String[] stringsb = daysfromdb.toArray(new String[daysfromdb.size()]);
         staticLabelsFormatterb.setHorizontalLabels(stringsb);
+        graphb.getGridLabelRenderer().setLabelFormatter(staticLabelsFormatterb);
+        graphb.getGridLabelRenderer().setNumHorizontalLabels((daysfromdb.size() > 4) ? 4 : daysfromdb.size());
+
 
         //TODO prendi primo giorno registrato, crea label fino a oggi, cicla da primo giorno a oggi e riempi i dati
     }
