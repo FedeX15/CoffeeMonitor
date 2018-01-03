@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "947653765937",
+    "firebase_url": "https://coffee-monitor.firebaseio.com",
+    "project_id": "coffee-monitor",
+    "storage_bucket": "coffee-monitor.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:947653765937:android:c41cf0a71eec7497",
+        "android_client_info": {
+          "package_name": "com.fexed.coffeecounter"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "947653765937-hngdkig7m34k1geo4nhijji2opt62o16.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.fexed.coffeecounter",
+            "certificate_hash": "2a599725e995c07805a2bb1d2001476710537a25"
+          }
+        },
+        {
+          "client_id": "947653765937-j4t3dffpo2ufsfhafdud20fakffcq44j.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAnAAqjYMYKMGNs4dYAQpGfW7wm7J53GTo"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "947653765937-j4t3dffpo2ufsfhafdud20fakffcq44j.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

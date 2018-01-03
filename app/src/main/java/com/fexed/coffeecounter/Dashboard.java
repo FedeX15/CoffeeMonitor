@@ -24,12 +24,20 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.helper.StaticLabelsFormatter;
 import com.jjoe64.graphview.series.BarGraphSeries;
 import com.jjoe64.graphview.series.DataPoint;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 import java.util.Vector;
 
@@ -54,7 +62,7 @@ public class Dashboard extends AppCompatActivity {
         mTopToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO icone nel menù di navigazione
+                //TODO icone nel menù di navigazione
                 PopupMenu popup = new PopupMenu(v.getContext(), v);
                 popup.getMenuInflater().inflate(R.menu.navigation, popup.getMenu());
 
@@ -209,9 +217,6 @@ public class Dashboard extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         switch (item.getItemId()) {
             case R.id.action_favs:
                 PopupMenu popup = new PopupMenu(findViewById(R.id.action_add).getContext(), findViewById(R.id.action_add));
@@ -327,10 +332,10 @@ public class Dashboard extends AppCompatActivity {
     }
 
     public void adInitializer() {
-        /*MobileAds.initialize(this, "ca-app-pub-9387595638685451~9345692620");
+        MobileAds.initialize(this, "ca-app-pub-9387595638685451~9345692620");
         AdView mAdView = findViewById(R.id.banner1);
         AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);*/
+        mAdView.loadAd(adRequest);
     }
 
     public void graphInitializer() {
@@ -371,18 +376,51 @@ public class Dashboard extends AppCompatActivity {
 
         GraphView graphb = findViewById(R.id.graphb);
         graphb.removeAllSeries();
-        List<String> dates = db.cupDAO().getDays();
-        Vector<String> datesv = new Vector<>(1, 1);
-        BarGraphSeries<DataPoint> seriesb = new BarGraphSeries<>();
-        for (int i = 0; i < types.size(); i++) {
-            datesv.add(dates.get(i));
-            seriesb.appendData(new DataPoint(i, db.cupDAO().getAll(dates.get(i)).size()), true, 5, false);
+        BarGraphSeries<DataPoint> seriesb;
+        List<String> daysfromdb = db.cupDAO().getDays();
+        if (daysfromdb.size() == 0) {
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MMM/yy", Locale.getDefault());
+            Calendar dt = Calendar.getInstance();
+            String date1 = sdf.format(dt.getTime());
+            dt.add(Calendar.DATE, -1);
+            String date2 = sdf.format(dt.getTime());
+            daysfromdb.add(date2);
+            daysfromdb.add(date1);
+            seriesb = new BarGraphSeries<>(new DataPoint[]{
+                    new DataPoint(0, 0),
+                    new DataPoint(1, 0)
+            });
+        } else if (daysfromdb.size() == 1) {
+            //TODO prendi quel giorno e il precedente
+            String first = daysfromdb.get(0);
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MMM/yy", Locale.getDefault());
+            try {
+                Date dt = sdf.parse(first);
+
+            } catch (ParseException e) {
+                Calendar dt = Calendar.getInstance();
+                String date1 = sdf.format(dt.getTime());
+                dt.add(Calendar.DATE, -1);
+                String date2 = sdf.format(dt.getTime());
+                daysfromdb.add(date2);
+                daysfromdb.add(date1);
+            }
+            seriesb = new BarGraphSeries<>(new DataPoint[]{
+                    new DataPoint(0, 0),
+                    new DataPoint(1, 0)
+            });
+        } else {
+            //TODO prendili tutti
+            seriesb = new BarGraphSeries<>(new DataPoint[]{
+                    new DataPoint(0, 0),
+                    new DataPoint(1, 0)
+            });
         }
+        graphb.addSeries(seriesb);
         StaticLabelsFormatter staticLabelsFormatterb = new StaticLabelsFormatter(graphb);
-        String[] stringsb = datesv.toArray(new String[datesv.size()]);
+        String[] stringsb = daysfromdb.toArray(new String[daysfromdb.size()]);
         staticLabelsFormatterb.setHorizontalLabels(stringsb);
-        graphb.getGridLabelRenderer().setLabelFormatter(staticLabelsFormatterb);
-        seriesb.setSpacing(5);
-        grapha.addSeries(seriesb);
+
+        //TODO prendi primo giorno registrato, crea label fino a oggi, cicla da primo giorno a oggi e riempi i dati
     }
 }
