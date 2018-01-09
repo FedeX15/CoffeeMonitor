@@ -29,6 +29,13 @@
                 ap:rangeTitle="range"
                 ap:renderMode="use_background_thread" />
 
+            <com.androidplot.pie.PieChart
+                android:id="@+id/pieTypes"
+                android:layout_width="wrap_content"
+                android:layout_height="500dp"
+                ap:backgroundColor="@color/transparent"
+                ap:borderColor="@color/colorText" />
+
         </LinearLayout>
     </ScrollView>
 

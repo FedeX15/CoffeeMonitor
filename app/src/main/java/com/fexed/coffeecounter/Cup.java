@@ -5,11 +5,8 @@ import android.arch.persistence.room.ForeignKey;
 import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.Locale;
 
 /**
@@ -36,6 +33,12 @@ public class Cup {
         this.date = sdf.format(Calendar.getInstance().getTime());
         sdf = new SimpleDateFormat("dd/MMM/yyy", Locale.getDefault());
         this.day = sdf.format(Calendar.getInstance().getTime());
+    }
+
+    public Cup(int typekey, String Date, String Day) {
+        this.typekey = typekey;
+        this.date = Date;
+        this.day = Day;
     }
 
     @NonNull

@@ -29,8 +29,11 @@ public interface CupDAO {
     @Query("SELECT * FROM cup WHERE day is :day")
     List<Cup> getAll(String day);
 
-    @Query("SELECT COUNT(*) FROM cup WHERE day is :day")
-    int perDay(String day);
+    @Query("SELECT COUNT(*) FROM cup GROUP BY day")
+    List<Integer> perDay();
+
+    @Query("SELECT COUNT(*) FROM cup GROUP BY `key`")
+    List<Integer> perType();
 
     @Query("SELECT * FROM cup WHERE typekey is :key AND day is :day")
     List<Cup> getAll(int key, String day);

@@ -1,5 +1,6 @@
 package com.fexed.coffeecounter;
 
+import android.app.DatePickerDialog;
 import android.arch.persistence.room.Room;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
@@ -19,12 +20,16 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 
+import com.androidplot.pie.PieChart;
+import com.androidplot.pie.Segment;
+import com.androidplot.pie.SegmentFormatter;
 import com.androidplot.xy.CatmullRomInterpolator;
 import com.androidplot.xy.LineAndPointFormatter;
 import com.androidplot.xy.PanZoom;
@@ -39,8 +44,10 @@ import com.google.android.gms.ads.MobileAds;
 import java.text.FieldPosition;
 import java.text.Format;
 import java.text.ParsePosition;
-import java.util.ArrayList;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 
 public class Dashboard extends AppCompatActivity {
@@ -199,6 +206,26 @@ public class Dashboard extends AppCompatActivity {
                 dialogbuilder.show();
             }
         });
+
+        final Button addcupdatebtn = findViewById(R.id.addcupdatebtn);
+        Calendar cld = Calendar.getInstance();
+        final DatePickerDialog StartTime = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
+            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                Calendar newDate = Calendar.getInstance();
+                newDate.set(year, monthOfYear, dayOfMonth);
+                SimpleDateFormat sdf = new SimpleDateFormat("dd/MMM/yyy HH:mm:ss:SSS", Locale.getDefault());
+                String Date = sdf.format(newDate.getTime());
+                sdf = new SimpleDateFormat("dd/MMM/yyy", Locale.getDefault());
+                String Day = sdf.format(newDate.getTime());
+                db.cupDAO().insert(new Cup(db.coffetypeDao().getAll().get(0).getKey(), Date, Day));
+            }
+        }, cld.get(Calendar.YEAR), cld.get(Calendar.MONTH), cld.get(Calendar.DAY_OF_MONTH));
+        addcupdatebtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                StartTime.show();
+            }
+        });
     }
 
 
@@ -352,6 +379,8 @@ public class Dashboard extends AppCompatActivity {
         plot.setLegend(null);
         plot.setDomainLabel(null);
         PanZoom.attach(plot);
+
+        PieChart pie = findViewById(R.id.pieTypes);
     }
 
     public void graphUpdater() {
@@ -360,10 +389,12 @@ public class Dashboard extends AppCompatActivity {
 
         // create a couple arrays of y-values to plot:
         final List<String> days = db.cupDAO().getDays();
-        List<Integer> cups = new ArrayList<>();
+
+        List<Integer> cups = db.cupDAO().perDay();
+        /*List<Integer> cups = new ArrayList<>();
         for (String day : days) {
             cups.add(days.indexOf(day), db.cupDAO().perDay(day));
-        }
+        }*/
 
         // turn the above arrays into XYSeries':
         // (Y_VALS_ONLY means use the element index as the x value)
@@ -396,5 +427,14 @@ public class Dashboard extends AppCompatActivity {
             }
         });
 
+        PieChart pie = findViewById(R.id.pieTypes);
+        List<Coffeetype> types = db.coffetypeDao().getAll();
+        int i = 0;
+        for (Coffeetype type : types) {
+            Segment segment = new Segment(type.getName(), db.cupDAO().getAll(type.getKey()).size());
+            Random rnd = new Random();
+            SegmentFormatter formatter = new SegmentFormatter(Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256)));
+            pie.addSegment(segment, formatter);
+        }
     }
 }
