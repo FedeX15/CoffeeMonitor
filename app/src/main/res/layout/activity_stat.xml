@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ap="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -15,15 +16,18 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <com.jjoe64.graphview.GraphView
-                android:id="@+id/grapha"
-                android:layout_width="match_parent"
-                android:layout_height="200dip" />
-
-            <com.jjoe64.graphview.GraphView
-                android:id="@+id/graphb"
-                android:layout_width="match_parent"
-                android:layout_height="200dip" />
+            <com.androidplot.xy.XYPlot
+                android:id="@+id/plotCount"
+                style="@style/APDefacto.Dark"
+                android:layout_width="wrap_content"
+                android:layout_height="500dp"
+                ap:backgroundColor="@color/transparent"
+                ap:borderColor="@color/colorText"
+                ap:domainTitle="domain"
+                ap:lineLabelRotationBottom="-45"
+                ap:lineLabels="left|bottom"
+                ap:rangeTitle="range"
+                ap:renderMode="use_background_thread" />
 
         </LinearLayout>
     </ScrollView>

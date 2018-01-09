@@ -3,6 +3,7 @@ package com.fexed.coffeecounter;
 import android.arch.persistence.room.Room;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
@@ -24,22 +25,23 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 
+import com.androidplot.xy.CatmullRomInterpolator;
+import com.androidplot.xy.LineAndPointFormatter;
+import com.androidplot.xy.PanZoom;
+import com.androidplot.xy.SimpleXYSeries;
+import com.androidplot.xy.XYGraphWidget;
+import com.androidplot.xy.XYPlot;
+import com.androidplot.xy.XYSeries;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
-import com.jjoe64.graphview.GraphView;
-import com.jjoe64.graphview.helper.StaticLabelsFormatter;
-import com.jjoe64.graphview.series.BarGraphSeries;
-import com.jjoe64.graphview.series.DataPoint;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
+import java.text.FieldPosition;
+import java.text.Format;
+import java.text.ParsePosition;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Random;
-import java.util.Vector;
 
 public class Dashboard extends AppCompatActivity {
     public SharedPreferences state;
@@ -182,16 +184,16 @@ public class Dashboard extends AppCompatActivity {
         showstatbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                double literstotal = 0.0;
+                int milliliterstotal = 0;
                 int cupstotal = 0;
 
                 for (Coffeetype type : db.coffetypeDao().getAll()) {
-                    literstotal += (type.getLiters() * type.getQnt());
+                    milliliterstotal += (type.getLiters() * type.getQnt());
                     cupstotal += type.getQnt();
                 }
 
                 AlertDialog.Builder dialogbuilder = new AlertDialog.Builder(v.getContext());
-                dialogbuilder.setMessage("Bevuti in totale " + literstotal + " l in " + cupstotal + " tazzine.")
+                dialogbuilder.setMessage("Bevuti in totale " + milliliterstotal + " ml in " + cupstotal + " tazzine.")
                         .setNeutralButton("OK", null);
                 dialogbuilder.create();
                 dialogbuilder.show();
@@ -339,89 +341,60 @@ public class Dashboard extends AppCompatActivity {
     }
 
     public void graphInitializer() {
-        GraphView grapha = findViewById(R.id.grapha);
-        grapha.getGridLabelRenderer().setGridColor(getResources().getColor(R.color.colorText));
-        grapha.getGridLabelRenderer().setLabelsSpace(0);
-        grapha.getGridLabelRenderer().setHorizontalLabelsColor(getResources().getColor(R.color.colorText));
-        grapha.getGridLabelRenderer().setVerticalLabelsColor(getResources().getColor(R.color.colorText));
-        grapha.getViewport().setScrollable(true);
-        grapha.getViewport().setScalable(true);
-
-        GraphView graphb = findViewById(R.id.graphb);
-        graphb.getGridLabelRenderer().setGridColor(getResources().getColor(R.color.colorText));
-        graphb.getGridLabelRenderer().setLabelsSpace(0);
-        graphb.getGridLabelRenderer().setHorizontalLabelsColor(getResources().getColor(R.color.colorText));
-        graphb.getGridLabelRenderer().setVerticalLabelsColor(getResources().getColor(R.color.colorText));
-        graphb.getViewport().setScrollable(true);
-        graphb.getViewport().setScalable(true);
-
+        XYPlot plot = findViewById(R.id.plotCount);
+        plot.getGraph().getGridBackgroundPaint().setColor(Color.TRANSPARENT);
+        plot.setBackgroundColor(Color.TRANSPARENT);
+        plot.getGraph().getDomainCursorPaint().setColor(Color.TRANSPARENT);
+        plot.getGraph().getRangeCursorPaint().setColor(Color.TRANSPARENT);
+        plot.getGraph().getBackgroundPaint().setColor(Color.TRANSPARENT);
+        plot.setTitle("Conteggio giornaliero");
+        plot.setRangeLabel(null);
+        plot.setLegend(null);
+        plot.setDomainLabel(null);
+        PanZoom.attach(plot);
     }
 
     public void graphUpdater() {
-        GraphView grapha = findViewById(R.id.grapha);
-        grapha.removeAllSeries();
-        List<Coffeetype> types = db.coffetypeDao().getAll();
-        Vector<String> names = new Vector<>(1, 1);
-        BarGraphSeries<DataPoint> series = new BarGraphSeries<>();
-        for (int i = 0; i < types.size(); i++) {
-            names.add(types.get(i).getName());
-            series.appendData(new DataPoint(i, types.get(i).getQnt()), true, 5, false);
-        }
-        StaticLabelsFormatter staticLabelsFormatter = new StaticLabelsFormatter(grapha);
-        String[] strings = names.toArray(new String[names.size()]);
-        staticLabelsFormatter.setHorizontalLabels(strings);
-        grapha.getGridLabelRenderer().setLabelFormatter(staticLabelsFormatter);
-        series.setSpacing(5);
-        grapha.addSeries(series);
-        grapha.getGridLabelRenderer().setNumHorizontalLabels((types.size() > 4) ? 4 : types.size());
+        // initialize our XYPlot reference:
+        XYPlot plot = findViewById(R.id.plotCount);
 
-        GraphView graphb = findViewById(R.id.graphb);
-        graphb.removeAllSeries();
-        BarGraphSeries<DataPoint> seriesb = null;
-        List<String> daysfromdb = db.cupDAO().getDays();
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MMM/yy", Locale.getDefault());
-        if (daysfromdb.size() == 0) {
-            Calendar cld = Calendar.getInstance();
-            String date1 = sdf.format(cld.getTime());
-            cld.add(Calendar.DATE, -1);
-            String date2 = sdf.format(cld.getTime());
-            daysfromdb.add(date2);
-            daysfromdb.add(date1);
-            seriesb = new BarGraphSeries<>(new DataPoint[]{
-                    new DataPoint(0, 0),
-                    new DataPoint(1, 0)
-            });
-        } else if (daysfromdb.size() == 1) {
-            //TODO prendi quel giorno e il precedente
-            String first = daysfromdb.get(0);
-            try {
-                Date dt = sdf.parse(first);
-                Calendar cal = Calendar.getInstance();
-                cal.setTime(dt);
-                cal.add(Calendar.DATE, -1);
-                String date2 = sdf.format(cal.getTime());
-                daysfromdb.add(date2);
-            } catch (ParseException e) {
-                //TODO errore interpretazione db
+        // create a couple arrays of y-values to plot:
+        final List<String> days = db.cupDAO().getDays();
+        List<Integer> cups = new ArrayList<>();
+        for (String day : days) {
+            cups.add(days.indexOf(day), db.cupDAO().perDay(day));
+        }
+
+        // turn the above arrays into XYSeries':
+        // (Y_VALS_ONLY means use the element index as the x value)
+        XYSeries series1 = new SimpleXYSeries(cups, SimpleXYSeries.ArrayFormat.Y_VALS_ONLY, "Series1");
+
+        // create formatters to use for drawing a series using LineAndPointRenderer
+        // and configure them from xml:
+        LineAndPointFormatter series1Format =
+                new LineAndPointFormatter(this, R.xml.line_point_formatter_with_labels);
+
+        // just for fun, add some smoothing to the lines:
+        // see: http://androidplot.com/smooth-curves-and-androidplot/
+        series1Format.setInterpolationParams(
+                new CatmullRomInterpolator.Params(10, CatmullRomInterpolator.Type.Centripetal));
+
+        // add a new series' to the xyplot:
+        plot.clear();
+        plot.addSeries(series1, series1Format);
+
+        plot.getGraph().getLineLabelStyle(XYGraphWidget.Edge.BOTTOM).setFormat(new Format() {
+            @Override
+            public StringBuffer format(Object obj, StringBuffer toAppendTo, FieldPosition pos) {
+                int i = Math.round(((Number) obj).floatValue());
+                return toAppendTo.append(days.get(i));
             }
-            seriesb = new BarGraphSeries<>();
-            seriesb.appendData(new DataPoint(0, db.cupDAO().perDay(daysfromdb.get(0))), true, 5, false);
-            seriesb.appendData(new DataPoint(1, 0), true, 5, false);
-        } else {
-            //TODO prendili tutti
-            seriesb = new BarGraphSeries<>(new DataPoint[]{
-                    new DataPoint(0, 0),
-                    new DataPoint(1, 3)
-            });
-        }
-        graphb.addSeries(seriesb);
-        StaticLabelsFormatter staticLabelsFormatterb = new StaticLabelsFormatter(graphb);
-        String[] stringsb = daysfromdb.toArray(new String[daysfromdb.size()]);
-        staticLabelsFormatterb.setHorizontalLabels(stringsb);
-        graphb.getGridLabelRenderer().setLabelFormatter(staticLabelsFormatterb);
-        graphb.getGridLabelRenderer().setNumHorizontalLabels((daysfromdb.size() > 4) ? 4 : daysfromdb.size());
 
+            @Override
+            public Object parseObject(String source, ParsePosition pos) {
+                return null;
+            }
+        });
 
-        //TODO prendi primo giorno registrato, crea label fino a oggi, cicla da primo giorno a oggi e riempi i dati
     }
 }
