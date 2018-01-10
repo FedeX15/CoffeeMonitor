@@ -51,7 +51,7 @@ public class RecviewAdapter extends RecyclerView.Adapter<RecviewAdapter.ViewHold
         cupstxtv.setText("" + mDataset.get(position).getQnt());
 
         TextView desctxtv = holder.descTextView;
-        desctxtv.setText(mDataset.get(position).toString() + "\n\n\n" + db.cupDAO().getAll(mDataset.get(position).getKey()).toString());
+        desctxtv.setText(mDataset.get(position).toString()/* + "\n\n\n" + db.cupDAO().getAll(mDataset.get(position).getKey()).toString()*/);
 
         Button addbtn = holder.mCardView.findViewById(R.id.addbtn);
         addbtn.setOnClickListener(new View.OnClickListener() {
@@ -134,6 +134,7 @@ public class RecviewAdapter extends RecyclerView.Adapter<RecviewAdapter.ViewHold
     }
 
     public void removeAt(int position) {
+        db.cupDAO().deleteAll(mDataset.get(position).getKey());
         db.coffetypeDao().delete(mDataset.get(position));
         mDataset.remove(position);
         notifyItemRemoved(position);

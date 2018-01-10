@@ -17,7 +17,7 @@ public interface CupDAO {
     @Query("SELECT * FROM cup WHERE typekey is :key")
     List<Cup> getAll(int key);
 
-    @Query("SELECT DISTINCT day FROM cup")
+    @Query("SELECT day FROM cup GROUP BY day")
     List<String> getDays();
 
     @Query("DELETE FROM cup WHERE typekey IS :key")

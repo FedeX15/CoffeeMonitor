@@ -5,6 +5,7 @@ import android.arch.persistence.room.Room;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
@@ -30,8 +31,9 @@ import android.widget.ViewFlipper;
 import com.androidplot.pie.PieChart;
 import com.androidplot.pie.Segment;
 import com.androidplot.pie.SegmentFormatter;
-import com.androidplot.xy.CatmullRomInterpolator;
-import com.androidplot.xy.LineAndPointFormatter;
+import com.androidplot.util.PixelUtils;
+import com.androidplot.xy.BarFormatter;
+import com.androidplot.xy.BarRenderer;
 import com.androidplot.xy.PanZoom;
 import com.androidplot.xy.SimpleXYSeries;
 import com.androidplot.xy.XYGraphWidget;
@@ -211,13 +213,16 @@ public class Dashboard extends AppCompatActivity {
         Calendar cld = Calendar.getInstance();
         final DatePickerDialog StartTime = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                Coffeetype type = db.coffetypeDao().getAll().get(0);
                 Calendar newDate = Calendar.getInstance();
                 newDate.set(year, monthOfYear, dayOfMonth);
                 SimpleDateFormat sdf = new SimpleDateFormat("dd/MMM/yyy HH:mm:ss:SSS", Locale.getDefault());
                 String Date = sdf.format(newDate.getTime());
                 sdf = new SimpleDateFormat("dd/MMM/yyy", Locale.getDefault());
                 String Day = sdf.format(newDate.getTime());
-                db.cupDAO().insert(new Cup(db.coffetypeDao().getAll().get(0).getKey(), Date, Day));
+                db.cupDAO().insert(new Cup(type.getKey(), Date, Day));
+                type.setQnt(type.getQnt() + 1);
+                db.coffetypeDao().update(type);
             }
         }, cld.get(Calendar.YEAR), cld.get(Calendar.MONTH), cld.get(Calendar.DAY_OF_MONTH));
         addcupdatebtn.setOnClickListener(new View.OnClickListener() {
@@ -391,10 +396,6 @@ public class Dashboard extends AppCompatActivity {
         final List<String> days = db.cupDAO().getDays();
 
         List<Integer> cups = db.cupDAO().perDay();
-        /*List<Integer> cups = new ArrayList<>();
-        for (String day : days) {
-            cups.add(days.indexOf(day), db.cupDAO().perDay(day));
-        }*/
 
         // turn the above arrays into XYSeries':
         // (Y_VALS_ONLY means use the element index as the x value)
@@ -402,23 +403,29 @@ public class Dashboard extends AppCompatActivity {
 
         // create formatters to use for drawing a series using LineAndPointRenderer
         // and configure them from xml:
-        LineAndPointFormatter series1Format =
+        /*LineAndPointFormatter series1Format =
                 new LineAndPointFormatter(this, R.xml.line_point_formatter_with_labels);
 
         // just for fun, add some smoothing to the lines:
         // see: http://androidplot.com/smooth-curves-and-androidplot/
         series1Format.setInterpolationParams(
-                new CatmullRomInterpolator.Params(10, CatmullRomInterpolator.Type.Centripetal));
+                new CatmullRomInterpolator.Params(10, CatmullRomInterpolator.Type.Centripetal));*/
+
+        BarFormatter bf = new BarFormatter(getResources().getColor(R.color.colorAccent), getResources().getColor(R.color.colorAccentDark));
+        bf.getPointLabelFormatter().setTextPaint(new Paint(getResources().getColor(R.color.colorText)));
 
         // add a new series' to the xyplot:
         plot.clear();
-        plot.addSeries(series1, series1Format);
+        plot.addSeries(series1, bf);
+        BarRenderer renderer = plot.getRenderer(BarRenderer.class);
+        renderer.setBarGroupWidth(BarRenderer.BarGroupWidthMode.FIXED_GAP, PixelUtils.dpToPix(5));
+
 
         plot.getGraph().getLineLabelStyle(XYGraphWidget.Edge.BOTTOM).setFormat(new Format() {
             @Override
             public StringBuffer format(Object obj, StringBuffer toAppendTo, FieldPosition pos) {
                 int i = Math.round(((Number) obj).floatValue());
-                return toAppendTo.append(days.get(i));
+                return toAppendTo.append(days.get(i).split("/")[0] + "/" + days.get(i).split("/")[1]);
             }
 
             @Override
@@ -426,15 +433,18 @@ public class Dashboard extends AppCompatActivity {
                 return null;
             }
         });
+        plot.redraw();
+
 
         PieChart pie = findViewById(R.id.pieTypes);
+        pie.clear();
         List<Coffeetype> types = db.coffetypeDao().getAll();
-        int i = 0;
         for (Coffeetype type : types) {
             Segment segment = new Segment(type.getName(), db.cupDAO().getAll(type.getKey()).size());
-            Random rnd = new Random();
-            SegmentFormatter formatter = new SegmentFormatter(Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256)));
+            SegmentFormatter formatter = new SegmentFormatter(getResources().getColor(R.color.colorAccent));
+            formatter.setRadialInset((float) 1);
             pie.addSegment(segment, formatter);
         }
+        pie.redraw();
     }
 }

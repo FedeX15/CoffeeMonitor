@@ -22,9 +22,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="500dp"
                 ap:backgroundColor="@color/transparent"
-                ap:borderColor="@color/colorText"
+                ap:borderColor="@color/transparent"
                 ap:domainTitle="domain"
-                ap:lineLabelRotationBottom="-45"
+                ap:lineLabelRotationBottom="-40"
                 ap:lineLabels="left|bottom"
                 ap:rangeTitle="range"
                 ap:renderMode="use_background_thread" />
@@ -34,7 +34,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="500dp"
                 ap:backgroundColor="@color/transparent"
-                ap:borderColor="@color/colorText" />
+                ap:borderColor="@color/transparent"
+                ap:renderMode="use_background_thread" />
 
         </LinearLayout>
     </ScrollView>
