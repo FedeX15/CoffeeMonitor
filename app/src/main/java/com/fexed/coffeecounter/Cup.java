@@ -31,7 +31,7 @@ public class Cup {
 
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MMM/yyy HH:mm:ss:SSS", Locale.getDefault());
         this.date = sdf.format(Calendar.getInstance().getTime());
-        sdf = new SimpleDateFormat("dd/MMM/yyy", Locale.getDefault());
+        sdf = new SimpleDateFormat("yyy/MM/dd", Locale.getDefault());
         this.day = sdf.format(Calendar.getInstance().getTime());
     }
 

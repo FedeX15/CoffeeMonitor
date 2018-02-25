@@ -34,6 +34,7 @@ import com.androidplot.pie.SegmentFormatter;
 import com.androidplot.util.PixelUtils;
 import com.androidplot.xy.BarFormatter;
 import com.androidplot.xy.BarRenderer;
+import com.androidplot.xy.BoundaryMode;
 import com.androidplot.xy.PanZoom;
 import com.androidplot.xy.SimpleXYSeries;
 import com.androidplot.xy.XYGraphWidget;
@@ -48,6 +49,7 @@ import java.text.Format;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Random;
@@ -120,7 +122,7 @@ public class Dashboard extends AppCompatActivity {
             }
         });
 
-        db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "typedb").allowMainThreadQueries().fallbackToDestructiveMigration().build();
+        db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "typedb").allowMainThreadQueries().build();
         insertStandardTypes();
 
         adInitializer();
@@ -218,7 +220,7 @@ public class Dashboard extends AppCompatActivity {
                 newDate.set(year, monthOfYear, dayOfMonth);
                 SimpleDateFormat sdf = new SimpleDateFormat("dd/MMM/yyy HH:mm:ss:SSS", Locale.getDefault());
                 String Date = sdf.format(newDate.getTime());
-                sdf = new SimpleDateFormat("dd/MMM/yyy", Locale.getDefault());
+                sdf = new SimpleDateFormat("yyy/MM/dd", Locale.getDefault());
                 String Day = sdf.format(newDate.getTime());
                 db.cupDAO().insert(new Cup(type.getKey(), Date, Day));
                 type.setQnt(type.getQnt() + 1);
@@ -383,7 +385,6 @@ public class Dashboard extends AppCompatActivity {
         plot.setRangeLabel(null);
         plot.setLegend(null);
         plot.setDomainLabel(null);
-        PanZoom.attach(plot);
 
         PieChart pie = findViewById(R.id.pieTypes);
     }
@@ -395,21 +396,10 @@ public class Dashboard extends AppCompatActivity {
         // create a couple arrays of y-values to plot:
         final List<String> days = db.cupDAO().getDays();
 
-        List<Integer> cups = db.cupDAO().perDay();
+        final List<Integer> cups = db.cupDAO().perDay();
 
-        // turn the above arrays into XYSeries':
-        // (Y_VALS_ONLY means use the element index as the x value)
+
         XYSeries series1 = new SimpleXYSeries(cups, SimpleXYSeries.ArrayFormat.Y_VALS_ONLY, "Series1");
-
-        // create formatters to use for drawing a series using LineAndPointRenderer
-        // and configure them from xml:
-        /*LineAndPointFormatter series1Format =
-                new LineAndPointFormatter(this, R.xml.line_point_formatter_with_labels);
-
-        // just for fun, add some smoothing to the lines:
-        // see: http://androidplot.com/smooth-curves-and-androidplot/
-        series1Format.setInterpolationParams(
-                new CatmullRomInterpolator.Params(10, CatmullRomInterpolator.Type.Centripetal));*/
 
         BarFormatter bf = new BarFormatter(getResources().getColor(R.color.colorAccent), getResources().getColor(R.color.colorAccentDark));
         bf.getPointLabelFormatter().setTextPaint(new Paint(getResources().getColor(R.color.colorText)));
@@ -425,7 +415,7 @@ public class Dashboard extends AppCompatActivity {
             @Override
             public StringBuffer format(Object obj, StringBuffer toAppendTo, FieldPosition pos) {
                 int i = Math.round(((Number) obj).floatValue());
-                return toAppendTo.append(days.get(i).split("/")[0] + "/" + days.get(i).split("/")[1]);
+                return toAppendTo.append(days.get(i).split("/")[2] + "/" + days.get(i).split("/")[1]);
             }
 
             @Override
@@ -433,6 +423,12 @@ public class Dashboard extends AppCompatActivity {
                 return null;
             }
         });
+        int max = Collections.max(cups);
+        plot.setDomainBoundaries(0, days.size(), BoundaryMode.AUTO); //x
+        plot.setRangeBoundaries(0, max, BoundaryMode.AUTO); //y
+        PanZoom pz = PanZoom.attach(plot);
+        pz.setZoomLimit(PanZoom.ZoomLimit.OUTER);
+        pz.setPan(PanZoom.Pan.HORIZONTAL);
         plot.redraw();
 
 
