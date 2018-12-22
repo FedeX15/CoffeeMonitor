@@ -4,8 +4,6 @@ import android.app.DatePickerDialog;
 import android.arch.persistence.room.Room;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
@@ -28,28 +26,12 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 
-import com.androidplot.pie.PieChart;
-import com.androidplot.pie.Segment;
-import com.androidplot.pie.SegmentFormatter;
-import com.androidplot.util.PixelUtils;
-import com.androidplot.xy.BarFormatter;
-import com.androidplot.xy.BarRenderer;
-import com.androidplot.xy.BoundaryMode;
-import com.androidplot.xy.PanZoom;
-import com.androidplot.xy.SimpleXYSeries;
-import com.androidplot.xy.XYGraphWidget;
-import com.androidplot.xy.XYPlot;
-import com.androidplot.xy.XYSeries;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
 
-import java.text.FieldPosition;
-import java.text.Format;
-import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Random;
@@ -375,72 +357,10 @@ public class Dashboard extends AppCompatActivity {
     }
 
     public void graphInitializer() {
-        XYPlot plot = findViewById(R.id.plotCount);
-        plot.getGraph().getGridBackgroundPaint().setColor(Color.TRANSPARENT);
-        plot.setBackgroundColor(Color.TRANSPARENT);
-        plot.getGraph().getDomainCursorPaint().setColor(Color.TRANSPARENT);
-        plot.getGraph().getRangeCursorPaint().setColor(Color.TRANSPARENT);
-        plot.getGraph().getBackgroundPaint().setColor(Color.TRANSPARENT);
-        plot.setTitle("Conteggio giornaliero");
-        plot.setRangeLabel(null);
-        plot.setLegend(null);
-        plot.setDomainLabel(null);
 
-        PieChart pie = findViewById(R.id.pieTypes);
     }
 
     public void graphUpdater() {
-        // initialize our XYPlot reference:
-        XYPlot plot = findViewById(R.id.plotCount);
 
-        // create a couple arrays of y-values to plot:
-        final List<String> days = db.cupDAO().getDays();
-
-        final List<Integer> cups = db.cupDAO().perDay();
-
-
-        XYSeries series1 = new SimpleXYSeries(cups, SimpleXYSeries.ArrayFormat.Y_VALS_ONLY, "Series1");
-
-        BarFormatter bf = new BarFormatter(getResources().getColor(R.color.colorAccent), getResources().getColor(R.color.colorAccentDark));
-        bf.getPointLabelFormatter().setTextPaint(new Paint(getResources().getColor(R.color.colorText)));
-
-        // add a new series' to the xyplot:
-        plot.clear();
-        plot.addSeries(series1, bf);
-        BarRenderer renderer = plot.getRenderer(BarRenderer.class);
-        renderer.setBarGroupWidth(BarRenderer.BarGroupWidthMode.FIXED_GAP, PixelUtils.dpToPix(5));
-
-
-        plot.getGraph().getLineLabelStyle(XYGraphWidget.Edge.BOTTOM).setFormat(new Format() {
-            @Override
-            public StringBuffer format(Object obj, StringBuffer toAppendTo, FieldPosition pos) {
-                int i = Math.round(((Number) obj).floatValue());
-                return toAppendTo.append(days.get(i).split("/")[2] + "/" + days.get(i).split("/")[1]);
-            }
-
-            @Override
-            public Object parseObject(String source, ParsePosition pos) {
-                return null;
-            }
-        });
-        int max = Collections.max(cups);
-        plot.setDomainBoundaries(0, days.size(), BoundaryMode.AUTO); //x
-        plot.setRangeBoundaries(0, max, BoundaryMode.AUTO); //y
-        PanZoom pz = PanZoom.attach(plot);
-        pz.setZoomLimit(PanZoom.ZoomLimit.OUTER);
-        pz.setPan(PanZoom.Pan.HORIZONTAL);
-        plot.redraw();
-
-
-        PieChart pie = findViewById(R.id.pieTypes);
-        pie.clear();
-        List<Coffeetype> types = db.coffetypeDao().getAll();
-        for (Coffeetype type : types) {
-            Segment segment = new Segment(type.getName(), db.cupDAO().getAll(type.getKey()).size());
-            SegmentFormatter formatter = new SegmentFormatter(getResources().getColor(R.color.colorAccent));
-            formatter.setRadialInset((float) 1);
-            pie.addSegment(segment, formatter);
-        }
-        pie.redraw();
     }
 }

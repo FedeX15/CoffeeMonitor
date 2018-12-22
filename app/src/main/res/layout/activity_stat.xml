@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:ap="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -16,26 +15,16 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <com.androidplot.xy.XYPlot
-                android:id="@+id/plotCount"
-                style="@style/APDefacto.Dark"
-                android:layout_width="wrap_content"
-                android:layout_height="500dp"
-                ap:backgroundColor="@color/transparent"
-                ap:borderColor="@color/transparent"
-                ap:domainTitle="domain"
-                ap:lineLabelRotationBottom="-40"
-                ap:lineLabels="left|bottom"
-                ap:rangeTitle="range"
-                ap:renderMode="use_background_thread" />
 
-            <com.androidplot.pie.PieChart
-                android:id="@+id/pieTypes"
-                android:layout_width="wrap_content"
-                android:layout_height="500dp"
-                ap:backgroundColor="@color/transparent"
-                ap:borderColor="@color/transparent"
-                ap:renderMode="use_background_thread" />
+            <com.jjoe64.graphview.GraphView
+                android:id="@+id/bargraph"
+                android:layout_width="match_parent"
+                android:layout_height="200dip" />
+
+            <com.jjoe64.graphview.GraphView
+                android:id="@+id/piegraph"
+                android:layout_width="match_parent"
+                android:layout_height="200dip" />
 
         </LinearLayout>
     </ScrollView>
