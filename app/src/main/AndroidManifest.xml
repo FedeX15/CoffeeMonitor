@@ -28,6 +28,9 @@
             <meta-data android:name="android.appwidget.provider"
                 android:resource="@xml/addwidget" />
         </receiver> -->
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-9387595638685451~3707270987" />
     </application>
 
 </manifest>

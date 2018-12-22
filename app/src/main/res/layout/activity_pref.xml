@@ -67,8 +67,6 @@
 
         </LinearLayout>
 
-        <!-- ca-app-pub-9387595638685451/3495488198 -->
-
         <TextView
             android:id="@+id/creditstitletextv"
             android:layout_width="match_parent"
@@ -110,7 +108,7 @@
             android:layout_height="wrap_content"
             app:adSize="BANNER"
             app:adUnitId="ca-app-pub-3940256099942544/6300978111" />
-
+        <!-- ca-app-pub-9387595638685451/8349223573 -->
     </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>
