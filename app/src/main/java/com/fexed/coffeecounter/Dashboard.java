@@ -23,15 +23,27 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.PopupMenu;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
+import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.helper.DateAsXAxisLabelFormatter;
+import com.jjoe64.graphview.series.BarGraphSeries;
+import com.jjoe64.graphview.series.DataPoint;
+import com.jjoe64.graphview.series.LineGraphSeries;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Random;
@@ -190,6 +202,16 @@ public class Dashboard extends AppCompatActivity {
                         .setNeutralButton("OK", null);
                 dialogbuilder.create();
                 dialogbuilder.show();
+            }
+        });
+
+        Switch historyswitch = findViewById(R.id.historybarswitch);
+        historyswitch.setChecked(state.getBoolean("historyline", false));
+        historyswitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                editor.putBoolean("historyline", b).apply();
+                graphUpdater();
             }
         });
 
@@ -361,6 +383,69 @@ public class Dashboard extends AppCompatActivity {
     }
 
     public void graphUpdater() {
+        GraphView graph = findViewById(R.id.bargraph);
+        //days[0] è sempre il primo giorno nel db
+        //days.length = cups.length
+        final List<String> days = db.cupDAO().getDays();
+        final List<Integer> cups = db.cupDAO().perDay();
 
+        if (days.size() > 0) {
+            LocalDate fromDate = getLocalDateFromString(days.get(0));
+            LocalDate toDate = LocalDate.now();
+            LocalDate current = fromDate;
+            toDate = toDate.plusDays(1);
+            List<LocalDate> dates = new ArrayList<>(25);
+            while (current.isBefore(toDate)) {
+                dates.add(current);
+                current = current.plusDays(1);
+            }
+
+            List<DataPoint> points = new ArrayList<>();
+            int j = 0;
+            int i;
+            for (i = 0; i < dates.size(); i++) {
+                String day = getStringFromLocalDate(dates.get(i));
+                Date daydate = Date.from(dates.get(i).atStartOfDay(ZoneId.systemDefault()).toInstant());
+                if (day.equals(days.get(j))) {
+                    points.add(new DataPoint(daydate, cups.get(j)));
+                    j++;
+                } else points.add(new DataPoint(daydate, 0));
+            }
+            DataPoint[] pointsv = new DataPoint[points.size()];
+            pointsv = points.toArray(pointsv);
+            LineGraphSeries<DataPoint> seriesl = new LineGraphSeries<>(pointsv);
+            BarGraphSeries<DataPoint> seriesb = new BarGraphSeries<>(pointsv);
+            seriesb.setDrawValuesOnTop(true);
+
+            graph.removeAllSeries();
+            if (state.getBoolean("historyline", false)) graph.addSeries(seriesb);
+            else graph.addSeries(seriesl);
+
+            // set date label formatter
+            graph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(this));
+            graph.getGridLabelRenderer().setNumHorizontalLabels(3); // only 4 because of the space
+
+            /*graph.getViewport().setMinX(Date.from(current.atStartOfDay(ZoneId.systemDefault()).toInstant()).getTime());
+            graph.getViewport().setMaxX(Date.from(toDate.atStartOfDay(ZoneId.systemDefault()).toInstant()).getTime());*/
+            graph.getViewport().setXAxisBoundsManual(true);
+
+            graph.getGridLabelRenderer().setHumanRounding(false);
+        }
+    }
+
+    public LocalDate getLocalDateFromString(String date) {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd", Locale.getDefault());
+        try {
+            LocalDate ret = format.parse(date).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+            return ret;
+        } catch (ParseException e) {
+            return null;
+        }
+    }
+
+    public String getStringFromLocalDate(LocalDate date) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+        SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd", Locale.getDefault());
+        return date.format(formatter);
     }
 }
