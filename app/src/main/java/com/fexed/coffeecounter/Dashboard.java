@@ -406,7 +406,7 @@ public class Dashboard extends AppCompatActivity {
             for (i = 0; i < dates.size(); i++) {
                 String day = getStringFromLocalDate(dates.get(i));
                 Date daydate = Date.from(dates.get(i).atStartOfDay(ZoneId.systemDefault()).toInstant());
-                if (day.equals(days.get(j))) {
+                if (j < days.size() && day.equals(days.get(j))) {
                     points.add(new DataPoint(daydate, cups.get(j)));
                     j++;
                 } else points.add(new DataPoint(daydate, 0));
