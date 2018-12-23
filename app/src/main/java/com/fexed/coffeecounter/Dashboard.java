@@ -19,7 +19,6 @@ import android.support.v7.widget.LinearSnapHelper;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SnapHelper;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -78,7 +77,7 @@ public class Dashboard extends AppCompatActivity {
         if (db.coffetypeDao().getAll().size() == 0) {
             db.coffetypeDao().insert(new Coffeetype("Caffè espresso", 30, "Tazzina di caffè da bar o da moka.", true, "Caffeina", 0));
             db.coffetypeDao().insert(new Coffeetype("Cappuccino", 150, "Tazza di cappuccino da bar.", true, "Caffeina", 0));
-            db.coffetypeDao().insert(new Coffeetype("Caffè ristretto", 16, "Tazzina di caffè ristretto.", true, "Caffeina", 0));
+            db.coffetypeDao().insert(new Coffeetype("Caffè ristretto", 15, "Tazzina di caffè ristretto.", true, "Caffeina", 0));
         }
     }
 
@@ -454,7 +453,6 @@ public class Dashboard extends AppCompatActivity {
 
     public String getStringFromLocalDate(LocalDate date) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
-        SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd", Locale.getDefault());
         return date.format(formatter);
     }
 
@@ -523,7 +521,6 @@ public class Dashboard extends AppCompatActivity {
             for (Coffeetype type : types) {
                 int clr;
                 if (db.coffetypeDao().getFavs().contains(type)) {
-                    Log.d("FAVS", "YESDA");
                     clr = getColor(R.color.colorAccent);
                 } else clr = getColor(R.color.colorAccentDark);
 
