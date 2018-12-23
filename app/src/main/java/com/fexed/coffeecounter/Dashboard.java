@@ -215,6 +215,24 @@ public class Dashboard extends AppCompatActivity {
             }
         });
 
+        ImageButton sharebtn1 = findViewById(R.id.sharegraph1);
+        final GraphView graph1 = findViewById(R.id.historygraph);
+        sharebtn1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                graph1.takeSnapshotAndShare(getApplicationContext(), "Coffee Monitor history", "Coffee Monitor History Graph");
+            }
+        });
+
+        ImageButton sharebtn2 = findViewById(R.id.sharegraph2);
+        final GraphView graph2 = findViewById(R.id.piegraph);
+        sharebtn2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                graph2.takeSnapshotAndShare(getApplicationContext(), "Coffee Monitor history", "Coffee Monitor Pie Graph");
+            }
+        });
+
         final Button addcupdatebtn = findViewById(R.id.addcupdatebtn);
         Calendar cld = Calendar.getInstance();
         final DatePickerDialog StartTime = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
@@ -379,7 +397,7 @@ public class Dashboard extends AppCompatActivity {
     }
 
     public void graphInitializer() {
-        final GraphView graph = findViewById(R.id.bargraph);
+        final GraphView graph = findViewById(R.id.historygraph);
         /*graph.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
@@ -393,7 +411,7 @@ public class Dashboard extends AppCompatActivity {
     }
 
     public void graphUpdater() {
-        GraphView graph = findViewById(R.id.bargraph);
+        GraphView graph = findViewById(R.id.historygraph);
         //days[0] è sempre il primo giorno nel db
         //days.length = cups.length
         final List<String> days = db.cupDAO().getDays();
