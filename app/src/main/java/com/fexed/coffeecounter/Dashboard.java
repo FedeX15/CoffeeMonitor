@@ -379,7 +379,17 @@ public class Dashboard extends AppCompatActivity {
     }
 
     public void graphInitializer() {
-
+        final GraphView graph = findViewById(R.id.bargraph);
+        /*graph.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                graph.takeSnapshotAndShare(getApplicationContext(), "Coffe Monitor graph", "Coffee Monitor");
+                return true;
+            }
+        });*/
+        //graph.getViewport().setXAxisBoundsManual(true);
+        graph.getViewport().setMaxXAxisSize(30);
+        graph.getViewport().setScrollable(true);
     }
 
     public void graphUpdater() {
@@ -400,6 +410,14 @@ public class Dashboard extends AppCompatActivity {
                 current = current.plusDays(1);
             }
 
+            graph.getViewport().setScalable(true);
+            graph.getViewport().setMaxX(Date.from(dates.get(dates.size() - 1).atStartOfDay(ZoneId.systemDefault()).toInstant()).getTime());
+            if (dates.size() <= 30)
+                graph.getViewport().setMinX(Date.from(dates.get(0).atStartOfDay(ZoneId.systemDefault()).toInstant()).getTime());
+            else
+                graph.getViewport().setMinX(Date.from(dates.get(dates.size() - 29).atStartOfDay(ZoneId.systemDefault()).toInstant()).getTime());
+            graph.getViewport().setScalable(false);
+
             List<DataPoint> points = new ArrayList<>();
             int j = 0;
             int i;
@@ -413,13 +431,19 @@ public class Dashboard extends AppCompatActivity {
             }
             DataPoint[] pointsv = new DataPoint[points.size()];
             pointsv = points.toArray(pointsv);
-            LineGraphSeries<DataPoint> seriesl = new LineGraphSeries<>(pointsv);
-            BarGraphSeries<DataPoint> seriesb = new BarGraphSeries<>(pointsv);
-            seriesb.setDrawValuesOnTop(true);
-
             graph.removeAllSeries();
-            if (state.getBoolean("historyline", false)) graph.addSeries(seriesb);
-            else graph.addSeries(seriesl);
+
+            if (state.getBoolean("historyline", false)) {
+                BarGraphSeries<DataPoint> seriesb = new BarGraphSeries<>(pointsv);
+                seriesb.setDrawValuesOnTop(true);
+                seriesb.setColor(getColor(R.color.colorAccent));
+                seriesb.setSpacing(25);
+                graph.addSeries(seriesb);
+            } else {
+                LineGraphSeries<DataPoint> seriesl = new LineGraphSeries<>(pointsv);
+                seriesl.setColor(getColor(R.color.colorAccent));
+                graph.addSeries(seriesl);
+            }
 
             // set date label formatter
             graph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(this));
