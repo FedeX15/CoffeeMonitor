@@ -3,8 +3,14 @@ package com.fexed.coffeecounter;
 import android.app.DatePickerDialog;
 import android.arch.persistence.room.Room;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -27,6 +33,9 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 
+import com.androidplot.pie.PieChart;
+import com.androidplot.pie.Segment;
+import com.androidplot.pie.SegmentFormatter;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
@@ -36,6 +45,7 @@ import com.jjoe64.graphview.series.BarGraphSeries;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
+import java.io.ByteArrayOutputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -53,6 +63,153 @@ public class Dashboard extends AppCompatActivity {
     public SharedPreferences.Editor editor;
     public AppDatabase db;
     public RecyclerView recview;
+
+    public static Bitmap loadBitmapFromView(View v) {
+        Bitmap b = Bitmap.createBitmap(v.getMeasuredWidth(), v.getMeasuredHeight(), Bitmap.Config.ARGB_8888);
+        Canvas c = new Canvas(b);
+        v.layout(v.getLeft(), v.getTop(), v.getRight(), v.getBottom());
+        v.draw(c);
+        return b;
+    }
+
+
+    private void insertStandardTypes() {
+        if (db.coffetypeDao().getAll().size() == 0) {
+            db.coffetypeDao().insert(new Coffeetype("Caffè espresso", 30, "Tazzina di caffè da bar o da moka.", true, "Caffeina", 0));
+            db.coffetypeDao().insert(new Coffeetype("Cappuccino", 150, "Tazza di cappuccino da bar.", true, "Caffeina", 0));
+            db.coffetypeDao().insert(new Coffeetype("Caffè ristretto", 16, "Tazzina di caffè ristretto.", true, "Caffeina", 0));
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.options, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_favs:
+                PopupMenu popup = new PopupMenu(findViewById(R.id.action_add).getContext(), findViewById(R.id.action_add));
+                final List<Coffeetype> list = db.coffetypeDao().getFavs();
+                for (Coffeetype type : list)
+                    popup.getMenu().add(1, list.indexOf(type), 0, type.getName());
+                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        int pos = item.getItemId();
+                        Coffeetype elem = list.get(pos);
+                        elem.setQnt(elem.getQnt() + 1);
+                        db.coffetypeDao().update(elem);
+                        db.cupDAO().insert(new Cup(elem.getKey()));
+                        graphUpdater();
+                        recview.setAdapter(new RecviewAdapter(db));
+                        return true;
+                    }
+                });
+                popup.show();
+                break;
+            case R.id.action_notifs:
+                //TODO implementare consigli e notifiche
+                break;
+
+            case R.id.action_add:
+                final AlertDialog.Builder dialogbuilder = new AlertDialog.Builder(findViewById(R.id.action_favs).getContext());
+                final View form = getLayoutInflater().inflate(R.layout.addtypedialog, null);
+                final TextView literstxt = form.findViewById(R.id.ltrsmgtext);
+                CheckBox liquidckbx = form.findViewById(R.id.liquidcheck);
+
+                editor.putInt("qnt", 0);
+                editor.putString("suffix", (liquidckbx.isChecked()) ? " ml" : " mg");
+                editor.commit();
+                literstxt.setText(state.getInt("qnt", 0) + state.getString("suffix", " ml"));
+
+                ImageButton addbtn = form.findViewById(R.id.incrbtn);
+                addbtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        int qnt = state.getInt("qnt", 0);
+                        qnt += 5;
+                        editor.putInt("qnt", qnt);
+                        editor.commit();
+                        literstxt.setText(qnt + state.getString("suffix", " ml"));
+                    }
+                });
+
+                ImageButton rmvbtn = form.findViewById(R.id.decrbtn);
+                rmvbtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        int qnt = state.getInt("qnt", 0);
+                        qnt = (qnt == 0) ? 0 : qnt - 5;
+                        editor.putInt("qnt", qnt);
+                        editor.commit();
+                        literstxt.setText(qnt + state.getString("suffix", " ml"));
+                    }
+                });
+
+                liquidckbx.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                        editor.putString("suffix", (isChecked) ? " ml" : " mg");
+                        editor.commit();
+                        literstxt.setText(state.getInt("qnt", 0) + state.getString("suffix", " ml"));
+                    }
+                });
+
+                dialogbuilder.setView(form);
+                dialogbuilder.create();
+                final AlertDialog dialog = dialogbuilder.show();
+
+                Button positive = form.findViewById(R.id.confirmbtn);
+                positive.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        EditText nameedittxt = form.findViewById(R.id.nametxt);
+                        EditText descedittxt = form.findViewById(R.id.desctxt);
+                        EditText sostedittxt = form.findViewById(R.id.sosttxt);
+                        CheckBox liquidckbx = form.findViewById(R.id.liquidcheck);
+
+                        String name = nameedittxt.getText().toString();
+                        if (name.isEmpty()) {
+                            Snackbar.make(findViewById(R.id.container), "Il nome non può essere vuoto", Snackbar.LENGTH_SHORT).show();
+                        } else {
+                            int liters = state.getInt("qnt", 0);
+                            String desc = descedittxt.getText().toString();
+                            String sostanza = sostedittxt.getText().toString();
+
+                            boolean liquid = liquidckbx.isChecked();
+                            Coffeetype newtype = new Coffeetype(name, liters, desc, liquid, sostanza, 0);
+
+                            db.coffetypeDao().insert(newtype);
+
+                            recview.setAdapter(new RecviewAdapter(db));
+                            Snackbar.make(findViewById(R.id.container), "Tipo " + newtype.getName() + " aggiunto", Snackbar.LENGTH_SHORT).show();
+
+                            dialog.dismiss();
+                        }
+                    }
+                });
+
+                Button negative = form.findViewById(R.id.cancelbtn);
+                negative.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                    }
+                });
+                break;
+        }
+        return true;
+    }
+
+    public void adInitializer() {
+        MobileAds.initialize(this, "ca-app-pub-9387595638685451~9345692620");
+        AdView mAdView = findViewById(R.id.banner1);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -220,16 +377,33 @@ public class Dashboard extends AppCompatActivity {
         sharebtn1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                graph1.takeSnapshotAndShare(getApplicationContext(), "Coffee Monitor history", "Coffee Monitor History Graph");
+                graph1.takeSnapshotAndShare(getApplicationContext(), "Coffee Monitor History Graph", "Coffee Monitor History Graph");
             }
         });
 
         ImageButton sharebtn2 = findViewById(R.id.sharegraph2);
-        final GraphView graph2 = findViewById(R.id.piegraph);
+        final PieChart graph2 = findViewById(R.id.piegraph);
         sharebtn2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                graph2.takeSnapshotAndShare(getApplicationContext(), "Coffee Monitor history", "Coffee Monitor Pie Graph");
+                ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+                Bitmap inImage = loadBitmapFromView(graph2);
+                inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+
+                String path = MediaStore.Images.Media.insertImage(getApplicationContext().getContentResolver(), inImage, "Coffee Monitor Pie Chart", null);
+                if (path == null) {
+                    // most likely a security problem
+                    throw new SecurityException("Could not get path from MediaStore. Please check permissions.");
+                }
+
+                Intent i = new Intent(Intent.ACTION_SEND);
+                i.setType("image/*");
+                i.putExtra(Intent.EXTRA_STREAM, Uri.parse(path));
+                try {
+                    getApplicationContext().startActivity(Intent.createChooser(i, "Coffee Monitor Pie Chart"));
+                } catch (android.content.ActivityNotFoundException ex) {
+                    ex.printStackTrace();
+                }
             }
         });
 
@@ -257,161 +431,33 @@ public class Dashboard extends AppCompatActivity {
         });
     }
 
-
-    private void insertStandardTypes() {
-        if (db.coffetypeDao().getAll().size() == 0) {
-            db.coffetypeDao().insert(new Coffeetype("Caffè espresso", 30, "Tazzina di caffè da bar o da moka.", true, "Caffeina", 0));
-            db.coffetypeDao().insert(new Coffeetype("Cappuccino", 150, "Tazza di cappuccino da bar.", true, "Caffeina", 0));
-            db.coffetypeDao().insert(new Coffeetype("Caffè ristretto", 16, "Tazzina di caffè ristretto.", true, "Caffeina", 0));
-        }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.options, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_favs:
-                PopupMenu popup = new PopupMenu(findViewById(R.id.action_add).getContext(), findViewById(R.id.action_add));
-                final List<Coffeetype> list = db.coffetypeDao().getFavs();
-                for (Coffeetype type : list)
-                    popup.getMenu().add(1, list.indexOf(type), 0, type.getName());
-                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-                        int pos = item.getItemId();
-                        Coffeetype elem = list.get(pos);
-                        elem.setQnt(elem.getQnt() + 1);
-                        db.coffetypeDao().update(elem);
-                        db.cupDAO().insert(new Cup(elem.getKey()));
-                        graphUpdater();
-                        recview.setAdapter(new RecviewAdapter(db));
-                        return true;
-                    }
-                });
-                popup.show();
-                break;
-            case R.id.action_notifs:
-                //TODO implementare consigli e notifiche
-                break;
-
-            case R.id.action_add:
-                final AlertDialog.Builder dialogbuilder = new AlertDialog.Builder(findViewById(R.id.action_favs).getContext());
-                final View form = getLayoutInflater().inflate(R.layout.addtypedialog, null);
-                final TextView literstxt = form.findViewById(R.id.ltrsmgtext);
-                CheckBox liquidckbx = form.findViewById(R.id.liquidcheck);
-
-                editor.putInt("qnt", 0);
-                editor.putString("suffix", (liquidckbx.isChecked()) ? " ml" : " mg");
-                editor.commit();
-                literstxt.setText(state.getInt("qnt", 0) + state.getString("suffix", " ml"));
-
-                ImageButton addbtn = form.findViewById(R.id.incrbtn);
-                addbtn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        int qnt = state.getInt("qnt", 0);
-                        qnt += 5;
-                        editor.putInt("qnt", qnt);
-                        editor.commit();
-                        literstxt.setText(qnt + state.getString("suffix", " ml"));
-                    }
-                });
-
-                ImageButton rmvbtn = form.findViewById(R.id.decrbtn);
-                rmvbtn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        int qnt = state.getInt("qnt", 0);
-                        qnt = (qnt == 0) ? 0 : qnt - 5;
-                        editor.putInt("qnt", qnt);
-                        editor.commit();
-                        literstxt.setText(qnt + state.getString("suffix", " ml"));
-                    }
-                });
-
-                liquidckbx.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                        editor.putString("suffix", (isChecked) ? " ml" : " mg");
-                        editor.commit();
-                        literstxt.setText(state.getInt("qnt", 0) + state.getString("suffix", " ml"));
-                    }
-                });
-
-                dialogbuilder.setView(form);
-                dialogbuilder.create();
-                final AlertDialog dialog = dialogbuilder.show();
-
-                Button positive = form.findViewById(R.id.confirmbtn);
-                positive.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        EditText nameedittxt = form.findViewById(R.id.nametxt);
-                        EditText descedittxt = form.findViewById(R.id.desctxt);
-                        EditText sostedittxt = form.findViewById(R.id.sosttxt);
-                        CheckBox liquidckbx = form.findViewById(R.id.liquidcheck);
-
-                        String name = nameedittxt.getText().toString();
-                        if (name.isEmpty()) {
-                            Snackbar.make(findViewById(R.id.container), "Il nome non può essere vuoto", Snackbar.LENGTH_SHORT).show();
-                        } else {
-                            int liters = state.getInt("qnt", 0);
-                            String desc = descedittxt.getText().toString();
-                            String sostanza = sostedittxt.getText().toString();
-
-                            boolean liquid = liquidckbx.isChecked();
-                            Coffeetype newtype = new Coffeetype(name, liters, desc, liquid, sostanza, 0);
-
-                            db.coffetypeDao().insert(newtype);
-
-                            recview.setAdapter(new RecviewAdapter(db));
-                            Snackbar.make(findViewById(R.id.container), "Tipo " + newtype.getName() + " aggiunto", Snackbar.LENGTH_SHORT).show();
-
-                            dialog.dismiss();
-                        }
-                    }
-                });
-
-                Button negative = form.findViewById(R.id.cancelbtn);
-                negative.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        dialog.dismiss();
-                    }
-                });
-                break;
-        }
-        return true;
-    }
-
-    public void adInitializer() {
-        MobileAds.initialize(this, "ca-app-pub-9387595638685451~9345692620");
-        AdView mAdView = findViewById(R.id.banner1);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);
-    }
-
     public void graphInitializer() {
-        final GraphView graph = findViewById(R.id.historygraph);
-        /*graph.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                graph.takeSnapshotAndShare(getApplicationContext(), "Coffe Monitor graph", "Coffee Monitor");
-                return true;
-            }
-        });*/
-        //graph.getViewport().setXAxisBoundsManual(true);
+        GraphView graph = findViewById(R.id.historygraph);
+        PieChart pie = findViewById(R.id.piegraph);
+
         graph.getViewport().setMaxXAxisSize(30);
         graph.getViewport().setScrollable(true);
     }
 
+    public LocalDate getLocalDateFromString(String date) {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd", Locale.getDefault());
+        try {
+            LocalDate ret = format.parse(date).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+            return ret;
+        } catch (ParseException e) {
+            return null;
+        }
+    }
+
+    public String getStringFromLocalDate(LocalDate date) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+        SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd", Locale.getDefault());
+        return date.format(formatter);
+    }
+
     public void graphUpdater() {
         GraphView graph = findViewById(R.id.historygraph);
+        PieChart pie = findViewById(R.id.piegraph);
         //days[0] è sempre il primo giorno nel db
         //days.length = cups.length
         final List<String> days = db.cupDAO().getDays();
@@ -466,28 +512,22 @@ public class Dashboard extends AppCompatActivity {
             // set date label formatter
             graph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(this));
             graph.getGridLabelRenderer().setNumHorizontalLabels(3); // only 4 because of the space
-
-            /*graph.getViewport().setMinX(Date.from(current.atStartOfDay(ZoneId.systemDefault()).toInstant()).getTime());
-            graph.getViewport().setMaxX(Date.from(toDate.atStartOfDay(ZoneId.systemDefault()).toInstant()).getTime());*/
             graph.getViewport().setXAxisBoundsManual(true);
-
             graph.getGridLabelRenderer().setHumanRounding(false);
+
+            pie.clear();
+            List<Coffeetype> types = db.coffetypeDao().getAll();
+            for (Coffeetype type : types) {
+                Segment segment = new Segment(type.getName(), db.cupDAO().getAll(type.getKey()).size());
+                SegmentFormatter formatter = new SegmentFormatter(getColor(R.color.colorAccentDark));
+                formatter.setRadialInset((float) 1);
+                Paint pnt = new Paint(formatter.getLabelPaint());
+                pnt.setTextSize(35);
+                formatter.setLabelPaint(pnt);
+                pie.addSegment(segment, formatter);
+            }
+            pie.redraw();
         }
     }
 
-    public LocalDate getLocalDateFromString(String date) {
-        SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd", Locale.getDefault());
-        try {
-            LocalDate ret = format.parse(date).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-            return ret;
-        } catch (ParseException e) {
-            return null;
-        }
-    }
-
-    public String getStringFromLocalDate(LocalDate date) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
-        SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd", Locale.getDefault());
-        return date.format(formatter);
-    }
 }
