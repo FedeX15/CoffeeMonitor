@@ -8,4 +8,5 @@
     <color name="colorAccentDark">#9E357B</color>
     <color name="colorText">#FFFFFF</color>
     <color name="transparent">#00000000</color>
+    <color name="edittextbg">#961A1151</color>
 </resources>
