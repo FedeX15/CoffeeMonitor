@@ -117,4 +117,12 @@ public class Coffeetype {
         this.fav = fav;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        try {
+            return getKey() == ((Coffeetype) obj).getKey();
+        } catch (ClassCastException ex) {
+            return false;
+        }
+    }
 }

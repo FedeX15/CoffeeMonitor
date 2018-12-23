@@ -19,6 +19,7 @@ import android.support.v7.widget.LinearSnapHelper;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SnapHelper;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -520,11 +521,20 @@ public class Dashboard extends AppCompatActivity {
             pie.clear();
             List<Coffeetype> types = db.coffetypeDao().getAll();
             for (Coffeetype type : types) {
+                int clr;
+                if (db.coffetypeDao().getFavs().contains(type)) {
+                    Log.d("FAVS", "YESDA");
+                    clr = getColor(R.color.colorAccent);
+                } else clr = getColor(R.color.colorAccentDark);
+
                 Segment segment = new Segment(type.getName(), db.cupDAO().getAll(type.getKey()).size());
-                SegmentFormatter formatter = new SegmentFormatter(getColor(R.color.colorAccentDark));
+                SegmentFormatter formatter = new SegmentFormatter(clr);
                 formatter.setRadialInset((float) 1);
                 Paint pnt = new Paint(formatter.getLabelPaint());
                 pnt.setTextSize(30);
+                if (db.coffetypeDao().getFavs().contains(type)) {
+                    pnt.setFakeBoldText(true);
+                }
                 formatter.setLabelPaint(pnt);
                 pie.addSegment(segment, formatter);
             }
