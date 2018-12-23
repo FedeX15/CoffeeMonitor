@@ -71,7 +71,7 @@
         <item>"L\'inventore delle bustine per il tè è un newyorkese di nome Thomas Sullivan, che le inventò agli inizi del 20esimo secolo."</item>
     </string-array>
 
-    <string name="sources">gizzeta.it, cafestival.it, momondo.co.uk, .essentialwonders.com</string>
+    <string name="sources">Sources\nGraphView, Androidplot\ngizzeta.it, cafestival.it, momondo.co.uk, .essentialwonders.com</string>
     <string name="notif">Notifications</string>
     <string name="favs">Favourites</string>
 </resources>

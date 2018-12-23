@@ -205,10 +205,12 @@ public class Dashboard extends AppCompatActivity {
     }
 
     public void adInitializer() {
-        MobileAds.initialize(this, "ca-app-pub-9387595638685451~9345692620");
+        MobileAds.initialize(this, "ca-app-pub-9387595638685451~3707270987");
         AdView mAdView = findViewById(R.id.banner1);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
+        AdView mAdView2 = findViewById(R.id.banner2);
+        mAdView2.loadAd(adRequest);
     }
 
     @Override
@@ -522,7 +524,7 @@ public class Dashboard extends AppCompatActivity {
                 SegmentFormatter formatter = new SegmentFormatter(getColor(R.color.colorAccentDark));
                 formatter.setRadialInset((float) 1);
                 Paint pnt = new Paint(formatter.getLabelPaint());
-                pnt.setTextSize(35);
+                pnt.setTextSize(30);
                 formatter.setLabelPaint(pnt);
                 pie.addSegment(segment, formatter);
             }

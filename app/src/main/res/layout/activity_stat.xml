@@ -23,6 +23,12 @@
                 android:layout_gravity="right"
                 android:orientation="horizontal">
 
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Storico" />
+
                 <ImageButton
                     android:id="@+id/sharegraph1"
                     android:layout_width="wrap_content"
@@ -37,12 +43,28 @@
                 android:layout_width="match_parent"
                 android:layout_height="200dip" />
 
+            <com.google.android.gms.ads.AdView
+                android:id="@+id/banner2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                app:adSize="BANNER"
+                app:adUnitId="ca-app-pub-3940256099942544/6300978111" />
+
+            <!-- ca-app-pub-9387595638685451/1637433421 -->
+
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_gravity="right"
                 android:layout_marginTop="15dp"
                 android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Tipologie" />
 
                 <ImageButton
                     android:id="@+id/sharegraph2"
