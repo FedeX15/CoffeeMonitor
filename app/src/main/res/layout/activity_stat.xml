@@ -67,7 +67,7 @@
                     android:text="Tipologie" />
 
                 <ImageButton
-                    android:id="@+id/sharegraph2"
+                    android:id="@+id/sharegraph3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -103,10 +103,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Giorni della settimana" />
+                    android:text="Tipologie" />
 
                 <ImageButton
-                    android:id="@+id/sharegraph3"
+                    android:id="@+id/sharegraph2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
