@@ -19,6 +19,7 @@ import android.support.v7.widget.LinearSnapHelper;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SnapHelper;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -41,6 +42,7 @@ import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.helper.DateAsXAxisLabelFormatter;
+import com.jjoe64.graphview.helper.StaticLabelsFormatter;
 import com.jjoe64.graphview.series.BarGraphSeries;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
@@ -211,6 +213,8 @@ public class Dashboard extends AppCompatActivity {
         mAdView.loadAd(adRequest);
         AdView mAdView2 = findViewById(R.id.banner2);
         mAdView2.loadAd(adRequest);
+        AdView mAdView3 = findViewById(R.id.banner3);
+        mAdView3.loadAd(adRequest);
     }
 
     @Override
@@ -409,6 +413,15 @@ public class Dashboard extends AppCompatActivity {
             }
         });
 
+        ImageButton sharebtn3 = findViewById(R.id.sharegraph3);
+        final GraphView graph3 = findViewById(R.id.daygraph);
+        sharebtn3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                graph3.takeSnapshotAndShare(getApplicationContext(), "Coffee Monitor Days Graph", "Coffee Monitor Days Graph");
+            }
+        });
+
         final Button addcupdatebtn = findViewById(R.id.addcupdatebtn);
         Calendar cld = Calendar.getInstance();
         final DatePickerDialog StartTime = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
@@ -435,10 +448,21 @@ public class Dashboard extends AppCompatActivity {
 
     public void graphInitializer() {
         GraphView graph = findViewById(R.id.historygraph);
+        GraphView daygraph = findViewById(R.id.daygraph);
         PieChart pie = findViewById(R.id.piegraph);
 
+        //graph.getViewport().setMinimalViewport(Double.NaN, Double.NaN, 0, Double.NaN);
         graph.getViewport().setMaxXAxisSize(30);
         graph.getViewport().setScrollable(true);
+        graph.getViewport().setYAxisBoundsManual(true);
+        graph.getViewport().setMinY(0);
+
+        daygraph.getViewport().setMaxXAxisSize(7);
+        StaticLabelsFormatter staticLabelsFormatter = new StaticLabelsFormatter(daygraph);
+        staticLabelsFormatter.setHorizontalLabels(new String[]{"Dom", "Lun", "Mar", "Mer", "Gio", "Ven", "Sab"});
+        daygraph.getGridLabelRenderer().setLabelFormatter(staticLabelsFormatter);
+        daygraph.getViewport().setYAxisBoundsManual(true);
+        daygraph.getViewport().setMinY(0);
     }
 
     public LocalDate getLocalDateFromString(String date) {
@@ -459,6 +483,8 @@ public class Dashboard extends AppCompatActivity {
     public void graphUpdater() {
         GraphView graph = findViewById(R.id.historygraph);
         PieChart pie = findViewById(R.id.piegraph);
+        GraphView daygraph = findViewById(R.id.daygraph);
+
         //days[0] è sempre il primo giorno nel db
         //days.length = cups.length
         final List<String> days = db.cupDAO().getDays();
@@ -476,6 +502,8 @@ public class Dashboard extends AppCompatActivity {
             }
 
             graph.getViewport().setScalable(true);
+            //graph.getViewport().setMinY(0);
+            //graph.getViewport().setMaxY(20);
             graph.getViewport().setMaxX(Date.from(dates.get(dates.size() - 1).atStartOfDay(ZoneId.systemDefault()).toInstant()).getTime());
             if (dates.size() <= 30)
                 graph.getViewport().setMinX(Date.from(dates.get(0).atStartOfDay(ZoneId.systemDefault()).toInstant()).getTime());
@@ -485,18 +513,20 @@ public class Dashboard extends AppCompatActivity {
 
             List<DataPoint> points = new ArrayList<>();
             int j = 0;
-            int i;
+            int i, maxc = 0;
             for (i = 0; i < dates.size(); i++) {
                 String day = getStringFromLocalDate(dates.get(i));
                 Date daydate = Date.from(dates.get(i).atStartOfDay(ZoneId.systemDefault()).toInstant());
                 if (j < days.size() && day.equals(days.get(j))) {
                     points.add(new DataPoint(daydate, cups.get(j)));
+                    if (cups.get(j) > maxc) maxc = cups.get(j);
                     j++;
                 } else points.add(new DataPoint(daydate, 0));
             }
             DataPoint[] pointsv = new DataPoint[points.size()];
             pointsv = points.toArray(pointsv);
             graph.removeAllSeries();
+            graph.getViewport().setMaxY(maxc);
 
             if (state.getBoolean("historyline", false)) {
                 BarGraphSeries<DataPoint> seriesb = new BarGraphSeries<>(pointsv);
@@ -537,6 +567,40 @@ public class Dashboard extends AppCompatActivity {
             }
             pie.redraw();
         }
+
+        List<Cup> allcups = new ArrayList<>();
+        for (Coffeetype type : db.coffetypeDao().getAll()) {
+            for (Cup cup : db.cupDAO().getAll(type.getKey())) allcups.add(cup);
+        }
+        int[] cupPerDay = new int[7];
+        SimpleDateFormat sdf = new SimpleDateFormat("E", Locale.getDefault());
+        SimpleDateFormat sdf1 = new SimpleDateFormat("yyy/MM/dd", Locale.getDefault());
+        Calendar clndr = Calendar.getInstance();
+        int day;
+        for (Cup cup : allcups) {
+            try {
+                Log.d("DAYS", sdf.format(sdf1.parse(cup.getDay())));
+                clndr.setTime(sdf1.parse(cup.getDay()));
+                day = clndr.get(Calendar.DAY_OF_WEEK) - 1;
+                cupPerDay[day]++;
+            } catch (ParseException e) {
+            }
+        }
+        int max = 0;
+
+        DataPoint[] pointsv = new DataPoint[7];
+        for (int i = 0; i < 7; i++) {
+            pointsv[i] = new DataPoint(i, cupPerDay[i]);
+            if (cupPerDay[i] > max) max = cupPerDay[i];
+        }
+
+        BarGraphSeries<DataPoint> dayseries = new BarGraphSeries<>(pointsv);
+        dayseries.setDrawValuesOnTop(true);
+        dayseries.setColor(getColor(R.color.colorAccent));
+        dayseries.setSpacing(25);
+        daygraph.removeAllSeries();
+        daygraph.addSeries(dayseries);
+        daygraph.getViewport().setMaxY(max);
     }
 
 }

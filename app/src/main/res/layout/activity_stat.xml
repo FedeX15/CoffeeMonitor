@@ -82,6 +82,43 @@
                 ap:backgroundColor="@color/transparent"
                 ap:renderMode="use_background_thread" />
 
+            <com.google.android.gms.ads.AdView
+                android:id="@+id/banner3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                app:adSize="BANNER"
+                app:adUnitId="ca-app-pub-3940256099942544/6300978111" />
+
+            <!-- ca-app-pub-9387595638685451/8685001586 -->
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="right"
+                android:layout_marginTop="15dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Giorni della settimana" />
+
+                <ImageButton
+                    android:id="@+id/sharegraph3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@color/transparent"
+                    app:srcCompat="@drawable/ic_share" />
+            </LinearLayout>
+
+            <com.jjoe64.graphview.GraphView
+                android:id="@+id/daygraph"
+                android:layout_width="match_parent"
+                android:layout_height="200dip" />
+
         </LinearLayout>
     </ScrollView>
 
