@@ -446,23 +446,30 @@ public class Dashboard extends AppCompatActivity {
         });
     }
 
-    public void graphInitializer() {
-        GraphView graph = findViewById(R.id.historygraph);
-        GraphView daygraph = findViewById(R.id.daygraph);
-        PieChart pie = findViewById(R.id.piegraph);
-
+    public void historyGraphInitializer(GraphView graph) {
         //graph.getViewport().setMinimalViewport(Double.NaN, Double.NaN, 0, Double.NaN);
         graph.getViewport().setMaxXAxisSize(30);
         graph.getViewport().setScrollable(true);
         graph.getViewport().setYAxisBoundsManual(true);
         graph.getViewport().setMinY(0);
+    }
 
+    public void daygraphInitializer(GraphView daygraph) {
         daygraph.getViewport().setMaxXAxisSize(7);
         StaticLabelsFormatter staticLabelsFormatter = new StaticLabelsFormatter(daygraph);
         staticLabelsFormatter.setHorizontalLabels(new String[]{"Dom", "Lun", "Mar", "Mer", "Gio", "Ven", "Sab"});
         daygraph.getGridLabelRenderer().setLabelFormatter(staticLabelsFormatter);
         daygraph.getViewport().setYAxisBoundsManual(true);
         daygraph.getViewport().setMinY(0);
+    }
+
+    public void graphInitializer() {
+        GraphView graph = findViewById(R.id.historygraph);
+        GraphView daygraph = findViewById(R.id.daygraph);
+        PieChart pie = findViewById(R.id.piegraph);
+
+        historyGraphInitializer(graph);
+        daygraphInitializer(daygraph);
     }
 
     public LocalDate getLocalDateFromString(String date) {
@@ -480,11 +487,7 @@ public class Dashboard extends AppCompatActivity {
         return date.format(formatter);
     }
 
-    public void graphUpdater() {
-        GraphView graph = findViewById(R.id.historygraph);
-        PieChart pie = findViewById(R.id.piegraph);
-        GraphView daygraph = findViewById(R.id.daygraph);
-
+    public void historyGraph(GraphView graph) {
         //days[0] è sempre il primo giorno nel db
         //days.length = cups.length
         final List<String> days = db.cupDAO().getDays();
@@ -545,29 +548,33 @@ public class Dashboard extends AppCompatActivity {
             graph.getGridLabelRenderer().setNumHorizontalLabels(3); // only 4 because of the space
             graph.getViewport().setXAxisBoundsManual(true);
             graph.getGridLabelRenderer().setHumanRounding(false);
-
-            pie.clear();
-            List<Coffeetype> types = db.coffetypeDao().getAll();
-            for (Coffeetype type : types) {
-                int clr;
-                if (db.coffetypeDao().getFavs().contains(type)) {
-                    clr = getColor(R.color.colorAccent);
-                } else clr = getColor(R.color.colorAccentDark);
-
-                Segment segment = new Segment(type.getName(), db.cupDAO().getAll(type.getKey()).size());
-                SegmentFormatter formatter = new SegmentFormatter(clr);
-                formatter.setRadialInset((float) 1);
-                Paint pnt = new Paint(formatter.getLabelPaint());
-                pnt.setTextSize(30);
-                if (db.coffetypeDao().getFavs().contains(type)) {
-                    pnt.setFakeBoldText(true);
-                }
-                formatter.setLabelPaint(pnt);
-                pie.addSegment(segment, formatter);
-            }
-            pie.redraw();
         }
+    }
 
+    public void typePie(PieChart pie) {
+        pie.clear();
+        List<Coffeetype> types = db.coffetypeDao().getAll();
+        for (Coffeetype type : types) {
+            int clr;
+            if (db.coffetypeDao().getFavs().contains(type)) {
+                clr = getColor(R.color.colorAccent);
+            } else clr = getColor(R.color.colorAccentDark);
+
+            Segment segment = new Segment(type.getName(), db.cupDAO().getAll(type.getKey()).size());
+            SegmentFormatter formatter = new SegmentFormatter(clr);
+            formatter.setRadialInset((float) 1);
+            Paint pnt = new Paint(formatter.getLabelPaint());
+            pnt.setTextSize(30);
+            if (db.coffetypeDao().getFavs().contains(type)) {
+                pnt.setFakeBoldText(true);
+            }
+            formatter.setLabelPaint(pnt);
+            pie.addSegment(segment, formatter);
+        }
+        pie.redraw();
+    }
+
+    public void dayGraph(GraphView daygraph) {
         List<Cup> allcups = new ArrayList<>();
         for (Coffeetype type : db.coffetypeDao().getAll()) {
             for (Cup cup : db.cupDAO().getAll(type.getKey())) allcups.add(cup);
@@ -601,6 +608,16 @@ public class Dashboard extends AppCompatActivity {
         daygraph.removeAllSeries();
         daygraph.addSeries(dayseries);
         daygraph.getViewport().setMaxY(max);
+    }
+
+    public void graphUpdater() {
+        GraphView graph = findViewById(R.id.historygraph);
+        PieChart pie = findViewById(R.id.piegraph);
+        GraphView daygraph = findViewById(R.id.daygraph);
+
+        historyGraph(graph);
+        typePie(pie);
+        dayGraph(daygraph);
     }
 
 }
