@@ -280,17 +280,6 @@ public class Dashboard extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 drawer.openDrawer(GravityCompat.START);
-                /*//TODO icone nel menù di navigazione
-                PopupMenu popup = new PopupMenu(v.getContext(), v);
-                popup.getMenuInflater().inflate(R.menu.navigation, popup.getMenu());
-
-                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-
-                    }
-                });
-                popup.show();*/
             }
         });
 
