@@ -35,20 +35,14 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/textView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="Storico a linee / barre" />
-
             <Switch
                 android:id="@+id/historybarswitch"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Switch" />
+                android:text="Storico a linee / barre"
+                android:textAlignment="center"
+                android:textAllCaps="false" />
         </LinearLayout>
 
         <Space
@@ -111,30 +105,36 @@
 
         </LinearLayout>
 
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:layout_weight="1" />
+
+        <TextView
+            android:id="@+id/dbgsettextv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Debug Settings"
+            android:textAllCaps="true"
+            android:textStyle="bold|italic" />
+
         <LinearLayout
             android:id="@+id/debugsettingslyt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/dbgsettextv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="Debug Settings" />
-
             <Button
                 android:id="@+id/statbtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginEnd="8dp"
-                android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
-                android:layout_weight="1"
+                android:layout_weight="0"
                 android:gravity="center"
                 android:text="@string/showstat"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -146,10 +146,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginEnd="8dp"
-                android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
-                android:layout_weight="1"
+                android:layout_weight="0"
                 android:gravity="center"
                 android:text="@string/resetdb"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -158,10 +156,11 @@
 
             <Button
                 android:id="@+id/addcupdatebtn"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_weight="1"
+                android:layout_marginTop="8dp"
+                android:layout_weight="0"
                 android:gravity="center"
                 android:text="Add Cup" />
 

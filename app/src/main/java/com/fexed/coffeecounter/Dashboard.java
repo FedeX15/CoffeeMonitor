@@ -286,6 +286,11 @@ public class Dashboard extends AppCompatActivity {
         db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "typedb").allowMainThreadQueries().build();
         insertStandardTypes();
 
+        for (Coffeetype type : db.coffetypeDao().getAll()) {
+            type.setQnt(db.cupDAO().getAll(type.getKey()).size());
+            db.coffetypeDao().update(type);
+        }
+
         adInitializer();
         graphInitializer();
         graphUpdater();
@@ -358,14 +363,19 @@ public class Dashboard extends AppCompatActivity {
             public void onClick(View v) {
                 int milliliterstotal = 0;
                 int cupstotal = 0;
+                String cupsstat = "";
 
                 for (Coffeetype type : db.coffetypeDao().getAll()) {
+                    cupsstat = cupsstat + type.getName() + "\n";
                     milliliterstotal += (type.getLiters() * type.getQnt());
                     cupstotal += type.getQnt();
+                    for (Cup cup : db.cupDAO().getAll(type.getKey()))
+                        cupsstat = cupsstat + ("\t[" + cup.toString() + "]\n");
                 }
 
+
                 AlertDialog.Builder dialogbuilder = new AlertDialog.Builder(v.getContext());
-                dialogbuilder.setMessage("Bevuti in totale " + milliliterstotal + " ml in " + cupstotal + " tazzine.")
+                dialogbuilder.setMessage("Bevuti in totale " + milliliterstotal + " ml in " + cupstotal + " tazzine.\n\n" + cupsstat)
                         .setNeutralButton("OK", null);
                 dialogbuilder.create();
                 dialogbuilder.show();
@@ -430,16 +440,32 @@ public class Dashboard extends AppCompatActivity {
         Calendar cld = Calendar.getInstance();
         final DatePickerDialog StartTime = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                Coffeetype type = db.coffetypeDao().getAll().get(0);
+                final Coffeetype type = db.coffetypeDao().getAll().get(0);
                 Calendar newDate = Calendar.getInstance();
                 newDate.set(year, monthOfYear, dayOfMonth);
                 SimpleDateFormat sdf = new SimpleDateFormat("dd/MMM/yyy HH:mm:ss:SSS", Locale.getDefault());
-                String Date = sdf.format(newDate.getTime());
+                final String Date = sdf.format(newDate.getTime());
                 sdf = new SimpleDateFormat("yyy/MM/dd", Locale.getDefault());
-                String Day = sdf.format(newDate.getTime());
-                db.cupDAO().insert(new Cup(type.getKey(), Date, Day));
-                type.setQnt(type.getQnt() + 1);
-                db.coffetypeDao().update(type);
+                final String Day = sdf.format(newDate.getTime());
+                PopupMenu popup = new PopupMenu(getApplicationContext(), findViewById(R.id.addcupdatebtn));
+
+                final List<Coffeetype> list = db.coffetypeDao().getAll();
+                for (Coffeetype typea : list)
+                    popup.getMenu().add(1, list.indexOf(typea), 0, typea.getName());
+                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        int pos = item.getItemId();
+                        db.cupDAO().insert(new Cup(list.get(pos).getKey(), Date, Day));
+                        list.get(pos).setQnt(list.get(pos).getQnt() + 1);
+                        db.coffetypeDao().update(list.get(pos));
+                        recview.setAdapter(new RecviewAdapter(db));
+                        return true;
+                    }
+                });
+                popup.show();
+
+
             }
         }, cld.get(Calendar.YEAR), cld.get(Calendar.MONTH), cld.get(Calendar.DAY_OF_MONTH));
         addcupdatebtn.setOnClickListener(new View.OnClickListener() {
@@ -448,6 +474,8 @@ public class Dashboard extends AppCompatActivity {
                 StartTime.show();
             }
         });
+
+
     }
 
     public void historyGraphInitializer(GraphView graph) {
