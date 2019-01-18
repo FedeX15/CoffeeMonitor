@@ -11,7 +11,10 @@ import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -229,53 +232,65 @@ public class Dashboard extends AppCompatActivity {
         mTopToolbar.setBackgroundColor(getResources().getColor(R.color.transparent));
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         mTopToolbar.setNavigationIcon(R.drawable.ic_hamburger);
+        final DrawerLayout drawer = findViewById(R.id.containerdrawer);
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(MenuItem menuItem) {
+                drawer.closeDrawers();
+                ViewFlipper vf = findViewById(R.id.viewflipper);
+
+                switch (menuItem.getItemId()) {
+                    case R.id.navigation_statistics:
+
+                        if (vf.getDisplayedChild() != 0) {
+                            graphUpdater();
+                            vf.setDisplayedChild(0);
+                        }
+
+                        return true;
+                    case R.id.navigation_dashboard:
+
+                        if (vf.getDisplayedChild() != 1) {
+                            String[] funfacts = getResources().getStringArray(R.array.funfacts);
+                            Random rnd = new Random();
+                            int i = rnd.nextInt(funfacts.length);
+
+                            TextView funfactstxtv = findViewById(R.id.funfacttxt);
+                            funfactstxtv.setText(funfacts[i]);
+
+                            vf.setDisplayedChild(1);
+                        }
+
+                        return true;
+                    case R.id.navigation_notifications:
+
+                        if (vf.getDisplayedChild() != 2) {
+                            vf.setDisplayedChild(2);
+                        }
+
+                        return true;
+                }
+                return false;
+            }
+        });
+
+
         mTopToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO icone nel menù di navigazione
+                drawer.openDrawer(GravityCompat.START);
+                /*//TODO icone nel menù di navigazione
                 PopupMenu popup = new PopupMenu(v.getContext(), v);
                 popup.getMenuInflater().inflate(R.menu.navigation, popup.getMenu());
 
                 popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
-                        ViewFlipper vf = findViewById(R.id.viewflipper);
 
-                        switch (item.getItemId()) {
-                            case R.id.navigation_statistics:
-
-                                if (vf.getDisplayedChild() != 0) {
-                                    graphUpdater();
-                                    vf.setDisplayedChild(0);
-                                }
-
-                                return true;
-                            case R.id.navigation_dashboard:
-
-                                if (vf.getDisplayedChild() != 1) {
-                                    String[] funfacts = getResources().getStringArray(R.array.funfacts);
-                                    Random rnd = new Random();
-                                    int i = rnd.nextInt(funfacts.length);
-
-                                    TextView funfactstxtv = findViewById(R.id.funfacttxt);
-                                    funfactstxtv.setText(funfacts[i]);
-
-                                    vf.setDisplayedChild(1);
-                                }
-
-                                return true;
-                            case R.id.navigation_notifications:
-
-                                if (vf.getDisplayedChild() != 2) {
-                                    vf.setDisplayedChild(2);
-                                }
-
-                                return true;
-                        }
-                        return false;
                     }
                 });
-                popup.show();
+                popup.show();*/
             }
         });
 
