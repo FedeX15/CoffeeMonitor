@@ -26,6 +26,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -438,34 +439,29 @@ public class Dashboard extends AppCompatActivity {
 
         final Button addcupdatebtn = findViewById(R.id.addcupdatebtn);
         Calendar cld = Calendar.getInstance();
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Seleziona tipologia");
+        final List<Coffeetype> list = db.coffetypeDao().getAll();
+
         final DatePickerDialog StartTime = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                final Coffeetype type = db.coffetypeDao().getAll().get(0);
                 Calendar newDate = Calendar.getInstance();
                 newDate.set(year, monthOfYear, dayOfMonth);
                 SimpleDateFormat sdf = new SimpleDateFormat("dd/MMM/yyy HH:mm:ss:SSS", Locale.getDefault());
-                final String Date = sdf.format(newDate.getTime());
+                final String date = sdf.format(newDate.getTime());
                 sdf = new SimpleDateFormat("yyy/MM/dd", Locale.getDefault());
-                final String Day = sdf.format(newDate.getTime());
-                PopupMenu popup = new PopupMenu(getApplicationContext(), findViewById(R.id.addcupdatebtn));
-
-                final List<Coffeetype> list = db.coffetypeDao().getAll();
-                for (Coffeetype typea : list)
-                    popup.getMenu().add(1, list.indexOf(typea), 0, typea.getName());
-                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                final String day = sdf.format(newDate.getTime());
+                builder.setAdapter(new ArrayAdapter<Coffeetype>(getApplicationContext(), android.R.layout.select_dialog_item, list), new DialogInterface.OnClickListener() {
                     @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-                        int pos = item.getItemId();
-                        db.cupDAO().insert(new Cup(list.get(pos).getKey(), Date, Day));
+                    public void onClick(DialogInterface dialog, int pos) {
                         list.get(pos).setQnt(list.get(pos).getQnt() + 1);
                         db.coffetypeDao().update(list.get(pos));
                         recview.setAdapter(new RecviewAdapter(db));
-                        return true;
+
+                        db.cupDAO().insert(new Cup(list.get(pos).getKey(), date, day));
                     }
                 });
-                popup.show();
-
-
+                builder.show();
             }
         }, cld.get(Calendar.YEAR), cld.get(Calendar.MONTH), cld.get(Calendar.DAY_OF_MONTH));
         addcupdatebtn.setOnClickListener(new View.OnClickListener() {
