@@ -463,6 +463,21 @@ public class Dashboard extends AppCompatActivity {
                         }
 
                         return true;
+
+                    case R.id.navigation_cups:
+
+                        if (vf.getDisplayedChild() != 3) {
+                            String[] funfacts = getResources().getStringArray(R.array.funfacts);
+                            Random rnd = new Random();
+                            int i = rnd.nextInt(funfacts.length);
+
+                            TextView funfactstxtv = findViewById(R.id.cupsfunfacttxt);
+                            funfactstxtv.setText(funfacts[i]);
+
+                            vf.setDisplayedChild(3);
+                        }
+
+                        return true;
                 }
                 return false;
             }
@@ -491,6 +506,10 @@ public class Dashboard extends AppCompatActivity {
         adInitializer();
         graphInitializer();
         graphUpdater();
+
+        RecyclerView cupsrecv = findViewById(R.id.cupsrecview);
+        cupsrecv.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        cupsrecv.setAdapter(new CupRecviewAdapter(db));
 
         recview = findViewById(R.id.recview);
         recview.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
@@ -558,6 +577,22 @@ public class Dashboard extends AppCompatActivity {
         showstatbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                /*final AlertDialog.Builder dialogbuilder = new AlertDialog.Builder(findViewById(R.id.action_favs).getContext());
+                final View form = getLayoutInflater().inflate(R.layout.showcupsdialog, null);
+                dialogbuilder.setView(form);
+                dialogbuilder.create();
+
+                RecyclerView recv = form.findViewById(R.id.cupsrecview);
+                recv.setAdapter(new CupRecviewAdapter(db));
+                final AlertDialog dialog = dialogbuilder.show();
+
+                Button negative = form.findViewById(R.id.cancelbtn);
+                negative.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                    }
+                });*/
                 int milliliterstotal = 0;
                 int cupstotal = 0;
                 String cupsstat = "";
@@ -646,7 +681,7 @@ public class Dashboard extends AppCompatActivity {
                 final String date = sdf.format(newDate.getTime());
                 sdf = new SimpleDateFormat("yyy/MM/dd", Locale.getDefault());
                 final String day = sdf.format(newDate.getTime());
-                builder.setAdapter(new ArrayAdapter<Coffeetype>(getApplicationContext(), android.R.layout.select_dialog_item, list), new DialogInterface.OnClickListener() {
+                builder.setAdapter(new ArrayAdapter<Coffeetype>(getApplicationContext(), android.R.layout.simple_list_item_1, list), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int pos) {
                         list.get(pos).setQnt(list.get(pos).getQnt() + 1);

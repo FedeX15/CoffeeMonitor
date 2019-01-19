@@ -12,6 +12,11 @@
         android:title="@string/title_dashboard" />
 
     <item
+        android:id="@+id/navigation_cups"
+        android:icon="@drawable/ic_hamburger"
+        android:title="@string/title_cups" />
+
+    <item
         android:id="@+id/navigation_notifications"
         android:icon="@drawable/ic_settings"
         android:title="@string/title_preferences" />

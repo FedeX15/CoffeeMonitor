@@ -33,6 +33,8 @@
 
         <include layout="@layout/activity_pref" />
 
+        <include layout="@layout/activity_cups" />
+
     </ViewFlipper>
 
     <android.support.design.widget.NavigationView

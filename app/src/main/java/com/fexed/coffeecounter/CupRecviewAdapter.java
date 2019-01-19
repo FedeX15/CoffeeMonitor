@@ -5,9 +5,11 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -24,10 +26,9 @@ public class CupRecviewAdapter extends RecyclerView.Adapter<CupRecviewAdapter.Vi
 
     public CupRecviewAdapter(AppDatabase db) {
         List<Cup> allcups = new ArrayList<>();
-        for (Coffeetype type : db.coffetypeDao().getAll())
-            allcups.addAll(db.cupDAO().getAll(type.getKey()));
-        this.mDataset = allcups;
         this.types = db.coffetypeDao().getAll();
+        for (Coffeetype type : this.types) allcups.addAll(db.cupDAO().getAll(type.getKey()));
+        this.mDataset = allcups;
         this.db = db;
     }
 
@@ -41,7 +42,7 @@ public class CupRecviewAdapter extends RecyclerView.Adapter<CupRecviewAdapter.Vi
 
     @Override
     public CupRecviewAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        TextView v = (TextView) LayoutInflater.from(parent.getContext()).inflate(android.R.layout.simple_list_item_1, parent, false);
+        LinearLayout v = (LinearLayout) LayoutInflater.from(parent.getContext()).inflate(R.layout.cup_element, parent, false);
         ViewHolder vh = new ViewHolder(v);
         return vh;
     }
@@ -54,8 +55,9 @@ public class CupRecviewAdapter extends RecyclerView.Adapter<CupRecviewAdapter.Vi
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
         final String str = getTypeFromKey(mDataset.get(position).getTypekey()).getName() + " @ " + mDataset.get(position).toString();
+        Log.d("CUP", str);
         holder.txtv.setText(str);
-        holder.txtv.setOnLongClickListener(new View.OnLongClickListener() {
+        holder.parent.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
                 AlertDialog.Builder dialogbuilder = new AlertDialog.Builder(view.getContext());
@@ -89,10 +91,12 @@ public class CupRecviewAdapter extends RecyclerView.Adapter<CupRecviewAdapter.Vi
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public TextView txtv;
+        public LinearLayout parent;
 
-        public ViewHolder(TextView v) {
+        public ViewHolder(LinearLayout v) {
             super(v);
-            txtv = v;
+            txtv = v.findViewById(R.id.cupname);
+            parent = v.findViewById(R.id.cupelemparent);
         }
     }
 }
