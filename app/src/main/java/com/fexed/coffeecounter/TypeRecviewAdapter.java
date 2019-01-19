@@ -19,11 +19,11 @@ import java.util.List;
  * Created by fedex on 01/12/2017.
  */
 
-public class RecviewAdapter extends RecyclerView.Adapter<RecviewAdapter.ViewHolder> {
+public class TypeRecviewAdapter extends RecyclerView.Adapter<TypeRecviewAdapter.ViewHolder> {
     AppDatabase db;
     private List<Coffeetype> mDataset;
 
-    public RecviewAdapter(AppDatabase db) {
+    public TypeRecviewAdapter(AppDatabase db) {
         this.mDataset = db.coffetypeDao().getAll();
         this.db = db;
     }
@@ -37,7 +37,7 @@ public class RecviewAdapter extends RecyclerView.Adapter<RecviewAdapter.ViewHold
     }
 
     @Override
-    public RecviewAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public TypeRecviewAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         CardView v = (CardView) LayoutInflater.from(parent.getContext()).inflate(R.layout.coffee_card, parent, false);
         ViewHolder vh = new ViewHolder(v);
         return vh;

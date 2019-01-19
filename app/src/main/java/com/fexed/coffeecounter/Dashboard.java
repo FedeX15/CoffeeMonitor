@@ -136,7 +136,7 @@ public class Dashboard extends AppCompatActivity {
                         db.coffetypeDao().update(elem);
                         db.cupDAO().insert(new Cup(elem.getKey()));
                         graphUpdater();
-                        recview.setAdapter(new RecviewAdapter(db));
+                        recview.setAdapter(new TypeRecviewAdapter(db));
                         return true;
                     }
                 });
@@ -217,7 +217,7 @@ public class Dashboard extends AppCompatActivity {
 
                             db.coffetypeDao().insert(newtype);
 
-                            recview.setAdapter(new RecviewAdapter(db));
+                            recview.setAdapter(new TypeRecviewAdapter(db));
                             Snackbar.make(findViewById(R.id.containerdrawer), "Tipo " + newtype.getName() + " aggiunto", Snackbar.LENGTH_SHORT).show();
 
                             dialog.dismiss();
@@ -494,7 +494,7 @@ public class Dashboard extends AppCompatActivity {
 
         recview = findViewById(R.id.recview);
         recview.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        recview.setAdapter(new RecviewAdapter(db));
+        recview.setAdapter(new TypeRecviewAdapter(db));
         SnapHelper helper = new LinearSnapHelper() {
             @Override
             public int findTargetSnapPosition(RecyclerView.LayoutManager layoutManager, int velocityX, int velocityY) {
@@ -539,7 +539,7 @@ public class Dashboard extends AppCompatActivity {
                                 db.cupDAO().nuke();
                                 db.coffetypeDao().nuke();
                                 insertStandardTypes();
-                                recview.setAdapter(new RecviewAdapter(db));
+                                recview.setAdapter(new TypeRecviewAdapter(db));
                                 Snackbar.make(findViewById(R.id.container), "Database resettato", Snackbar.LENGTH_SHORT).show();
                             }
                         })
@@ -569,7 +569,6 @@ public class Dashboard extends AppCompatActivity {
                     for (Cup cup : db.cupDAO().getAll(type.getKey()))
                         cupsstat = cupsstat + ("\t[" + cup.toString() + "]\n");
                 }
-
 
                 AlertDialog.Builder dialogbuilder = new AlertDialog.Builder(v.getContext());
                 dialogbuilder.setMessage("Bevuti in totale " + milliliterstotal + " ml in " + cupstotal + " tazzine.\n\n" + cupsstat)
@@ -652,7 +651,7 @@ public class Dashboard extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int pos) {
                         list.get(pos).setQnt(list.get(pos).getQnt() + 1);
                         db.coffetypeDao().update(list.get(pos));
-                        recview.setAdapter(new RecviewAdapter(db));
+                        recview.setAdapter(new TypeRecviewAdapter(db));
 
                         db.cupDAO().insert(new Cup(list.get(pos).getKey(), date, day));
                     }
