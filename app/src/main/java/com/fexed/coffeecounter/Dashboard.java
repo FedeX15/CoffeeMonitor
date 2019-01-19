@@ -81,7 +81,6 @@ public class Dashboard extends AppCompatActivity {
         return b;
     }
 
-
     private void insertStandardTypes() {
         if (db.coffetypeDao().getAll().size() == 0) {
             db.coffetypeDao().insert(new Coffeetype("Caffè espresso", 30, "Tazzina di caffè da bar o da moka.", true, "Caffeina", 0));
@@ -346,9 +345,11 @@ public class Dashboard extends AppCompatActivity {
     public void typePie(PieChart pie) {
         pie.clear();
         List<Coffeetype> types = db.coffetypeDao().getAll();
+        List<Coffeetype> favs = db.coffetypeDao().getFavs();
         for (Coffeetype type : types) {
             int clr;
-            if (db.coffetypeDao().getFavs().contains(type)) {
+            boolean isfav = favs.contains(type);
+            if (isfav) {
                 clr = getColor(R.color.colorAccent);
             } else clr = getColor(R.color.colorAccentDark);
 
@@ -665,7 +666,5 @@ public class Dashboard extends AppCompatActivity {
                 StartTime.show();
             }
         });
-
-
     }
 }
