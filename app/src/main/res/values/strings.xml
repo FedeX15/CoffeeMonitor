@@ -11,10 +11,11 @@
     <string name="liquid">Liquid</string>
     <string name="resetdb">Reset Database</string>
     <string name="showstat">Show statistics</string>
-    <string name="sostanza">Sostanza</string>
-    <string name="addtype">Aggiungi tipologia</string>
-    <string name="placeholder">Dati vari placeholder</string>
-    <string name="Tazzebevutepertipo">Tazze bevute per tipo</string>
+    <string name="sostanza">Substance</string>
+    <string name="price">Price</string>
+    <string name="addtype">Add type</string>
+    <string name="placeholder">Various data placeholder</string>
+    <string name="Tazzebevutepertipo">Drunk cups for each type</string>
 
     <string-array name="funfacts">
         <item>"Sembra che gli elefanti siano ghiotti di caffè."</item>
