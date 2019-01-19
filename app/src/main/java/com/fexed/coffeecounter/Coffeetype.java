@@ -31,9 +31,9 @@ public class Coffeetype {
 
     private boolean fav;
 
-    private int price;
+    private float price;
 
-    public Coffeetype(String name, int liters, String desc, boolean liquido, String sostanza, int price) {
+    public Coffeetype(String name, int liters, String desc, boolean liquido, String sostanza, float price) {
         this.liters = liters;
         this.name = name;
         this.desc = desc;
@@ -101,11 +101,11 @@ public class Coffeetype {
         return "Nome: " + getName() + "\n" + getDesc() + "\n" + getPrice() + "€\n" + "\nSostanza: " + getSostanza().toLowerCase() + "\nQuantità: " + getLiters() + ((isLiquido()) ? " ml" : " mg");
     }
 
-    public int getPrice() {
+    public float getPrice() {
         return price;
     }
 
-    public void setPrice(int price) {
+    public void setPrice(float price) {
         this.price = price;
     }
 
