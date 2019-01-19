@@ -1,7 +1,9 @@
 package com.fexed.coffeecounter;
 
 import android.app.DatePickerDialog;
+import android.arch.persistence.db.SupportSQLiteDatabase;
 import android.arch.persistence.room.Room;
+import android.arch.persistence.room.migration.Migration;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -11,6 +13,7 @@ import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
@@ -94,6 +97,29 @@ public class Dashboard extends AppCompatActivity {
         return true;
     }
 
+    static final Migration MIGRATION_19_20 = new Migration(19, 20) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            database.execSQL("BEGIN TRANSACTION");
+            database.execSQL("CREATE TABLE IF NOT EXISTS `coffeetypenew` (`qnt` INTEGER NOT NULL, `liters` INTEGER NOT NULL, `name` TEXT, `desc` TEXT, `key` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `liquido` INTEGER NOT NULL, `sostanza` TEXT, `fav` INTEGER NOT NULL, `price` REAL NOT NULL)");
+            database.execSQL("INSERT INTO coffeetypenew('qnt', 'liters', 'name', 'desc', 'key', 'liquido', 'sostanza', 'fav', 'price') SELECT * FROM coffeetype");
+            database.execSQL("DROP TABLE coffeetype");
+            database.execSQL("ALTER TABLE coffeetypenew RENAME TO coffeetype");
+            database.execSQL("COMMIT");
+        }
+    };
+
+    public void adInitializer() {
+        MobileAds.initialize(this, "ca-app-pub-9387595638685451~3707270987");
+        AdView mAdView = findViewById(R.id.banner1);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+        AdView mAdView2 = findViewById(R.id.banner2);
+        mAdView2.loadAd(adRequest);
+        AdView mAdView3 = findViewById(R.id.banner3);
+        mAdView3.loadAd(adRequest);
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -175,23 +201,25 @@ public class Dashboard extends AppCompatActivity {
                         EditText nameedittxt = form.findViewById(R.id.nametxt);
                         EditText descedittxt = form.findViewById(R.id.desctxt);
                         EditText sostedittxt = form.findViewById(R.id.sosttxt);
+                        EditText pricetedittxt = form.findViewById(R.id.pricetxt);
                         CheckBox liquidckbx = form.findViewById(R.id.liquidcheck);
 
                         String name = nameedittxt.getText().toString();
                         if (name.isEmpty()) {
-                            Snackbar.make(findViewById(R.id.container), "Il nome non può essere vuoto", Snackbar.LENGTH_SHORT).show();
+                            Snackbar.make(findViewById(R.id.containerdrawer), "Il nome non può essere vuoto", Snackbar.LENGTH_SHORT).show();
                         } else {
                             int liters = state.getInt("qnt", 0);
                             String desc = descedittxt.getText().toString();
                             String sostanza = sostedittxt.getText().toString();
+                            float price = Float.parseFloat(pricetedittxt.getText().toString());
 
                             boolean liquid = liquidckbx.isChecked();
-                            Coffeetype newtype = new Coffeetype(name, liters, desc, liquid, sostanza, 0);
+                            Coffeetype newtype = new Coffeetype(name, liters, desc, liquid, sostanza, price);
 
                             db.coffetypeDao().insert(newtype);
 
                             recview.setAdapter(new RecviewAdapter(db));
-                            Snackbar.make(findViewById(R.id.container), "Tipo " + newtype.getName() + " aggiunto", Snackbar.LENGTH_SHORT).show();
+                            Snackbar.make(findViewById(R.id.containerdrawer), "Tipo " + newtype.getName() + " aggiunto", Snackbar.LENGTH_SHORT).show();
 
                             dialog.dismiss();
                         }
@@ -210,15 +238,178 @@ public class Dashboard extends AppCompatActivity {
         return true;
     }
 
-    public void adInitializer() {
-        MobileAds.initialize(this, "ca-app-pub-9387595638685451~3707270987");
-        AdView mAdView = findViewById(R.id.banner1);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);
-        AdView mAdView2 = findViewById(R.id.banner2);
-        mAdView2.loadAd(adRequest);
-        AdView mAdView3 = findViewById(R.id.banner3);
-        mAdView3.loadAd(adRequest);
+    public void historyGraphInitializer(GraphView graph) {
+        //graph.getViewport().setMinimalViewport(Double.NaN, Double.NaN, 0, Double.NaN);
+        graph.getViewport().setMaxXAxisSize(30);
+        graph.getViewport().setScrollable(true);
+        graph.getViewport().setYAxisBoundsManual(true);
+        graph.getViewport().setMinY(0);
+    }
+
+    public void daygraphInitializer(GraphView daygraph) {
+        daygraph.getViewport().setMaxXAxisSize(7);
+        StaticLabelsFormatter staticLabelsFormatter = new StaticLabelsFormatter(daygraph);
+        staticLabelsFormatter.setHorizontalLabels(new String[]{"Dom", "Lun", "Mar", "Mer", "Gio", "Ven", "Sab"});
+        daygraph.getGridLabelRenderer().setLabelFormatter(staticLabelsFormatter);
+        daygraph.getViewport().setYAxisBoundsManual(true);
+        daygraph.getViewport().setMinY(0);
+    }
+
+    public void graphInitializer() {
+        GraphView graph = findViewById(R.id.historygraph);
+        GraphView daygraph = findViewById(R.id.daygraph);
+        PieChart pie = findViewById(R.id.piegraph);
+
+        historyGraphInitializer(graph);
+        daygraphInitializer(daygraph);
+    }
+
+    public LocalDate getLocalDateFromString(String date) {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd", Locale.getDefault());
+        try {
+            LocalDate ret = format.parse(date).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+            return ret;
+        } catch (ParseException e) {
+            return null;
+        }
+    }
+
+    public String getStringFromLocalDate(LocalDate date) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+        return date.format(formatter);
+    }
+
+    public void historyGraph(GraphView graph) {
+        //days[0] è sempre il primo giorno nel db
+        //days.length = cups.length
+        final List<String> days = db.cupDAO().getDays();
+        final List<Integer> cups = db.cupDAO().perDay();
+
+        if (days.size() > 0) {
+            LocalDate fromDate = getLocalDateFromString(days.get(0));
+            LocalDate toDate = LocalDate.now();
+            LocalDate current = fromDate;
+            toDate = toDate.plusDays(1);
+            List<LocalDate> dates = new ArrayList<>(25);
+            while (current.isBefore(toDate)) {
+                dates.add(current);
+                current = current.plusDays(1);
+            }
+
+            graph.getViewport().setScalable(true);
+            //graph.getViewport().setMinY(0);
+            //graph.getViewport().setMaxY(20);
+            graph.getViewport().setMaxX(Date.from(dates.get(dates.size() - 1).atStartOfDay(ZoneId.systemDefault()).toInstant()).getTime());
+            if (dates.size() <= 30)
+                graph.getViewport().setMinX(Date.from(dates.get(0).atStartOfDay(ZoneId.systemDefault()).toInstant()).getTime());
+            else
+                graph.getViewport().setMinX(Date.from(dates.get(dates.size() - 29).atStartOfDay(ZoneId.systemDefault()).toInstant()).getTime());
+            graph.getViewport().setScalable(false);
+
+            List<DataPoint> points = new ArrayList<>();
+            int j = 0;
+            int i, maxc = 0;
+            for (i = 0; i < dates.size(); i++) {
+                String day = getStringFromLocalDate(dates.get(i));
+                Date daydate = Date.from(dates.get(i).atStartOfDay(ZoneId.systemDefault()).toInstant());
+                if (j < days.size() && day.equals(days.get(j))) {
+                    points.add(new DataPoint(daydate, cups.get(j)));
+                    if (cups.get(j) > maxc) maxc = cups.get(j);
+                    j++;
+                } else points.add(new DataPoint(daydate, 0));
+            }
+            DataPoint[] pointsv = new DataPoint[points.size()];
+            pointsv = points.toArray(pointsv);
+            graph.removeAllSeries();
+            graph.getViewport().setMaxY(maxc);
+
+            if (state.getBoolean("historyline", false)) {
+                BarGraphSeries<DataPoint> seriesb = new BarGraphSeries<>(pointsv);
+                seriesb.setDrawValuesOnTop(true);
+                seriesb.setColor(getColor(R.color.colorAccent));
+                seriesb.setSpacing(25);
+                graph.addSeries(seriesb);
+            } else {
+                LineGraphSeries<DataPoint> seriesl = new LineGraphSeries<>(pointsv);
+                seriesl.setColor(getColor(R.color.colorAccent));
+                graph.addSeries(seriesl);
+            }
+
+            // set date label formatter
+            graph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(this));
+            graph.getGridLabelRenderer().setNumHorizontalLabels(3); // only 4 because of the space
+            graph.getViewport().setXAxisBoundsManual(true);
+            graph.getGridLabelRenderer().setHumanRounding(false);
+        }
+    }
+
+    public void typePie(PieChart pie) {
+        pie.clear();
+        List<Coffeetype> types = db.coffetypeDao().getAll();
+        for (Coffeetype type : types) {
+            int clr;
+            if (db.coffetypeDao().getFavs().contains(type)) {
+                clr = getColor(R.color.colorAccent);
+            } else clr = getColor(R.color.colorAccentDark);
+
+            Segment segment = new Segment(type.getName(), db.cupDAO().getAll(type.getKey()).size());
+            SegmentFormatter formatter = new SegmentFormatter(clr);
+            formatter.setRadialInset((float) 1);
+            Paint pnt = new Paint(formatter.getLabelPaint());
+            pnt.setTextSize(30);
+            if (db.coffetypeDao().getFavs().contains(type)) {
+                pnt.setFakeBoldText(true);
+            }
+            formatter.setLabelPaint(pnt);
+            pie.addSegment(segment, formatter);
+        }
+        pie.redraw();
+    }
+
+    public void dayGraph(GraphView daygraph) {
+        List<Cup> allcups = new ArrayList<>();
+        for (Coffeetype type : db.coffetypeDao().getAll()) {
+            for (Cup cup : db.cupDAO().getAll(type.getKey())) allcups.add(cup);
+        }
+        int[] cupPerDay = new int[7];
+        SimpleDateFormat sdf = new SimpleDateFormat("E", Locale.getDefault());
+        SimpleDateFormat sdf1 = new SimpleDateFormat("yyy/MM/dd", Locale.getDefault());
+        Calendar clndr = Calendar.getInstance();
+        int day;
+        for (Cup cup : allcups) {
+            try {
+                Log.d("DAYS", sdf.format(sdf1.parse(cup.getDay())));
+                clndr.setTime(sdf1.parse(cup.getDay()));
+                day = clndr.get(Calendar.DAY_OF_WEEK) - 1;
+                cupPerDay[day]++;
+            } catch (ParseException e) {
+            }
+        }
+        int max = 0;
+
+        DataPoint[] pointsv = new DataPoint[7];
+        for (int i = 0; i < 7; i++) {
+            pointsv[i] = new DataPoint(i, cupPerDay[i]);
+            if (cupPerDay[i] > max) max = cupPerDay[i];
+        }
+
+        BarGraphSeries<DataPoint> dayseries = new BarGraphSeries<>(pointsv);
+        dayseries.setDrawValuesOnTop(true);
+        dayseries.setColor(getColor(R.color.colorAccent));
+        dayseries.setSpacing(25);
+        daygraph.removeAllSeries();
+        daygraph.addSeries(dayseries);
+        daygraph.getViewport().setMaxY(max);
+    }
+
+    public void graphUpdater() {
+        GraphView graph = findViewById(R.id.historygraph);
+        PieChart pie = findViewById(R.id.piegraph);
+        GraphView daygraph = findViewById(R.id.daygraph);
+
+        historyGraph(graph);
+        typePie(pie);
+        dayGraph(daygraph);
     }
 
     @Override
@@ -284,7 +475,11 @@ public class Dashboard extends AppCompatActivity {
             }
         });
 
-        db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "typedb").allowMainThreadQueries().build();
+        db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "typedb")
+                .allowMainThreadQueries()
+                .addMigrations(MIGRATION_19_20)
+                .build();
+        Log.d("ROOMDB", "path: " + getDatabasePath("typedb").getAbsolutePath());
         insertStandardTypes();
 
         for (Coffeetype type : db.coffetypeDao().getAll()) {
@@ -473,179 +668,4 @@ public class Dashboard extends AppCompatActivity {
 
 
     }
-
-    public void historyGraphInitializer(GraphView graph) {
-        //graph.getViewport().setMinimalViewport(Double.NaN, Double.NaN, 0, Double.NaN);
-        graph.getViewport().setMaxXAxisSize(30);
-        graph.getViewport().setScrollable(true);
-        graph.getViewport().setYAxisBoundsManual(true);
-        graph.getViewport().setMinY(0);
-    }
-
-    public void daygraphInitializer(GraphView daygraph) {
-        daygraph.getViewport().setMaxXAxisSize(7);
-        StaticLabelsFormatter staticLabelsFormatter = new StaticLabelsFormatter(daygraph);
-        staticLabelsFormatter.setHorizontalLabels(new String[]{"Dom", "Lun", "Mar", "Mer", "Gio", "Ven", "Sab"});
-        daygraph.getGridLabelRenderer().setLabelFormatter(staticLabelsFormatter);
-        daygraph.getViewport().setYAxisBoundsManual(true);
-        daygraph.getViewport().setMinY(0);
-    }
-
-    public void graphInitializer() {
-        GraphView graph = findViewById(R.id.historygraph);
-        GraphView daygraph = findViewById(R.id.daygraph);
-        PieChart pie = findViewById(R.id.piegraph);
-
-        historyGraphInitializer(graph);
-        daygraphInitializer(daygraph);
-    }
-
-    public LocalDate getLocalDateFromString(String date) {
-        SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd", Locale.getDefault());
-        try {
-            LocalDate ret = format.parse(date).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-            return ret;
-        } catch (ParseException e) {
-            return null;
-        }
-    }
-
-    public String getStringFromLocalDate(LocalDate date) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
-        return date.format(formatter);
-    }
-
-    public void historyGraph(GraphView graph) {
-        //days[0] è sempre il primo giorno nel db
-        //days.length = cups.length
-        final List<String> days = db.cupDAO().getDays();
-        final List<Integer> cups = db.cupDAO().perDay();
-
-        if (days.size() > 0) {
-            LocalDate fromDate = getLocalDateFromString(days.get(0));
-            LocalDate toDate = LocalDate.now();
-            LocalDate current = fromDate;
-            toDate = toDate.plusDays(1);
-            List<LocalDate> dates = new ArrayList<>(25);
-            while (current.isBefore(toDate)) {
-                dates.add(current);
-                current = current.plusDays(1);
-            }
-
-            graph.getViewport().setScalable(true);
-            //graph.getViewport().setMinY(0);
-            //graph.getViewport().setMaxY(20);
-            graph.getViewport().setMaxX(Date.from(dates.get(dates.size() - 1).atStartOfDay(ZoneId.systemDefault()).toInstant()).getTime());
-            if (dates.size() <= 30)
-                graph.getViewport().setMinX(Date.from(dates.get(0).atStartOfDay(ZoneId.systemDefault()).toInstant()).getTime());
-            else
-                graph.getViewport().setMinX(Date.from(dates.get(dates.size() - 29).atStartOfDay(ZoneId.systemDefault()).toInstant()).getTime());
-            graph.getViewport().setScalable(false);
-
-            List<DataPoint> points = new ArrayList<>();
-            int j = 0;
-            int i, maxc = 0;
-            for (i = 0; i < dates.size(); i++) {
-                String day = getStringFromLocalDate(dates.get(i));
-                Date daydate = Date.from(dates.get(i).atStartOfDay(ZoneId.systemDefault()).toInstant());
-                if (j < days.size() && day.equals(days.get(j))) {
-                    points.add(new DataPoint(daydate, cups.get(j)));
-                    if (cups.get(j) > maxc) maxc = cups.get(j);
-                    j++;
-                } else points.add(new DataPoint(daydate, 0));
-            }
-            DataPoint[] pointsv = new DataPoint[points.size()];
-            pointsv = points.toArray(pointsv);
-            graph.removeAllSeries();
-            graph.getViewport().setMaxY(maxc);
-
-            if (state.getBoolean("historyline", false)) {
-                BarGraphSeries<DataPoint> seriesb = new BarGraphSeries<>(pointsv);
-                seriesb.setDrawValuesOnTop(true);
-                seriesb.setColor(getColor(R.color.colorAccent));
-                seriesb.setSpacing(25);
-                graph.addSeries(seriesb);
-            } else {
-                LineGraphSeries<DataPoint> seriesl = new LineGraphSeries<>(pointsv);
-                seriesl.setColor(getColor(R.color.colorAccent));
-                graph.addSeries(seriesl);
-            }
-
-            // set date label formatter
-            graph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(this));
-            graph.getGridLabelRenderer().setNumHorizontalLabels(3); // only 4 because of the space
-            graph.getViewport().setXAxisBoundsManual(true);
-            graph.getGridLabelRenderer().setHumanRounding(false);
-        }
-    }
-
-    public void typePie(PieChart pie) {
-        pie.clear();
-        List<Coffeetype> types = db.coffetypeDao().getAll();
-        for (Coffeetype type : types) {
-            int clr;
-            if (db.coffetypeDao().getFavs().contains(type)) {
-                clr = getColor(R.color.colorAccent);
-            } else clr = getColor(R.color.colorAccentDark);
-
-            Segment segment = new Segment(type.getName(), db.cupDAO().getAll(type.getKey()).size());
-            SegmentFormatter formatter = new SegmentFormatter(clr);
-            formatter.setRadialInset((float) 1);
-            Paint pnt = new Paint(formatter.getLabelPaint());
-            pnt.setTextSize(30);
-            if (db.coffetypeDao().getFavs().contains(type)) {
-                pnt.setFakeBoldText(true);
-            }
-            formatter.setLabelPaint(pnt);
-            pie.addSegment(segment, formatter);
-        }
-        pie.redraw();
-    }
-
-    public void dayGraph(GraphView daygraph) {
-        List<Cup> allcups = new ArrayList<>();
-        for (Coffeetype type : db.coffetypeDao().getAll()) {
-            for (Cup cup : db.cupDAO().getAll(type.getKey())) allcups.add(cup);
-        }
-        int[] cupPerDay = new int[7];
-        SimpleDateFormat sdf = new SimpleDateFormat("E", Locale.getDefault());
-        SimpleDateFormat sdf1 = new SimpleDateFormat("yyy/MM/dd", Locale.getDefault());
-        Calendar clndr = Calendar.getInstance();
-        int day;
-        for (Cup cup : allcups) {
-            try {
-                Log.d("DAYS", sdf.format(sdf1.parse(cup.getDay())));
-                clndr.setTime(sdf1.parse(cup.getDay()));
-                day = clndr.get(Calendar.DAY_OF_WEEK) - 1;
-                cupPerDay[day]++;
-            } catch (ParseException e) {
-            }
-        }
-        int max = 0;
-
-        DataPoint[] pointsv = new DataPoint[7];
-        for (int i = 0; i < 7; i++) {
-            pointsv[i] = new DataPoint(i, cupPerDay[i]);
-            if (cupPerDay[i] > max) max = cupPerDay[i];
-        }
-
-        BarGraphSeries<DataPoint> dayseries = new BarGraphSeries<>(pointsv);
-        dayseries.setDrawValuesOnTop(true);
-        dayseries.setColor(getColor(R.color.colorAccent));
-        dayseries.setSpacing(25);
-        daygraph.removeAllSeries();
-        daygraph.addSeries(dayseries);
-        daygraph.getViewport().setMaxY(max);
-    }
-
-    public void graphUpdater() {
-        GraphView graph = findViewById(R.id.historygraph);
-        PieChart pie = findViewById(R.id.piegraph);
-        GraphView daygraph = findViewById(R.id.daygraph);
-
-        historyGraph(graph);
-        typePie(pie);
-        dayGraph(daygraph);
-    }
-
 }
