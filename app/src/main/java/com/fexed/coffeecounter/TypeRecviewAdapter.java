@@ -51,7 +51,7 @@ public class TypeRecviewAdapter extends RecyclerView.Adapter<TypeRecviewAdapter.
         cupstxtv.setText("" + mDataset.get(position).getQnt());
 
         TextView desctxtv = holder.descTextView;
-        desctxtv.setText(mDataset.get(position).toString()/* + "\n\n\n" + db.cupDAO().getAll(mDataset.get(position).getKey()).toString()*/);
+        desctxtv.setText(mDataset.get(position).toBigString()/* + "\n\n\n" + db.cupDAO().getAll(mDataset.get(position).getKey()).toString()*/);
 
         Button addbtn = holder.mCardView.findViewById(R.id.addbtn);
         addbtn.setOnClickListener(new View.OnClickListener() {

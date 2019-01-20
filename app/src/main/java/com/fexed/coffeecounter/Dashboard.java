@@ -149,95 +149,101 @@ public class Dashboard extends AppCompatActivity {
                 break;
 
             case R.id.action_add:
-                final AlertDialog.Builder dialogbuilder = new AlertDialog.Builder(findViewById(R.id.action_favs).getContext());
-                final View form = getLayoutInflater().inflate(R.layout.addtypedialog, null);
-                final TextView literstxt = form.findViewById(R.id.ltrsmgtext);
-                CheckBox liquidckbx = form.findViewById(R.id.liquidcheck);
-
-                editor.putInt("qnt", 0);
-                editor.putString("suffix", (liquidckbx.isChecked()) ? " ml" : " mg");
-                editor.commit();
-                literstxt.setText(state.getInt("qnt", 0) + state.getString("suffix", " ml"));
-
-                ImageButton addbtn = form.findViewById(R.id.incrbtn);
-                addbtn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        int qnt = state.getInt("qnt", 0);
-                        qnt += 5;
-                        editor.putInt("qnt", qnt);
-                        editor.commit();
-                        literstxt.setText(qnt + state.getString("suffix", " ml"));
-                    }
-                });
-
-                ImageButton rmvbtn = form.findViewById(R.id.decrbtn);
-                rmvbtn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        int qnt = state.getInt("qnt", 0);
-                        qnt = (qnt == 0) ? 0 : qnt - 5;
-                        editor.putInt("qnt", qnt);
-                        editor.commit();
-                        literstxt.setText(qnt + state.getString("suffix", " ml"));
-                    }
-                });
-
-                liquidckbx.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                        editor.putString("suffix", (isChecked) ? " ml" : " mg");
-                        editor.commit();
-                        literstxt.setText(state.getInt("qnt", 0) + state.getString("suffix", " ml"));
-                    }
-                });
-
-                dialogbuilder.setView(form);
-                dialogbuilder.create();
-                final AlertDialog dialog = dialogbuilder.show();
-
-                Button positive = form.findViewById(R.id.confirmbtn);
-                positive.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        EditText nameedittxt = form.findViewById(R.id.nametxt);
-                        EditText descedittxt = form.findViewById(R.id.desctxt);
-                        EditText sostedittxt = form.findViewById(R.id.sosttxt);
-                        EditText pricetedittxt = form.findViewById(R.id.pricetxt);
-                        CheckBox liquidckbx = form.findViewById(R.id.liquidcheck);
-
-                        String name = nameedittxt.getText().toString();
-                        if (name.isEmpty()) {
-                            Snackbar.make(findViewById(R.id.containerdrawer), "Il nome non può essere vuoto", Snackbar.LENGTH_SHORT).show();
-                        } else {
-                            int liters = state.getInt("qnt", 0);
-                            String desc = descedittxt.getText().toString();
-                            String sostanza = sostedittxt.getText().toString();
-                            float price = Float.parseFloat(pricetedittxt.getText().toString());
-
-                            boolean liquid = liquidckbx.isChecked();
-                            Coffeetype newtype = new Coffeetype(name, liters, desc, liquid, sostanza, price);
-
-                            db.coffetypeDao().insert(newtype);
-
-                            cupsRecview.setAdapter(new CupRecviewAdapter(db));
-                            typesRecview.setAdapter(new TypeRecviewAdapter(db));
-                            Snackbar.make(findViewById(R.id.containerdrawer), "Tipo " + newtype.getName() + " aggiunto", Snackbar.LENGTH_SHORT).show();
-
-                            dialog.dismiss();
-                        }
-                    }
-                });
-
-                Button negative = form.findViewById(R.id.cancelbtn);
-                negative.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        dialog.dismiss();
-                    }
-                });
+                ViewFlipper vf = findViewById(R.id.viewflipper);
+                if (vf.getDisplayedChild() == 1) addNewType();
+                else addCup();
                 break;
         }
         return true;
+    }
+
+    public void addNewType() {
+        final AlertDialog.Builder dialogbuilder = new AlertDialog.Builder(findViewById(R.id.action_favs).getContext());
+        final View form = getLayoutInflater().inflate(R.layout.addtypedialog, null);
+        final TextView literstxt = form.findViewById(R.id.ltrsmgtext);
+        CheckBox liquidckbx = form.findViewById(R.id.liquidcheck);
+
+        editor.putInt("qnt", 0);
+        editor.putString("suffix", (liquidckbx.isChecked()) ? " ml" : " mg");
+        editor.commit();
+        literstxt.setText(state.getInt("qnt", 0) + state.getString("suffix", " ml"));
+
+        ImageButton addbtn = form.findViewById(R.id.incrbtn);
+        addbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int qnt = state.getInt("qnt", 0);
+                qnt += 5;
+                editor.putInt("qnt", qnt);
+                editor.commit();
+                literstxt.setText(qnt + state.getString("suffix", " ml"));
+            }
+        });
+
+        ImageButton rmvbtn = form.findViewById(R.id.decrbtn);
+        rmvbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int qnt = state.getInt("qnt", 0);
+                qnt = (qnt == 0) ? 0 : qnt - 5;
+                editor.putInt("qnt", qnt);
+                editor.commit();
+                literstxt.setText(qnt + state.getString("suffix", " ml"));
+            }
+        });
+
+        liquidckbx.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                editor.putString("suffix", (isChecked) ? " ml" : " mg");
+                editor.commit();
+                literstxt.setText(state.getInt("qnt", 0) + state.getString("suffix", " ml"));
+            }
+        });
+
+        dialogbuilder.setView(form);
+        dialogbuilder.create();
+        final AlertDialog dialog = dialogbuilder.show();
+
+        Button positive = form.findViewById(R.id.confirmbtn);
+        positive.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EditText nameedittxt = form.findViewById(R.id.nametxt);
+                EditText descedittxt = form.findViewById(R.id.desctxt);
+                EditText sostedittxt = form.findViewById(R.id.sosttxt);
+                EditText pricetedittxt = form.findViewById(R.id.pricetxt);
+                CheckBox liquidckbx = form.findViewById(R.id.liquidcheck);
+
+                String name = nameedittxt.getText().toString();
+                if (name.isEmpty()) {
+                    Snackbar.make(findViewById(R.id.containerdrawer), "Il nome non può essere vuoto", Snackbar.LENGTH_SHORT).show();
+                } else {
+                    int liters = state.getInt("qnt", 0);
+                    String desc = descedittxt.getText().toString();
+                    String sostanza = sostedittxt.getText().toString();
+                    float price = Float.parseFloat(pricetedittxt.getText().toString());
+
+                    boolean liquid = liquidckbx.isChecked();
+                    Coffeetype newtype = new Coffeetype(name, liters, desc, liquid, sostanza, price);
+
+                    db.coffetypeDao().insert(newtype);
+
+                    cupsRecview.setAdapter(new CupRecviewAdapter(db));
+                    typesRecview.setAdapter(new TypeRecviewAdapter(db));
+                    Snackbar.make(findViewById(R.id.containerdrawer), "Tipo " + newtype.getName() + " aggiunto", Snackbar.LENGTH_SHORT).show();
+
+                    dialog.dismiss();
+                }
+            }
+        });
+
+        Button negative = form.findViewById(R.id.cancelbtn);
+        negative.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
     }
 
     public void historyGraphInitializer(GraphView graph) {
@@ -454,6 +460,7 @@ public class Dashboard extends AppCompatActivity {
 
                             TextView funfactstxtv = findViewById(R.id.funfacttxt);
                             funfactstxtv.setText(funfacts[i]);
+                            typesRecview.setAdapter(new TypeRecviewAdapter(db));
 
                             vf.setDisplayedChild(1);
                         }
@@ -476,6 +483,7 @@ public class Dashboard extends AppCompatActivity {
 
                             TextView funfactstxtv = findViewById(R.id.cupsfunfacttxt);
                             funfactstxtv.setText(funfacts[i]);
+                            cupsRecview.setAdapter(new CupRecviewAdapter(db));
 
                             vf.setDisplayedChild(3);
                         }
@@ -581,22 +589,6 @@ public class Dashboard extends AppCompatActivity {
         showstatbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*final AlertDialog.Builder dialogbuilder = new AlertDialog.Builder(findViewById(R.id.action_favs).getContext());
-                final View form = getLayoutInflater().inflate(R.layout.showcupsdialog, null);
-                dialogbuilder.setView(form);
-                dialogbuilder.create();
-
-                RecyclerView recv = form.findViewById(R.id.cupsrecview);
-                recv.setAdapter(new CupRecviewAdapter(db));
-                final AlertDialog dialog = dialogbuilder.show();
-
-                Button negative = form.findViewById(R.id.cancelbtn);
-                negative.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        dialog.dismiss();
-                    }
-                });*/
                 int milliliterstotal = 0;
                 int cupstotal = 0;
                 String cupsstat = "";
@@ -685,7 +677,7 @@ public class Dashboard extends AppCompatActivity {
                 final String date = sdf.format(newDate.getTime());
                 sdf = new SimpleDateFormat("yyy/MM/dd", Locale.getDefault());
                 final String day = sdf.format(newDate.getTime());
-                builder.setAdapter(new ArrayAdapter<Coffeetype>(getApplicationContext(), android.R.layout.simple_list_item_1, list), new DialogInterface.OnClickListener() {
+                builder.setAdapter(new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_list_item_1, list), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int pos) {
                         list.get(pos).setQnt(list.get(pos).getQnt() + 1);
@@ -705,5 +697,23 @@ public class Dashboard extends AppCompatActivity {
                 StartTime.show();
             }
         });
+    }
+
+    public void addCup() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Seleziona tipologia");
+        final List<Coffeetype> list = db.coffetypeDao().getAll();
+        builder.setAdapter(new ArrayAdapter<>(getApplicationContext(), R.layout.type_element, list), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int pos) {
+                list.get(pos).setQnt(list.get(pos).getQnt() + 1);
+                db.coffetypeDao().update(list.get(pos));
+                cupsRecview.setAdapter(new CupRecviewAdapter(db));
+                typesRecview.setAdapter(new TypeRecviewAdapter(db));
+                db.cupDAO().insert(new Cup(list.get(pos).getKey()));
+                graphUpdater();
+            }
+        });
+        builder.show();
     }
 }
