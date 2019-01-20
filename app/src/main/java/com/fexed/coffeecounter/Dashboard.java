@@ -145,7 +145,18 @@ public class Dashboard extends AppCompatActivity {
                 popup.show();
                 break;
             case R.id.action_notifs:
-                //TODO implementare consigli e notifiche
+                final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle("Tips");
+                builder.setIcon(R.drawable.ic_info);
+                builder.setMessage(generateTip());
+                builder.setNeutralButton("Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                });
+                builder.create();
+                builder.show();
                 break;
 
             case R.id.action_add:
@@ -155,6 +166,10 @@ public class Dashboard extends AppCompatActivity {
                 break;
         }
         return true;
+    }
+
+    public String generateTip() {
+        return "Questo è un consiglio. Trattalo bene /s";
     }
 
     public void addNewType() {
