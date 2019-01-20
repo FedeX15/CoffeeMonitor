@@ -666,7 +666,7 @@ public class Dashboard extends AppCompatActivity {
         final Button addcupdatebtn = findViewById(R.id.addcupdatebtn);
         Calendar cld = Calendar.getInstance();
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Seleziona tipologia");
+        builder.setTitle(R.string.selecttype);
         final List<Coffeetype> list = db.coffetypeDao().getAll();
 
         final DatePickerDialog StartTime = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
@@ -701,7 +701,7 @@ public class Dashboard extends AppCompatActivity {
 
     public void addCup() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Seleziona tipologia");
+        builder.setTitle(R.string.selecttype);
         final List<Coffeetype> list = db.coffetypeDao().getAll();
         builder.setAdapter(new ArrayAdapter<>(getApplicationContext(), R.layout.type_element, list), new DialogInterface.OnClickListener() {
             @Override

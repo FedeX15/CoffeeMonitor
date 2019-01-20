@@ -76,4 +76,5 @@
     <string name="notif">Notifications</string>
     <string name="favs">Favourites</string>
     <string name="title_cups">Cups</string>
+    <string name="selecttype">Select type</string>
 </resources>
