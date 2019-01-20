@@ -109,6 +109,18 @@ public class Dashboard extends AppCompatActivity {
         }
     };
 
+    static final Migration MIGRATION_20_21 = new Migration(20, 21) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            database.execSQL("BEGIN TRANSACTION");
+            database.execSQL("CREATE TABLE IF NOT EXISTS `coffeetypenew` (`qnt` INTEGER NOT NULL, `liters` INTEGER NOT NULL, `name` TEXT, `desc` TEXT, `key` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `liquido` INTEGER NOT NULL, `sostanza` TEXT, `fav` INTEGER NOT NULL, `price` REAL NOT NULL)");
+            database.execSQL("INSERT INTO coffeetypenew('qnt', 'liters', 'name', 'desc', 'key', 'liquido', 'sostanza', 'fav', 'price') SELECT * FROM coffeetype");
+            database.execSQL("DROP TABLE coffeetype");
+            database.execSQL("ALTER TABLE coffeetypenew RENAME TO coffeetype");
+            database.execSQL("COMMIT");
+        }
+    };
+
     public void adInitializer() {
         MobileAds.initialize(this, "ca-app-pub-9387595638685451~3707270987");
         AdView mAdView = findViewById(R.id.banner1);
@@ -519,7 +531,7 @@ public class Dashboard extends AppCompatActivity {
 
         db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "typedb")
                 .allowMainThreadQueries()
-                .addMigrations(MIGRATION_19_20)
+                .addMigrations(MIGRATION_19_20, MIGRATION_20_21)
                 .build();
         Log.d("ROOMDB", "path: " + getDatabasePath("typedb").getAbsolutePath());
         insertStandardTypes();
