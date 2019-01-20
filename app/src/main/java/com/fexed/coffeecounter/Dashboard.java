@@ -677,7 +677,7 @@ public class Dashboard extends AppCompatActivity {
                 final String date = sdf.format(newDate.getTime());
                 sdf = new SimpleDateFormat("yyy/MM/dd", Locale.getDefault());
                 final String day = sdf.format(newDate.getTime());
-                builder.setAdapter(new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_list_item_1, list), new DialogInterface.OnClickListener() {
+                builder.setAdapter(new ArrayAdapter<>(getApplicationContext(), R.layout.type_element, list), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int pos) {
                         list.get(pos).setQnt(list.get(pos).getQnt() + 1);
