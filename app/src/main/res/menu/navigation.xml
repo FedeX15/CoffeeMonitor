@@ -3,17 +3,17 @@
 
     <item
         android:id="@+id/navigation_statistics"
-        android:icon="@drawable/ic_info"
+        android:icon="@drawable/ic_stats"
         android:title="@string/title_statistics" />
 
     <item
         android:id="@+id/navigation_dashboard"
-        android:icon="@drawable/ic_hamburger"
+        android:icon="@mipmap/coffeeicon_w"
         android:title="@string/title_dashboard" />
 
     <item
         android:id="@+id/navigation_cups"
-        android:icon="@drawable/ic_hamburger"
+        android:icon="@mipmap/cupicon_w"
         android:title="@string/title_cups" />
 
     <item

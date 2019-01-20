@@ -56,7 +56,8 @@ public class CupRecviewAdapter extends RecyclerView.Adapter<CupRecviewAdapter.Vi
     public void onBindViewHolder(ViewHolder holder, final int position) {
         final String str = getTypeFromKey(mDataset.get(position).getTypekey()).getName() + " @ " + mDataset.get(position).toString();
         Log.d("CUP", str);
-        holder.txtv.setText(str);
+        holder.typetxtv.setText(getTypeFromKey(mDataset.get(position).getTypekey()).getName());
+        holder.timestamptxtv.setText(mDataset.get(position).toString());
         holder.parent.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
@@ -90,12 +91,14 @@ public class CupRecviewAdapter extends RecyclerView.Adapter<CupRecviewAdapter.Vi
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView txtv;
+        public TextView typetxtv;
+        public TextView timestamptxtv;
         public LinearLayout parent;
 
         public ViewHolder(LinearLayout v) {
             super(v);
-            txtv = v.findViewById(R.id.cupname);
+            typetxtv = v.findViewById(R.id.typename);
+            timestamptxtv = v.findViewById(R.id.timestamp);
             parent = v.findViewById(R.id.cupelemparent);
         }
     }

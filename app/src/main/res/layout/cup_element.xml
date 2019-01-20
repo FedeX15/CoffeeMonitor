@@ -13,15 +13,35 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_weight="0"
+        android:contentDescription="Cup icon"
         app:srcCompat="@mipmap/cupicon_w" />
 
-    <TextView
-        android:id="@+id/cupname"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:gravity="center_vertical"
-        android:paddingLeft="5dp"
-        android:text="Very long text @ [test the layout 13.37]" />
+        android:layout_weight="0"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/typename"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:text="Very long text"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/timestamp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:text="[test the layout 13.37]" />
+    </LinearLayout>
 
 </LinearLayout>

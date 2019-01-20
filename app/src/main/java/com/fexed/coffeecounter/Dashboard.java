@@ -71,7 +71,8 @@ public class Dashboard extends AppCompatActivity {
     public SharedPreferences state;
     public SharedPreferences.Editor editor;
     public AppDatabase db;
-    public RecyclerView recview;
+    public RecyclerView typesRecview;
+    public RecyclerView cupsRecview;
 
     public static Bitmap loadBitmapFromView(View v) {
         Bitmap b = Bitmap.createBitmap(v.getMeasuredWidth(), v.getMeasuredHeight(), Bitmap.Config.ARGB_8888);
@@ -136,7 +137,8 @@ public class Dashboard extends AppCompatActivity {
                         db.coffetypeDao().update(elem);
                         db.cupDAO().insert(new Cup(elem.getKey()));
                         graphUpdater();
-                        recview.setAdapter(new TypeRecviewAdapter(db));
+                        typesRecview.setAdapter(new TypeRecviewAdapter(db));
+                        cupsRecview.setAdapter(new CupRecviewAdapter(db));
                         return true;
                     }
                 });
@@ -217,7 +219,8 @@ public class Dashboard extends AppCompatActivity {
 
                             db.coffetypeDao().insert(newtype);
 
-                            recview.setAdapter(new TypeRecviewAdapter(db));
+                            cupsRecview.setAdapter(new CupRecviewAdapter(db));
+                            typesRecview.setAdapter(new TypeRecviewAdapter(db));
                             Snackbar.make(findViewById(R.id.containerdrawer), "Tipo " + newtype.getName() + " aggiunto", Snackbar.LENGTH_SHORT).show();
 
                             dialog.dismiss();
@@ -507,13 +510,13 @@ public class Dashboard extends AppCompatActivity {
         graphInitializer();
         graphUpdater();
 
-        RecyclerView cupsrecv = findViewById(R.id.cupsrecview);
-        cupsrecv.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-        cupsrecv.setAdapter(new CupRecviewAdapter(db));
+        cupsRecview = findViewById(R.id.cupsrecview);
+        cupsRecview.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        cupsRecview.setAdapter(new CupRecviewAdapter(db));
 
-        recview = findViewById(R.id.recview);
-        recview.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        recview.setAdapter(new TypeRecviewAdapter(db));
+        typesRecview = findViewById(R.id.recview);
+        typesRecview.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        typesRecview.setAdapter(new TypeRecviewAdapter(db));
         SnapHelper helper = new LinearSnapHelper() {
             @Override
             public int findTargetSnapPosition(RecyclerView.LayoutManager layoutManager, int velocityX, int velocityY) {
@@ -544,7 +547,7 @@ public class Dashboard extends AppCompatActivity {
                 return targetPosition;
             }
         };
-        helper.attachToRecyclerView(recview);
+        helper.attachToRecyclerView(typesRecview);
 
         Button rstdbbtn = findViewById(R.id.resetdbbtn);
         rstdbbtn.setOnClickListener(new View.OnClickListener() {
@@ -558,7 +561,8 @@ public class Dashboard extends AppCompatActivity {
                                 db.cupDAO().nuke();
                                 db.coffetypeDao().nuke();
                                 insertStandardTypes();
-                                recview.setAdapter(new TypeRecviewAdapter(db));
+                                cupsRecview.setAdapter(new CupRecviewAdapter(db));
+                                typesRecview.setAdapter(new TypeRecviewAdapter(db));
                                 Snackbar.make(findViewById(R.id.container), "Database resettato", Snackbar.LENGTH_SHORT).show();
                             }
                         })
@@ -686,7 +690,8 @@ public class Dashboard extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int pos) {
                         list.get(pos).setQnt(list.get(pos).getQnt() + 1);
                         db.coffetypeDao().update(list.get(pos));
-                        recview.setAdapter(new TypeRecviewAdapter(db));
+                        cupsRecview.setAdapter(new CupRecviewAdapter(db));
+                        typesRecview.setAdapter(new TypeRecviewAdapter(db));
 
                         db.cupDAO().insert(new Cup(list.get(pos).getKey(), date, day));
                     }
