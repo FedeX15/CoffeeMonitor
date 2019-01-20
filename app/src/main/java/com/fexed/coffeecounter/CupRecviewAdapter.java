@@ -15,6 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -29,7 +30,11 @@ public class CupRecviewAdapter extends RecyclerView.Adapter<CupRecviewAdapter.Vi
     public CupRecviewAdapter(AppDatabase db) {
         List<Cup> allcups = new ArrayList<>();
         this.types = db.coffetypeDao().getAll();
-        for (Coffeetype type : this.types) allcups.addAll(db.cupDAO().getAll(type.getKey()));
+        for (Coffeetype type : this.types) {
+            List<Cup> typecups = db.cupDAO().getAll(type.getKey());
+            Collections.reverse(typecups);
+            allcups.addAll(typecups);
+        }
         this.mDataset = allcups;
         this.db = db;
     }
