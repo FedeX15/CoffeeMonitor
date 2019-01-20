@@ -3,12 +3,14 @@ package com.fexed.coffeecounter;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -58,7 +60,7 @@ public class CupRecviewAdapter extends RecyclerView.Adapter<CupRecviewAdapter.Vi
         Log.d("CUP", str);
         holder.typetxtv.setText(getTypeFromKey(mDataset.get(position).getTypekey()).getName());
         holder.timestamptxtv.setText(mDataset.get(position).toString());
-        holder.parent.setOnLongClickListener(new View.OnLongClickListener() {
+        holder.removebtn.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
                 AlertDialog.Builder dialogbuilder = new AlertDialog.Builder(view.getContext());
@@ -74,6 +76,13 @@ public class CupRecviewAdapter extends RecyclerView.Adapter<CupRecviewAdapter.Vi
                 dialogbuilder.show();
 
                 return true;
+            }
+        });
+        holder.cuptextparent.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                Snackbar.make(view, "Edit to be implemented", Snackbar.LENGTH_SHORT).show();
+                return false;
             }
         });
     }
@@ -93,13 +102,15 @@ public class CupRecviewAdapter extends RecyclerView.Adapter<CupRecviewAdapter.Vi
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public TextView typetxtv;
         public TextView timestamptxtv;
-        public LinearLayout parent;
+        public LinearLayout cuptextparent;
+        public Button removebtn;
 
         public ViewHolder(LinearLayout v) {
             super(v);
             typetxtv = v.findViewById(R.id.typename);
             timestamptxtv = v.findViewById(R.id.timestamp);
-            parent = v.findViewById(R.id.cupelemparent);
+            cuptextparent = v.findViewById(R.id.cuptextparent);
+            removebtn = v.findViewById(R.id.remove);
         }
     }
 }
