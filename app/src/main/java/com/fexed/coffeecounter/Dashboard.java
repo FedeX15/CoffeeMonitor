@@ -375,7 +375,6 @@ public class Dashboard extends AppCompatActivity {
             graph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(this));
             graph.getGridLabelRenderer().setNumHorizontalLabels(3); // only 4 because of the space
             graph.getViewport().setXAxisBoundsManual(true);
-            graph.getGridLabelRenderer().setHumanRounding(false);
         }
     }
 
@@ -383,6 +382,8 @@ public class Dashboard extends AppCompatActivity {
         pie.clear();
         List<Coffeetype> types = db.coffetypeDao().getAll();
         List<Coffeetype> favs = db.coffetypeDao().getFavs();
+        int totalcups = 0;
+        for (Coffeetype type : types) totalcups += type.getQnt();
         for (Coffeetype type : types) {
             int clr;
             boolean isfav = favs.contains(type);
@@ -390,7 +391,11 @@ public class Dashboard extends AppCompatActivity {
                 clr = getColor(R.color.colorAccent);
             } else clr = getColor(R.color.colorAccentDark);
 
-            Segment segment = new Segment(type.getName(), db.cupDAO().getAll(type.getKey()).size());
+            String name = "";
+            int n = db.cupDAO().getAll(type.getKey()).size();
+            double perc = (n * 100) / totalcups;
+            if (perc > 2.5) name = type.getName();
+            Segment segment = new Segment(name, n);
             SegmentFormatter formatter = new SegmentFormatter(clr);
             formatter.setRadialInset((float) 1);
             Paint pnt = new Paint(formatter.getLabelPaint());
