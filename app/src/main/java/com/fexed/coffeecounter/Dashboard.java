@@ -39,6 +39,7 @@ import android.widget.ImageButton;
 import android.widget.PopupMenu;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 import com.androidplot.pie.PieChart;
@@ -471,7 +472,6 @@ public class Dashboard extends AppCompatActivity {
 
                 switch (menuItem.getItemId()) {
                     case R.id.navigation_statistics:
-
                         if (vf.getDisplayedChild() != 0) {
                             graphUpdater();
                             vf.setDisplayedChild(0);
@@ -479,7 +479,6 @@ public class Dashboard extends AppCompatActivity {
 
                         return true;
                     case R.id.navigation_dashboard:
-
                         if (vf.getDisplayedChild() != 1) {
                             String[] funfacts = getResources().getStringArray(R.array.funfacts);
                             Random rnd = new Random();
@@ -494,7 +493,6 @@ public class Dashboard extends AppCompatActivity {
 
                         return true;
                     case R.id.navigation_notifications:
-
                         if (vf.getDisplayedChild() != 2) {
                             vf.setDisplayedChild(2);
                         }
@@ -502,7 +500,6 @@ public class Dashboard extends AppCompatActivity {
                         return true;
 
                     case R.id.navigation_cups:
-
                         if (vf.getDisplayedChild() != 3) {
                             String[] funfacts = getResources().getStringArray(R.array.funfacts);
                             Random rnd = new Random();
@@ -651,7 +648,11 @@ public class Dashboard extends AppCompatActivity {
         sharebtn1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                graph1.takeSnapshotAndShare(getApplicationContext(), "Coffee Monitor History Graph", "Coffee Monitor History Graph");
+                try {
+                    graph1.takeSnapshotAndShare(getApplicationContext(), "Coffee Monitor History Graph", "Coffee Monitor History Graph");
+                } catch (Exception e) {
+                    Toast.makeText(getApplicationContext(), "Error", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -660,23 +661,27 @@ public class Dashboard extends AppCompatActivity {
         sharebtn2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-                Bitmap inImage = loadBitmapFromView(graph2);
-                inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-
-                String path = MediaStore.Images.Media.insertImage(getApplicationContext().getContentResolver(), inImage, "Coffee Monitor Pie Chart", null);
-                if (path == null) {
-                    // most likely a security problem
-                    throw new SecurityException("Could not get path from MediaStore. Please check permissions.");
-                }
-
-                Intent i = new Intent(Intent.ACTION_SEND);
-                i.setType("image/*");
-                i.putExtra(Intent.EXTRA_STREAM, Uri.parse(path));
                 try {
-                    getApplicationContext().startActivity(Intent.createChooser(i, "Coffee Monitor Pie Chart"));
-                } catch (android.content.ActivityNotFoundException ex) {
-                    ex.printStackTrace();
+                    ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+                    Bitmap inImage = loadBitmapFromView(graph2);
+                    inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+
+                    String path = MediaStore.Images.Media.insertImage(getApplicationContext().getContentResolver(), inImage, "Coffee Monitor Pie Chart", null);
+                    if (path == null) {
+                        // most likely a security problem
+                        throw new SecurityException("Could not get path from MediaStore. Please check permissions.");
+                    }
+
+                    Intent i = new Intent(Intent.ACTION_SEND);
+                    i.setType("image/*");
+                    i.putExtra(Intent.EXTRA_STREAM, Uri.parse(path));
+                    try {
+                        getApplicationContext().startActivity(Intent.createChooser(i, "Coffee Monitor Pie Chart"));
+                    } catch (android.content.ActivityNotFoundException ex) {
+                        ex.printStackTrace();
+                    }
+                } catch (Exception e) {
+                    Toast.makeText(getApplicationContext(), "Error", Toast.LENGTH_SHORT).show();
                 }
             }
         });
