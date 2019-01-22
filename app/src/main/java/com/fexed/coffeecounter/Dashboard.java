@@ -494,6 +494,12 @@ public class Dashboard extends AppCompatActivity {
                             typesRecview.setAdapter(new TypeRecviewAdapter(db));
 
                             vf.setDisplayedChild(1);
+
+                            if (state.getBoolean("typestutorial", true)) {
+                                Toast.makeText(getApplicationContext(), "Queste sono le tipologie. Premi sul + in alto a destra per aggiungerne di personali", Toast.LENGTH_LONG).show();
+                                editor.putBoolean("typestutorial", false);
+                                editor.apply();
+                            }
                         }
 
                         return true;
@@ -515,6 +521,12 @@ public class Dashboard extends AppCompatActivity {
                             cupsRecview.setAdapter(new CupRecviewAdapter(db));
 
                             vf.setDisplayedChild(3);
+
+                            if (state.getBoolean("cupstutorial", true)) {
+                                Toast.makeText(getApplicationContext(), "Queste sono le varie tazze registrate. Tieni premuto su - per rimuoverne una, oppure tieni premuto sul nome per modificarla", Toast.LENGTH_LONG).show();
+                                editor.putBoolean("cupstutorial", false);
+                                editor.apply();
+                            }
                         }
 
                         return true;
@@ -700,12 +712,30 @@ public class Dashboard extends AppCompatActivity {
             }
         });
 
-        final Button addcupdatebtn = findViewById(R.id.addcupdatebtn);
-        Calendar cld = Calendar.getInstance();
+        final Button resettutorialbtn = findViewById(R.id.resettutorialbtn);
+        resettutorialbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                editor.putBoolean("dashboardtutorial", true);
+                editor.putBoolean("typestutorial", true);
+                editor.putBoolean("cupstutorial", true);
+
+                editor.commit();
+            }
+        });
+
+        if (state.getBoolean("dashboardtutorial", true)) {
+            Toast.makeText(this, "Queste sono le statistiche. Premi sul + in alto a destra per aggiungere una tazzina di caffè!", Toast.LENGTH_LONG).show();
+            editor.putBoolean("dashboardtutorial", false);
+            editor.apply();
+        }
+    }
+
+    public void addCup() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.selecttype);
         final List<Coffeetype> list = db.coffetypeDao().getAll();
-
+        Calendar cld = Calendar.getInstance();
         final DatePickerDialog StartTime = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                 Calendar newDate = Calendar.getInstance();
@@ -721,36 +751,13 @@ public class Dashboard extends AppCompatActivity {
                         db.coffetypeDao().update(list.get(pos));
                         cupsRecview.setAdapter(new CupRecviewAdapter(db));
                         typesRecview.setAdapter(new TypeRecviewAdapter(db));
-
-                        db.cupDAO().insert(new Cup(list.get(pos).getKey(), date, day));
+                        db.cupDAO().insert(new Cup(list.get(pos).getKey()));
+                        graphUpdater();
                     }
                 });
                 builder.show();
             }
         }, cld.get(Calendar.YEAR), cld.get(Calendar.MONTH), cld.get(Calendar.DAY_OF_MONTH));
-        addcupdatebtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                StartTime.show();
-            }
-        });
-    }
-
-    public void addCup() {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(R.string.selecttype);
-        final List<Coffeetype> list = db.coffetypeDao().getAll();
-        builder.setAdapter(new ArrayAdapter<>(getApplicationContext(), R.layout.type_element, list), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int pos) {
-                list.get(pos).setQnt(list.get(pos).getQnt() + 1);
-                db.coffetypeDao().update(list.get(pos));
-                cupsRecview.setAdapter(new CupRecviewAdapter(db));
-                typesRecview.setAdapter(new TypeRecviewAdapter(db));
-                db.cupDAO().insert(new Cup(list.get(pos).getKey()));
-                graphUpdater();
-            }
-        });
-        builder.show();
+        StartTime.show();
     }
 }
