@@ -99,7 +99,7 @@ public class Coffeetype {
     @Override
     public String toString() {
         //return getName() + "\n" + getDesc() + "\n" + getPrice() + "€\n" + "\nSostanza: " + getSostanza().toLowerCase() + "\nQuantità: " + getLiters() + ((isLiquido()) ? " ml" : " mg");
-        return getName() + "\n" + getDesc();
+        return getName();
     }
 
     public String toBigString() {
