@@ -483,7 +483,7 @@ public class Dashboard extends AppCompatActivity {
                         }
 
                         return true;
-                    case R.id.navigation_dashboard:
+                    case R.id.navigation_types:
                         if (vf.getDisplayedChild() != 1) {
                             String[] funfacts = getResources().getStringArray(R.array.funfacts);
                             Random rnd = new Random();
@@ -497,7 +497,7 @@ public class Dashboard extends AppCompatActivity {
                         }
 
                         return true;
-                    case R.id.navigation_notifications:
+                    case R.id.navigation_settings:
                         if (vf.getDisplayedChild() != 2) {
                             vf.setDisplayedChild(2);
                         }
