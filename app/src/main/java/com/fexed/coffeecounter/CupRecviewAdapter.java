@@ -17,6 +17,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -95,7 +96,7 @@ public class CupRecviewAdapter extends RecyclerView.Adapter<CupRecviewAdapter.Vi
         holder.cuptextparent.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                //Snackbar.make(view, "Edit to be implemented", Snackbar.LENGTH_SHORT).show();
+                Toast.makeText(context, "Tieni premuto sul campo per modificarlo", Toast.LENGTH_SHORT).show();
                 final Cup thiscup = mDataset.get(holder.getAdapterPosition());
                 AlertDialog.Builder dialogbuilder = new AlertDialog.Builder(context);
                 View form = LayoutInflater.from(context).inflate(R.layout.editcupdialog, null, false);
