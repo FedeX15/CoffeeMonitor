@@ -2,17 +2,23 @@ package com.fexed.coffeecounter;
 
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.List;
 
 /**
@@ -126,11 +132,30 @@ public class TypeRecviewAdapter extends RecyclerView.Adapter<TypeRecviewAdapter.
                 btn.setImageResource((mDataset.get(position).isFav()) ? R.drawable.ic_favstarfull : R.drawable.ic_favstarempty);
             }
         });
+
+
+        if (mDataset.get(position).getImg() != null) {
+            Log.d("IPATH", "onBindViewHolder: " + mDataset.get(position).getImg());
+            Bitmap bmp = loadImageFromStorage(mDataset.get(position).getImg());
+            if (bmp != null) holder.typeimage.setImageBitmap(bmp);
+        }
     }
 
     @Override
     public int getItemCount() {
         return mDataset.size();
+    }
+
+
+    public Bitmap loadImageFromStorage(String path) {
+        try {
+            File f = new File(path);
+            Bitmap b = BitmapFactory.decodeStream(new FileInputStream(f));
+            return b;
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public void removeAt(int position) {
@@ -147,6 +172,8 @@ public class TypeRecviewAdapter extends RecyclerView.Adapter<TypeRecviewAdapter.
         public TextView cupsTextView;
         public TextView descTextView;
         public ImageButton favbtn;
+        public ImageView typeimage;
+
         public ViewHolder(CardView v) {
             super(v);
             mCardView = v;
@@ -154,8 +181,8 @@ public class TypeRecviewAdapter extends RecyclerView.Adapter<TypeRecviewAdapter.
             cupsTextView = mCardView.findViewById(R.id.cups_textv);
             descTextView = mCardView.findViewById(R.id.desctxtv);
             favbtn = mCardView.findViewById(R.id.favbtn);
+            typeimage = mCardView.findViewById(R.id.cardtypeimageview);
         }
     }
-
 
 }

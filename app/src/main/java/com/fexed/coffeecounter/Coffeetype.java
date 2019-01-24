@@ -33,7 +33,9 @@ public class Coffeetype {
 
     private float price;
 
-    public Coffeetype(String name, int liters, String desc, boolean liquido, String sostanza, float price) {
+    public String img;
+
+    public Coffeetype(String name, int liters, String desc, boolean liquido, String sostanza, float price, String img) {
         this.liters = liters;
         this.name = name;
         this.desc = desc;
@@ -42,6 +44,7 @@ public class Coffeetype {
         this.qnt = 0;
         this.price = price;
         this.fav = false;
+        this.img = img;
     }
 
     public int getQnt() {
@@ -112,6 +115,15 @@ public class Coffeetype {
 
     public void setPrice(float price) {
         this.price = price;
+    }
+
+
+    public String getImg() {
+        return img;
+    }
+
+    public void setImg(String img) {
+        this.img = img;
     }
 
     public boolean isFav() {

@@ -22,7 +22,7 @@
         android:textAlignment="center" />
 
     <ImageView
-        android:id="@+id/imageView2"
+        android:id="@+id/typeimage"
         android:layout_width="150dp"
         android:layout_height="150dp"
         android:layout_gravity="center"

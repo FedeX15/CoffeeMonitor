@@ -8,7 +8,6 @@ import android.graphics.Canvas;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -72,7 +71,7 @@ public class CupRecviewAdapter extends RecyclerView.Adapter<CupRecviewAdapter.Vi
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
         final String str = getTypeFromKey(mDataset.get(position).getTypekey()).getName() + " @ " + mDataset.get(position).toString();
-        Log.d("CUP", str);
+
         holder.typetxtv.setText(getTypeFromKey(mDataset.get(position).getTypekey()).getName());
         holder.timestamptxtv.setText(mDataset.get(position).toString());
         holder.removebtn.setOnLongClickListener(new View.OnLongClickListener() {

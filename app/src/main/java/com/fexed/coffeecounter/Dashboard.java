@@ -4,10 +4,14 @@ import android.app.DatePickerDialog;
 import android.arch.persistence.db.SupportSQLiteDatabase;
 import android.arch.persistence.room.Room;
 import android.arch.persistence.room.migration.Migration;
+import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.net.Uri;
@@ -36,6 +40,7 @@ import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -56,6 +61,11 @@ import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -74,6 +84,15 @@ public class Dashboard extends AppCompatActivity {
     public AppDatabase db;
     public RecyclerView typesRecview;
     public RecyclerView cupsRecview;
+    static final Migration MIGRATION_21_22 = new Migration(21, 22) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            database.execSQL("BEGIN TRANSACTION");
+            database.execSQL("ALTER TABLE coffeetype ADD COLUMN img TEXT");
+            database.execSQL("COMMIT");
+        }
+    };
+    public ImageView currentimageview;
 
     public static Bitmap loadBitmapFromView(View v) {
         Bitmap b = Bitmap.createBitmap(v.getMeasuredWidth(), v.getMeasuredHeight(), Bitmap.Config.ARGB_8888);
@@ -83,13 +102,7 @@ public class Dashboard extends AppCompatActivity {
         return b;
     }
 
-    private void insertStandardTypes() {
-        if (db.coffetypeDao().getAll().size() == 0) {
-            db.coffetypeDao().insert(new Coffeetype("Caffè espresso", 30, "Tazzina di caffè da bar o da moka.", true, "Caffeina", 0));
-            db.coffetypeDao().insert(new Coffeetype("Cappuccino", 150, "Tazza di cappuccino da bar.", true, "Caffeina", 0));
-            db.coffetypeDao().insert(new Coffeetype("Caffè ristretto", 15, "Tazzina di caffè ristretto.", true, "Caffeina", 0));
-        }
-    }
+    public String currentbitmap;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -113,14 +126,16 @@ public class Dashboard extends AppCompatActivity {
     static final Migration MIGRATION_20_21 = new Migration(20, 21) {
         @Override
         public void migrate(@NonNull SupportSQLiteDatabase database) {
-            database.execSQL("BEGIN TRANSACTION");
-            database.execSQL("CREATE TABLE IF NOT EXISTS `coffeetypenew` (`qnt` INTEGER NOT NULL, `liters` INTEGER NOT NULL, `name` TEXT, `desc` TEXT, `key` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `liquido` INTEGER NOT NULL, `sostanza` TEXT, `fav` INTEGER NOT NULL, `price` REAL NOT NULL)");
-            database.execSQL("INSERT INTO coffeetypenew('qnt', 'liters', 'name', 'desc', 'key', 'liquido', 'sostanza', 'fav', 'price') SELECT * FROM coffeetype");
-            database.execSQL("DROP TABLE coffeetype");
-            database.execSQL("ALTER TABLE coffeetypenew RENAME TO coffeetype");
-            database.execSQL("COMMIT");
         }
     };
+
+    private void insertStandardTypes() {
+        if (db.coffetypeDao().getAll().size() == 0) {
+            db.coffetypeDao().insert(new Coffeetype("Caffè espresso", 30, "Tazzina di caffè da bar o da moka.", true, "Caffeina", 0, null));
+            db.coffetypeDao().insert(new Coffeetype("Cappuccino", 150, "Tazza di cappuccino da bar.", true, "Caffeina", 0, null));
+            db.coffetypeDao().insert(new Coffeetype("Caffè ristretto", 15, "Tazzina di caffè ristretto.", true, "Caffeina", 0, null));
+        }
+    }
 
     public void adInitializer() {
         MobileAds.initialize(this, "ca-app-pub-9387595638685451~3707270987");
@@ -190,6 +205,7 @@ public class Dashboard extends AppCompatActivity {
         final View form = getLayoutInflater().inflate(R.layout.addtypedialog, null);
         final TextView literstxt = form.findViewById(R.id.ltrsmgtext);
         CheckBox liquidckbx = form.findViewById(R.id.liquidcheck);
+        final ImageView typeimage = form.findViewById(R.id.typeimage);
 
         editor.putInt("qnt", 0);
         editor.putString("suffix", (liquidckbx.isChecked()) ? " ml" : " mg");
@@ -228,6 +244,17 @@ public class Dashboard extends AppCompatActivity {
             }
         });
 
+        typeimage.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                Intent i = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                currentbitmap = null;
+                currentimageview = typeimage;
+                startActivityForResult(i, 9);
+                return true;
+            }
+        });
+
         dialogbuilder.setView(form);
         dialogbuilder.create();
         final AlertDialog dialog = dialogbuilder.show();
@@ -252,7 +279,7 @@ public class Dashboard extends AppCompatActivity {
                     float price = Float.parseFloat(pricetedittxt.getText().toString());
 
                     boolean liquid = liquidckbx.isChecked();
-                    Coffeetype newtype = new Coffeetype(name, liters, desc, liquid, sostanza, price);
+                    Coffeetype newtype = new Coffeetype(name, liters, desc, liquid, sostanza, price, currentbitmap);
 
                     db.coffetypeDao().insert(newtype);
 
@@ -545,7 +572,7 @@ public class Dashboard extends AppCompatActivity {
 
         db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "typedb")
                 .allowMainThreadQueries()
-                .addMigrations(MIGRATION_19_20, MIGRATION_20_21)
+                .addMigrations(MIGRATION_19_20, MIGRATION_20_21, MIGRATION_21_22)
                 .build();
         Log.d("ROOMDB", "path: " + getDatabasePath("typedb").getAbsolutePath());
         insertStandardTypes();
@@ -760,4 +787,61 @@ public class Dashboard extends AppCompatActivity {
         }, cld.get(Calendar.YEAR), cld.get(Calendar.MONTH), cld.get(Calendar.DAY_OF_MONTH));
         StartTime.show();
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == 9 && resultCode == RESULT_OK && data != null) {
+            Uri selectedImage = data.getData();
+            String[] filePathColumn = {MediaStore.Images.Media.DATA};
+
+            Cursor cursor = getContentResolver().query(selectedImage, filePathColumn, null, null, null);
+            cursor.moveToFirst();
+
+            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+            String picturePath = cursor.getString(columnIndex);
+            cursor.close();
+
+            Bitmap bmp = BitmapFactory.decodeFile(picturePath);
+            currentimageview.setImageBitmap(bmp);
+            currentbitmap = saveToInternalStorage(bmp);
+        }
+    }
+
+    public String saveToInternalStorage(Bitmap bitmapImage) {
+        ContextWrapper cw = new ContextWrapper(getApplicationContext());
+        // path to /data/data/yourapp/app_data/imageDir
+        File directory = cw.getDir("images", Context.MODE_PRIVATE);
+        // Create imageDir
+        File mypath = new File(directory, bitmapImage.hashCode() + ".jpg");
+
+        FileOutputStream fos = null;
+        try {
+            fos = new FileOutputStream(mypath);
+            // Use the compress method on the BitMap object to write image to the OutputStream
+            bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, fos);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                fos.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return directory.getAbsolutePath() + "/" + bitmapImage.hashCode() + ".jpg";
+    }
+
+    public Bitmap loadImageFromStorage(String path) {
+        try {
+            File f = new File(path);
+            Bitmap b = BitmapFactory.decodeStream(new FileInputStream(f));
+            return b;
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 }
