@@ -751,7 +751,7 @@ public class Dashboard extends AppCompatActivity {
                         db.coffetypeDao().update(list.get(pos));
                         cupsRecview.setAdapter(new CupRecviewAdapter(db));
                         typesRecview.setAdapter(new TypeRecviewAdapter(db));
-                        db.cupDAO().insert(new Cup(list.get(pos).getKey()));
+                        db.cupDAO().insert(new Cup(list.get(pos).getKey(), date, day));
                         graphUpdater();
                     }
                 });
