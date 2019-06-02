@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">コーヒーモニター</string>
+    <string name="title_dashboard">タイプ</string>
+    <string name="title_preferences">嗜好</string>
+    <string name="title_statistics">統計</string>
+    <string name="aggiungitxt">追加する</string>
+    <string name="name">名</string>
+    <string name="desc">説明</string>
+    <string name="liters">リットル/ミリグラム</string>
+    <string name="liquid">液体</string>
+    <string name="resetdb">データベースをリセット</string>
+    <string name="showstat">統計を表示</string>
+    <string name="sostanza">物質</string>
+    <string name="price">価格</string>
+    <string name="addtype">タイプを追加</string>
+    <string name="placeholder">プレースホルダー</string>
+    <string name="Tazzebevutepertipo">タイプごとの飲酒カップ</string>
+    <string name="sources">gizzeta.it, cafestival.it, momondo.co.uk</string>
+    <string name="notif">通知</string>
+    <string name="favs">お気に入り</string>
+    <string name="title_cups">登録</string>
+    <string name="selecttype">タイプを選択</string>
+</resources>

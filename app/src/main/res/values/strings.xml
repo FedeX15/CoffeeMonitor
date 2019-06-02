@@ -75,6 +75,6 @@
     <string name="sources">Sources\nGraphView, Androidplot\ngizzeta.it, cafestival.it, momondo.co.uk, .essentialwonders.com</string>
     <string name="notif">Notifications</string>
     <string name="favs">Favourites</string>
-    <string name="title_cups">Cups</string>
+    <string name="title_cups">Register</string>
     <string name="selecttype">Select type</string>
 </resources>
