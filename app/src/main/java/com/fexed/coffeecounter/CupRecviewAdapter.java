@@ -1,5 +1,6 @@
 package com.fexed.coffeecounter;
 
+import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -75,6 +76,7 @@ public class CupRecviewAdapter extends RecyclerView.Adapter<CupRecviewAdapter.Vi
         holder.typetxtv.setText(getTypeFromKey(mDataset.get(position).getTypekey()).getName());
         holder.timestamptxtv.setText(mDataset.get(position).toString());
         holder.removebtn.setOnLongClickListener(new View.OnLongClickListener() {
+            @SuppressLint("StringFormatInvalid")
             @Override
             public boolean onLongClick(View view) {
                 AlertDialog.Builder dialogbuilder = new AlertDialog.Builder(view.getContext());

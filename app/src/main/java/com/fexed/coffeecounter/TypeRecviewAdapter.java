@@ -1,5 +1,6 @@
 package com.fexed.coffeecounter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
@@ -106,6 +107,7 @@ public class TypeRecviewAdapter extends RecyclerView.Adapter<TypeRecviewAdapter.
         });
 
         holder.nameTextView.setOnLongClickListener(new View.OnLongClickListener() {
+            @SuppressLint("StringFormatInvalid")
             @Override
             public boolean onLongClick(View v) {
 
