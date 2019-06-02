@@ -79,4 +79,9 @@
     <string name="selecttype">Seleziona tipologia</string>
     <string name="storico">Storico</string>
     <string name="giorni_della_settimana">Giorni della settimana</string>
+    <string name="tienipremutoedittipologia">Tieni premuto sul campo per modificarlo</string>
+    <string name="si">Si</string>
+    <string name="no">No</string>
+    <string name="eliminarecup">Eliminare \"%s\"?</string>
+    <string name="tutorial_dashboard">Queste sono le statistiche. Premi sul + in alto a destra per aggiungere una tazzina di caffè!</string>
 </resources>

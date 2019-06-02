@@ -78,14 +78,14 @@ public class CupRecviewAdapter extends RecyclerView.Adapter<CupRecviewAdapter.Vi
             @Override
             public boolean onLongClick(View view) {
                 AlertDialog.Builder dialogbuilder = new AlertDialog.Builder(view.getContext());
-                dialogbuilder.setMessage("Eliminare \"" + str + "?")
-                        .setPositiveButton("Si", new DialogInterface.OnClickListener() {
+                dialogbuilder.setMessage(context.getString(R.string.eliminarecup, str))
+                        .setPositiveButton(R.string.si, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 removeAt(holder.getAdapterPosition());
                             }
                         })
-                        .setNegativeButton("No", null);
+                        .setNegativeButton(R.string.no, null);
                 dialogbuilder.create();
                 dialogbuilder.show();
 
@@ -95,7 +95,7 @@ public class CupRecviewAdapter extends RecyclerView.Adapter<CupRecviewAdapter.Vi
         holder.cuptextparent.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                Toast.makeText(context, "Tieni premuto sul campo per modificarlo", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, context.getString(R.string.tienipremutoedittipologia), Toast.LENGTH_SHORT).show();
                 final Cup thiscup = mDataset.get(holder.getAdapterPosition());
                 AlertDialog.Builder dialogbuilder = new AlertDialog.Builder(context);
                 View form = LayoutInflater.from(context).inflate(R.layout.editcupdialog, null, false);

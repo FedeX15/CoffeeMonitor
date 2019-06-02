@@ -23,4 +23,9 @@
     <string name="selecttype">タイプを選択</string>
     <string name="storico">歴史</string>
     <string name="giorni_della_settimana">曜日</string>
+    <string name="tienipremutoedittipologia">編集するフィールドをロングタップ</string>
+    <string name="si">はい</string>
+    <string name="no">いいえ</string>
+    <string name="eliminarecup">\"％s\"を削除しますか？</string>
+    <string name="tutorial_dashboard">これらは統計です。 一杯のコーヒーを加えるために右上隅のをタップしてください！</string>
 </resources>

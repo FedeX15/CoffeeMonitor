@@ -771,7 +771,7 @@ public class Dashboard extends AppCompatActivity {
         });
 
         if (state.getBoolean("dashboardtutorial", true)) {
-            Toast.makeText(this, "Queste sono le statistiche. Premi sul + in alto a destra per aggiungere una tazzina di caffè!", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, getString(R.string.tutorial_dashboard), Toast.LENGTH_LONG).show();
             editor.putBoolean("dashboardtutorial", false);
             editor.apply();
         }

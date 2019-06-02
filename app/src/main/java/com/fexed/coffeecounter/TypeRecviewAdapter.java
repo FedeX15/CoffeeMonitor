@@ -1,5 +1,6 @@
 package com.fexed.coffeecounter;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -28,6 +29,7 @@ import java.util.List;
 public class TypeRecviewAdapter extends RecyclerView.Adapter<TypeRecviewAdapter.ViewHolder> {
     AppDatabase db;
     private List<Coffeetype> mDataset;
+    Context context;
 
     public TypeRecviewAdapter(AppDatabase db) {
         this.mDataset = db.coffetypeDao().getAll();
@@ -46,6 +48,7 @@ public class TypeRecviewAdapter extends RecyclerView.Adapter<TypeRecviewAdapter.
     public TypeRecviewAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         CardView v = (CardView) LayoutInflater.from(parent.getContext()).inflate(R.layout.coffee_card, parent, false);
         ViewHolder vh = new ViewHolder(v);
+        this.context = parent.getContext();
         return vh;
     }
 
@@ -107,14 +110,14 @@ public class TypeRecviewAdapter extends RecyclerView.Adapter<TypeRecviewAdapter.
             public boolean onLongClick(View v) {
 
                 AlertDialog.Builder dialogbuilder = new AlertDialog.Builder(v.getContext());
-                dialogbuilder.setMessage("Eliminare il tipo \"" + mDataset.get(position).getName() + "?")
-                        .setPositiveButton("Si", new DialogInterface.OnClickListener() {
+                dialogbuilder.setMessage(context.getString(R.string.eliminarecup, mDataset.get(position).getName()))
+                        .setPositiveButton(R.string.si, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 removeAt(position);
                             }
                         })
-                        .setNegativeButton("No", null);
+                        .setNegativeButton(R.string.no, null);
                 dialogbuilder.create();
                 dialogbuilder.show();
 
