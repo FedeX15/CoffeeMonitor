@@ -29,4 +29,11 @@
     <string name="eliminarecup">\"％s\"を削除しますか？</string>
     <string name="tutorial_dashboard">これらは統計です。 一杯のコーヒーを加えるために右上隅のをタップしてください！</string>
     <string name="tipsplaceholder">これは助言です。うまく扱ってください</string>
+    <string name="cappuccino">カプチーノ</string>
+    <string name="caffeina">カフェイン</string>
+    <string name="espresso">エスプレッソ</string>
+    <string name="ristretto">タイトコーヒー</string>
+    <string name="espressodesc">挽いたコーヒー豆を通して蒸気を強制することによって作られた強いブラックコーヒー</string>
+    <string name="cappuccinodesc">加圧蒸気で泡立てたミルクで作ったコーヒー。</string>
+    <string name="ristrettodesc">非常に強くて濃縮されたエスプレッソの飲み物。</string>
 </resources>

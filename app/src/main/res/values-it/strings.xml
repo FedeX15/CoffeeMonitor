@@ -85,4 +85,11 @@
     <string name="eliminarecup">Eliminare \"%s\"?</string>
     <string name="tutorial_dashboard">Queste sono le statistiche. Premi sul + in alto a destra per aggiungere una tazzina di caffè!</string>
     <string name="tipsplaceholder">Questo è un consiglio. Trattalo bene /s</string>
+    <string name="espresso">Caffè espresso</string>
+    <string name="cappuccino">Cappuccino</string>
+    <string name="ristretto">Caffè ristretto</string>
+    <string name="caffeina">Caffeina</string>
+    <string name="espressodesc">Tazzina di caffè da bar o da moka.</string>
+    <string name="cappuccinodesc">Tazza di cappuccino da bar.</string>
+    <string name="ristrettodesc">Tazzina di caffè ristretto.</string>
 </resources>

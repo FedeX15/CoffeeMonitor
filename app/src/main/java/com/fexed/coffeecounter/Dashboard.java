@@ -131,9 +131,9 @@ public class Dashboard extends AppCompatActivity {
 
     private void insertStandardTypes() {
         if (db.coffetypeDao().getAll().size() == 0) {
-            db.coffetypeDao().insert(new Coffeetype("Caffè espresso", 30, "Tazzina di caffè da bar o da moka.", true, "Caffeina", 0, null));
-            db.coffetypeDao().insert(new Coffeetype("Cappuccino", 150, "Tazza di cappuccino da bar.", true, "Caffeina", 0, null));
-            db.coffetypeDao().insert(new Coffeetype("Caffè ristretto", 15, "Tazzina di caffè ristretto.", true, "Caffeina", 0, null));
+            db.coffetypeDao().insert(new Coffeetype(getString(R.string.espresso), 30, getString(R.string.espressodesc), true, getString(R.string.caffeina), 0, null));
+            db.coffetypeDao().insert(new Coffeetype(getString(R.string.cappuccino), 150, getString(R.string.cappuccinodesc), true, getString(R.string.caffeina), 0, null));
+            db.coffetypeDao().insert(new Coffeetype(getString(R.string.ristretto), 15, getString(R.string.ristrettodesc), true, getString(R.string.caffeina), 0, null));
         }
     }
 

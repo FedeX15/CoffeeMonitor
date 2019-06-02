@@ -85,4 +85,11 @@
     <string name="eliminarecup">Delete \"%s\"?</string>
     <string name="tutorial_dashboard">These are the statistics. Tap on the + in the top right corner to add a cup of coffee!</string>
     <string name="tipsplaceholder">This is a tip. Please treat it nicely</string>
+    <string name="cappuccino">Cappuccino</string>
+    <string name="caffeina">Caffeine</string>
+    <string name="espresso">Espresso</string>
+    <string name="ristretto">Ristretto</string>
+    <string name="espressodesc">Strong black coffee made by forcing steam through ground coffee beans</string>
+    <string name="cappuccinodesc">Coffee made with milk that has been frothed up with pressurized steam.</string>
+    <string name="ristrettodesc">A drink of very strong, concentrated espresso.</string>
 </resources>
