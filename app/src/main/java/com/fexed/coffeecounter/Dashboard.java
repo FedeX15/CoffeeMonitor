@@ -677,7 +677,7 @@ public class Dashboard extends AppCompatActivity {
             }
         });
 
-        Switch historyswitch = findViewById(R.id.historybarswitch);
+        final Switch historyswitch = findViewById(R.id.historybarswitch);
         historyswitch.setChecked(state.getBoolean("historyline", false));
         historyswitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -693,9 +693,27 @@ public class Dashboard extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 try {
-                    graph1.takeSnapshotAndShare(getApplicationContext(), "Coffee Monitor History Graph", "Coffee Monitor History Graph");
+                    ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+                    Bitmap inImage = loadBitmapFromView(graph1);
+                    inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+
+                    String path = MediaStore.Images.Media.insertImage(getApplicationContext().getContentResolver(), inImage, "Coffee Monitor Pie Chart", null);
+                    if (path == null) {
+                        // most likely a security problem
+                        throw new SecurityException("Could not get path from MediaStore. Please check permissions.");
+                    }
+
+                    Intent i = new Intent(Intent.ACTION_SEND);
+                    i.setType("image/*");
+                    i.putExtra(Intent.EXTRA_STREAM, Uri.parse(path));
+                    i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    try {
+                        getApplicationContext().startActivity(Intent.createChooser(i, "Coffee Monitor History Graph"));
+                    } catch (android.content.ActivityNotFoundException ex) {
+                        ex.printStackTrace();
+                    }
                 } catch (Exception e) {
-                    Toast.makeText(getApplicationContext(), "Error", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -719,13 +737,14 @@ public class Dashboard extends AppCompatActivity {
                     Intent i = new Intent(Intent.ACTION_SEND);
                     i.setType("image/*");
                     i.putExtra(Intent.EXTRA_STREAM, Uri.parse(path));
+                    i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     try {
                         getApplicationContext().startActivity(Intent.createChooser(i, "Coffee Monitor Pie Chart"));
                     } catch (android.content.ActivityNotFoundException ex) {
                         ex.printStackTrace();
                     }
                 } catch (Exception e) {
-                    Toast.makeText(getApplicationContext(), "Error", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
                 }
             }
         });
