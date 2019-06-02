@@ -10,7 +10,7 @@ import java.util.Calendar;
 import java.util.Locale;
 
 /**
- * Created by fedex on 05/12/2017.
+ * Created by fexed on 05/12/2017.
  */
 
 @Entity(foreignKeys = @ForeignKey(entity = Coffeetype.class, parentColumns = "key", childColumns = "typekey"))

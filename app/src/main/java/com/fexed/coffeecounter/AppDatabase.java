@@ -4,7 +4,7 @@ import android.arch.persistence.room.Database;
 import android.arch.persistence.room.RoomDatabase;
 
 /**
- * Created by fedex on 04/12/2017.
+ * Created by fexed on 04/12/2017.
  */
 
 @Database(entities = {Coffeetype.class, Cup.class}, version = 22)

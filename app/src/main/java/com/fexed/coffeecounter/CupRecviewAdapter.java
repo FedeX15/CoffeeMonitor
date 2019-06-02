@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- * Created by fedex on 19/01/2018.
+ * Created by fexed on 19/01/2018.
  */
 
 public class CupRecviewAdapter extends RecyclerView.Adapter<CupRecviewAdapter.ViewHolder> {

@@ -22,7 +22,7 @@ import java.io.FileNotFoundException;
 import java.util.List;
 
 /**
- * Created by fedex on 01/12/2017.
+ * Created by fexed on 01/12/2017.
  */
 
 public class TypeRecviewAdapter extends RecyclerView.Adapter<TypeRecviewAdapter.ViewHolder> {

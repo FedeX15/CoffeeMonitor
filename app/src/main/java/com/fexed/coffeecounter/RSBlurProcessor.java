@@ -11,7 +11,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 /**
- * Created by fedex on 14/12/2017.
+ * Created by fexed on 14/12/2017.
  */
 
 public class RSBlurProcessor {
