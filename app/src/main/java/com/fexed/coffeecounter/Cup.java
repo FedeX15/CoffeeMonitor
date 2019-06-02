@@ -68,7 +68,7 @@ public class Cup {
 
     public String toString() {
 
-        return date.substring(0, date.length()-7);
+        return day;
     }
 
     public String getDay() {
