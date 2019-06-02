@@ -28,4 +28,5 @@
     <string name="no">いいえ</string>
     <string name="eliminarecup">\"％s\"を削除しますか？</string>
     <string name="tutorial_dashboard">これらは統計です。 一杯のコーヒーを加えるために右上隅のをタップしてください！</string>
+    <string name="tipsplaceholder">これは助言です。うまく扱ってください</string>
 </resources>

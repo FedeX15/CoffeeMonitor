@@ -197,7 +197,7 @@ public class Dashboard extends AppCompatActivity {
     }
 
     public String generateTip() {
-        return "Questo è un consiglio. Trattalo bene /s";
+        return getString(R.string.tipsplaceholder);
     }
 
     public void addNewType() {
@@ -765,7 +765,6 @@ public class Dashboard extends AppCompatActivity {
                 editor.putBoolean("dashboardtutorial", true);
                 editor.putBoolean("typestutorial", true);
                 editor.putBoolean("cupstutorial", true);
-
                 editor.commit();
             }
         });

@@ -84,4 +84,5 @@
     <string name="si">Yes</string>
     <string name="eliminarecup">Delete \"%s\"?</string>
     <string name="tutorial_dashboard">These are the statistics. Tap on the + in the top right corner to add a cup of coffee!</string>
+    <string name="tipsplaceholder">This is a tip. Please treat it nicely</string>
 </resources>
