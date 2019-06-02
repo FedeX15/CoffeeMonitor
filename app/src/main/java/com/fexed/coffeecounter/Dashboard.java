@@ -523,7 +523,7 @@ public class Dashboard extends AppCompatActivity {
                             vf.setDisplayedChild(1);
 
                             if (state.getBoolean("typestutorial", true)) {
-                                Toast.makeText(getApplicationContext(), "Queste sono le tipologie. Premi sul + in alto a destra per aggiungerne di personali", Toast.LENGTH_LONG).show();
+                                Toast.makeText(getApplicationContext(), getString(R.string.tutorial_types), Toast.LENGTH_LONG).show();
                                 editor.putBoolean("typestutorial", false);
                                 editor.apply();
                             }
@@ -550,7 +550,7 @@ public class Dashboard extends AppCompatActivity {
                             vf.setDisplayedChild(3);
 
                             if (state.getBoolean("cupstutorial", true)) {
-                                Toast.makeText(getApplicationContext(), "Queste sono le varie tazze registrate. Tieni premuto su - per rimuoverne una, oppure tieni premuto sul nome per modificarla", Toast.LENGTH_LONG).show();
+                                Toast.makeText(getApplicationContext(), getString(R.string.tutorial_cups), Toast.LENGTH_LONG).show();
                                 editor.putBoolean("cupstutorial", false);
                                 editor.apply();
                             }

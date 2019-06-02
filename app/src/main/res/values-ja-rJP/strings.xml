@@ -36,4 +36,6 @@
     <string name="espressodesc">挽いたコーヒー豆を通して蒸気を強制することによって作られた強いブラックコーヒー</string>
     <string name="cappuccinodesc">加圧蒸気で泡立てたミルクで作ったコーヒー。</string>
     <string name="ristrettodesc">非常に強くて濃縮されたエスプレッソの飲み物。</string>
+    <string name="tutorial_cups">これらは登録されている様々なカップです。長押し - 削除するには、名前を押したままにして名前を変更します。</string>
+    <string name="tutorial_types">これらはタイプです。個人タイプを追加するには、右上隅の+を押します</string>
 </resources>

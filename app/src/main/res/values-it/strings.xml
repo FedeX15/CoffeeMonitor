@@ -92,4 +92,6 @@
     <string name="espressodesc">Tazzina di caffè da bar o da moka.</string>
     <string name="cappuccinodesc">Tazza di cappuccino da bar.</string>
     <string name="ristrettodesc">Tazzina di caffè ristretto.</string>
+    <string name="tutorial_types">Queste sono le tipologie. Premi sul + in alto a destra per aggiungerne di personali</string>
+    <string name="tutorial_cups">Queste sono le varie tazze registrate. Tieni premuto su - per rimuoverne una, oppure tieni premuto sul nome per modificarla</string>
 </resources>
