@@ -27,7 +27,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Storico" />
+                    android:text="@string/storico" />
 
                 <ImageButton
                     android:id="@+id/sharegraph1"
@@ -65,7 +65,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Tipologie" />
+                    android:text="@string/title_dashboard" />
 
                 <ImageButton
                     android:id="@+id/sharegraph2"
@@ -106,7 +106,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Giorni della settimana" />
+                    android:text="@string/giorni_della_settimana" />
 
                 <ImageButton
                     android:id="@+id/sharegraph3"

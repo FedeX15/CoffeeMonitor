@@ -21,4 +21,6 @@
     <string name="favs">お気に入り</string>
     <string name="title_cups">登録</string>
     <string name="selecttype">タイプを選択</string>
+    <string name="storico">歴史</string>
+    <string name="giorni_della_settimana">曜日</string>
 </resources>

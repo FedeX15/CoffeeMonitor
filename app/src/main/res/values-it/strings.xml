@@ -77,4 +77,6 @@
     <string name="favs">Preferiti</string>
     <string name="title_cups">Registro</string>
     <string name="selecttype">Seleziona tipologia</string>
+    <string name="storico">Storico</string>
+    <string name="giorni_della_settimana">Giorni della settimana</string>
 </resources>

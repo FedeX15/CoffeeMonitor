@@ -77,4 +77,6 @@
     <string name="favs">Favourites</string>
     <string name="title_cups">Register</string>
     <string name="selecttype">Select type</string>
+    <string name="storico">History</string>
+    <string name="giorni_della_settimana">Days of the week</string>
 </resources>
