@@ -165,7 +165,7 @@ public class Dashboard extends AppCompatActivity {
                         db.coffetypeDao().update(elem);
                         db.cupDAO().insert(new Cup(elem.getKey()));
                         graphUpdater();
-                        typesRecview.setAdapter(new TypeRecviewAdapter(db));
+                        typesRecview.setAdapter(new TypeRecviewAdapter(db, typesRecview));
                         cupsRecview.setAdapter(new CupRecviewAdapter(db));
                         return true;
                     }
@@ -284,7 +284,7 @@ public class Dashboard extends AppCompatActivity {
                     db.coffetypeDao().insert(newtype);
 
                     cupsRecview.setAdapter(new CupRecviewAdapter(db));
-                    typesRecview.setAdapter(new TypeRecviewAdapter(db));
+                    typesRecview.setAdapter(new TypeRecviewAdapter(db, typesRecview));
                     Snackbar.make(findViewById(R.id.containerdrawer), "Tipo " + newtype.getName() + " aggiunto", Snackbar.LENGTH_SHORT).show();
 
                     dialog.dismiss();
@@ -518,7 +518,7 @@ public class Dashboard extends AppCompatActivity {
 
                             TextView funfactstxtv = findViewById(R.id.funfacttxt);
                             funfactstxtv.setText(funfacts[i]);
-                            typesRecview.setAdapter(new TypeRecviewAdapter(db));
+                            typesRecview.setAdapter(new TypeRecviewAdapter(db, typesRecview));
 
                             vf.setDisplayedChild(1);
 
@@ -592,7 +592,7 @@ public class Dashboard extends AppCompatActivity {
 
         typesRecview = findViewById(R.id.recview);
         typesRecview.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        typesRecview.setAdapter(new TypeRecviewAdapter(db));
+        typesRecview.setAdapter(new TypeRecviewAdapter(db, typesRecview));
         SnapHelper helper = new LinearSnapHelper() {
             @Override
             public int findTargetSnapPosition(RecyclerView.LayoutManager layoutManager, int velocityX, int velocityY) {
@@ -638,7 +638,7 @@ public class Dashboard extends AppCompatActivity {
                                 db.coffetypeDao().nuke();
                                 insertStandardTypes();
                                 cupsRecview.setAdapter(new CupRecviewAdapter(db));
-                                typesRecview.setAdapter(new TypeRecviewAdapter(db));
+                                typesRecview.setAdapter(new TypeRecviewAdapter(db, typesRecview));
                                 Snackbar.make(findViewById(R.id.container), "Database resettato", Snackbar.LENGTH_SHORT).show();
                             }
                         })
@@ -795,7 +795,7 @@ public class Dashboard extends AppCompatActivity {
                         list.get(pos).setQnt(list.get(pos).getQnt() + 1);
                         db.coffetypeDao().update(list.get(pos));
                         cupsRecview.setAdapter(new CupRecviewAdapter(db));
-                        typesRecview.setAdapter(new TypeRecviewAdapter(db));
+                        typesRecview.setAdapter(new TypeRecviewAdapter(db, typesRecview));
                         db.cupDAO().insert(new Cup(list.get(pos).getKey(), date, day));
                         graphUpdater();
                     }

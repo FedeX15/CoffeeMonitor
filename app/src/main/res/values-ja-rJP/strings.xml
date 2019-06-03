@@ -39,4 +39,61 @@
     <string name="tutorial_cups">これらは登録されている様々なカップです。長押し - 削除するには、名前を押したままにして名前を変更します。</string>
     <string name="tutorial_types">これらはタイプです。個人タイプを追加するには、右上隅の+を押します</string>
     <string name="edit">編集する</string>
+    <string name="conferma">確認する</string>
+    <string name="annulla">取消</string>
+
+    <string-array name="funfacts">
+        <item>"Sembra che gli elefanti siano ghiotti di caffè."</item>
+        <item>"Il <b>Black Ivory</b> è caffè prodotto dallo sterco degli elefanti che mangiano le bacche di caffè. Viene venduto a 1100$ al kg."</item>
+        <item>"La Finlandia è il paese in cui si consuma più caffè, con <b>10Kg pro capite all\'anno</b>."</item>
+        <item>"Ci sono almeno 1000 composti chimici nel caffè, alcuni di essi ancora in fase di studio dalla comunità scientifica."</item>
+        <item>"Bere troppo caffè può uccidere, ma bisogna berne tra le 80 e le 100 tazze in circa 4 ore."</item>
+        <item>"Bere caffè riduce il rischio di cancro al seno e alla prostata, secondo studi condotti dall\'Università di Lund e dalla Harvard School of Public Health."</item>
+        <item>"Secondo l\'Harvard School of Public Health, il caffè funge da antidepressivo: chi beve 2–4 tazzine al giorno ha il 50% di possibilità in meno di togliersi la vita."</item>
+        <item>"Il Principe Carlo d\'Inghilterra è un fervente sostenitore dei clisteri di caffè come cura anticancro. Su Amazon è possibile acquistare il kit per farli da sé."</item>
+        <item>"Un paio di tazzine di caffè migliorano l\'attenzione e l\'attività cognitiva."</item>
+        <item>"Storicamente la consumazione del caffè sembra avere avuto origine dalla popolazione nomade etiope degli <b>Oromo</b> nel primo millennio, che realizzava delle barrette energetiche costituite da chicchi di caffè macinati e grasso animale."</item>
+        <item>"Nel 2009, la Durham University ha osservato che gli studenti che bevono tre tazzine di caffè al giorno hanno tre volte più probabilità di sentire voci ed essere soggetti a esperienze extracorporee."</item>
+        <item>"Johann Sebastian Bach scrisse il Kaffeekantate in onore al suo amore per il caffè."</item>
+        <item>"Nel mondo vengono consumate quasi 1,6 miliardi di tazze di caffè ogni giorno."</item>
+        <item>"La tazza grande di caffè di Starbucks (quella da mezzo litro) contiene l’equivalente in caffeina di 9 lattine e mezzo di Coca Cola."</item>
+        <item>"Considerano il processo di crescita e il trattamento dei chicchi, per produrre una tazza di caffè servono circa 140l d\'acqua."</item>
+        <item>"Entro il 2080, le foreste degli altipiani in Etiopia e nel Sudan, dove cresce la maggior parte del caffè selvatico, potrebbero scomparire a causa dei cambiamenti climatici in corso."</item>
+        <item>"L\'unica specie di caffè ad essere naturalmente decaffeinata è originaria del Camerun e si chiama Coffea Charrieriana."</item>
+        <item>"Il 70% del caffè che viene consumato oggi viene dalla specie Coffea Arabica."</item>
+        <item>"Ricercatori dell\'Università di Tel Aviv hanno scoperto che il caffè inibisce la crescita di un batterio che provoca l\'alitosi."</item>
+        <item>"A Seattle vi è una media di bar a persona di 10 volte superiore rispetto al resto degli USA."</item>
+        <item>"In America in media ogni consumatore beve 3,1 tazze di caffè al giorno."</item>
+        <item>"L\'Italia presenta il maggior numero di bar per persona rispetto a qualsiasi altro paese del mondo: 100.000 bar per 60 milioni di persone."</item>
+        <item>"La maggior parte del caffè dei paesi che ne consumano proviene dall\'Eje Cafetero, o Asse Colombiano del Caffè."</item>
+        <item>"Nel 2001 il Brasile ha creato un francobollo postale al profumo di caffè."</item>
+        <item>"Il primo riferimento al caffè da parte di un europeo fu fatto nel 1573 dal botanico tedesco Leohnard Rauwolf."</item>
+        <item>"Dopo l\'Assedio di Vienna, nel 1683 venne aperta la prima caffetteria in città: il caffè veniva prodotto con i chicchi persi dai Turchi durante la ritirata."</item>
+        <item>"Il Vietnam è il secondo produttore di caffè al mondo, dopo il Brasile."</item>
+        <item>"I colonizzatori portoghesi hanno introdotto le piantagioni di caffè in Brasile all\'inizio del XIX secolo."</item>
+        <item>"Negli anni \'70 in Thailandia il caffè veniva considerato come sostituto dell\'oppio."</item>
+        <item>"In Norvegia vi è un fenomeno chiamato \"<i>Statoil koppen</i>\", dove le persone comprano delle borracce nelle stazioni Statoil e ottengono in cambio caffè gratis tutto l\'anno in qualsiasi punto Statoil della Norvegia."</item>
+        <item>"Negli anni \'20 i chioschi di caffè vengono banditi dalle strade di Melbourne a causa del loro stretto legame con il crimine."</item>
+        <item>"La cultura del caffè a Melbourne fu introdotta dagli immigrati italiani e greci, che usavano i bar come luogo di incontro e spesso erano associati al crimine."</item>
+        <item>"La piantagione di caffè nel sud di Cuba, nelle montagne della Sierra Maestra, è stata dichiarata partimonio mondiale dall\'UNESCO."</item>
+        <item>"La diffusione del caffè in India viene attribuita a Baba Budan, nel XVII secolo durante un pellegrinaggio a La Mecca. Secondo la leggenda, contrabbandò 7 chicchi di caffè al porto di Mocha, nello Yemen."</item>
+        <item>"Suggerisci anche tu un funfact! Manda le tue proposte a <i>federicomatteoni@live.it</i>"</item>
+        <item>"In Olanda c\'è il Koffie Verkeerd, che consiste in una dose di caffè espresso e due dosi di latte caldo. Verkeerd significa sbagliato in olandese, proprio perché la maggior part degli olandesi ritiene che il caffè debba essere servito con molto meno latte."</item>
+        <item>"La legge turca un tempo concedeva il divorzio alle donne il cui marito si rifiutava o dimenticava di servire loro il caffè!"</item>
+        <item>"Alcuni ricercatori riconducono l\'alta aspettativa di vita registrata sull\'isola greca di Ikaria all\'abitudine di bere una tazza di caffè al giorno."</item>
+        <item>"Il caffè è il secondo bene più scambiato al mondo. Il primo è il petrolio"</item>
+        <item>"In Africa, i chicchi di caffè vengono lasciati ammollo nell\'acqua, mixati con spezie e poi serviti come caramelle."</item>
+        <item>"Il Brasile è il più grande produttore di caffè al mondo, con 44 milioni di sacchi di caffè l\'anno."</item>
+        <item>"Il caffè nero senza zucchero o altri additivi contiene 0 calorie."</item>
+        <item>"Un esperto nella preparazione del caffè turco viene chiamato <i>kahveci</i>"</item>
+        <item>"Sia la rivoluzione francese che quella americana sono state ideate dentro delle caffetterie."</item>
+        <item>"Ci sono tantissime varietà di tè al mondo ma vengono tutte da un\'unica pianta: la <i>camellia sinensis</i>.</item>
+        <item>"Dopo l\'acqua, la bevanda più bevuta al mondo è il tè. Questo perché è molto facile produrlo ed è tipico di paesi molto popolosi."</item>
+        <item>"La teina e la caffeina sono in realtà la stessa identica cosa."</item>
+        <item>"Nel volume <i>The Etiquette of Modern Society</i>, del 1841, si suggeriva di offrire biscotti con il tè agli ospiti perché <i>essi potevano essere consumati più facilmente dei sandwich e senza doversi togliere i guanti</i>."</item>
+        <item>"Esistono all\'incirca 1.500 varietà di tè."</item>
+        <item>"In media, i britannici bevono tre tazze di tè al giorno."</item>
+        <item>"Negli Emirati Arabi si consumano in media annualmente 6.24Kg di tè pro capite."</item>
+        <item>"L\'inventore delle bustine per il tè è un newyorkese di nome Thomas Sullivan, che le inventò agli inizi del 20esimo secolo."</item>
+    </string-array>
 </resources>

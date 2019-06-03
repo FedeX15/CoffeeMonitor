@@ -35,10 +35,12 @@ public class TypeRecviewAdapter extends RecyclerView.Adapter<TypeRecviewAdapter.
     AppDatabase db;
     private List<Coffeetype> mDataset;
     Context context;
+    RecyclerView recv;
 
-    public TypeRecviewAdapter(AppDatabase db) {
+    public TypeRecviewAdapter(AppDatabase db, RecyclerView recv) {
         this.mDataset = db.coffetypeDao().getAll();
         this.db = db;
+        this.recv = recv;
     }
 
     public static Bitmap getBitmapFromView(View view) {
@@ -230,7 +232,7 @@ public class TypeRecviewAdapter extends RecyclerView.Adapter<TypeRecviewAdapter.
                             mDataset.get(position).setPrice(Float.parseFloat(pricetedittxt.getText().toString()));
 
                             db.coffetypeDao().update(mDataset.get(position));
-
+                            TypeRecviewAdapter.this.recv.setAdapter(new TypeRecviewAdapter(db, TypeRecviewAdapter.this.recv));
                             dialog.dismiss();
                         }
                     }
