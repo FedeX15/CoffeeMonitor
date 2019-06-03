@@ -106,7 +106,7 @@ public class Coffeetype {
     }
 
     public String toBigString() {
-        return getName() + "\n" + getDesc() + "\n" + getPrice() + "€\n" + "\nSostanza: " + getSostanza().toLowerCase() + "\nQuantità: " + getLiters() + ((isLiquido()) ? " ml" : " mg");
+        return getDesc() + "\n" + getLiters() + ((isLiquido()) ? " ml" : " mg") + "   " + getPrice() + "€   " + getSostanza();
     }
 
     public float getPrice() {
