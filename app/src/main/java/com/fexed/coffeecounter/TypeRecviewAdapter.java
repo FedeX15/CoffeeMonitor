@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -14,6 +15,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -138,6 +142,112 @@ public class TypeRecviewAdapter extends RecyclerView.Adapter<TypeRecviewAdapter.
             }
         });
 
+        holder.editbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final AlertDialog.Builder dialogbuilder = new AlertDialog.Builder(context);
+                final View form = View.inflate(context, R.layout.addtypedialog, null);
+                final TextView literstxt = form.findViewById(R.id.ltrsmgtext);
+                final CheckBox liquidckbx = form.findViewById(R.id.liquidcheck);
+                final boolean liquido = mDataset.get(position).isLiquido();
+                final int qnt = mDataset.get(position).getLiters();
+                EditText nameedittxt = form.findViewById(R.id.nametxt);
+                EditText descedittxt = form.findViewById(R.id.desctxt);
+                EditText sostedittxt = form.findViewById(R.id.sosttxt);
+                EditText pricetedittxt = form.findViewById(R.id.pricetxt);
+
+                nameedittxt.setText(mDataset.get(position).getName());
+                descedittxt.setText(mDataset.get(position).getDesc());
+                sostedittxt.setText(mDataset.get(position).getSostanza());
+                pricetedittxt.setText("" + mDataset.get(position).getPrice());
+
+                if (liquido) liquidckbx.setChecked(true);
+                else liquidckbx.setChecked(false);
+                literstxt.setText(qnt + (liquido ? " ml" : " mg"));
+
+                ImageButton addbtn = form.findViewById(R.id.incrbtn);
+                addbtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mDataset.get(position).setLiters(mDataset.get(position).getLiters() + 5);
+                        literstxt.setText(mDataset.get(position).getLiters() + (liquidckbx.isChecked() ? " ml" : " mg"));
+                    }
+                });
+
+                ImageButton rmvbtn = form.findViewById(R.id.decrbtn);
+                rmvbtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mDataset.get(position).setLiters(mDataset.get(position).getLiters() - 5);
+                        if (mDataset.get(position).getLiters() < 0)
+                            mDataset.get(position).setLiters(0);
+                        literstxt.setText(mDataset.get(position).getLiters() + (liquidckbx.isChecked() ? " ml" : " mg"));
+                    }
+                });
+
+                liquidckbx.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                        mDataset.get(position).setLiquido(isChecked);
+                        literstxt.setText(mDataset.get(position).getLiters() + (liquidckbx.isChecked() ? " ml" : " mg"));
+                    }
+                });
+
+
+
+                /*typeimage.setOnLongClickListener(new View.OnLongClickListener() { //TODO
+                    @Override
+                    public boolean onLongClick(View view) {
+                        Intent i = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                        currentbitmap = null;
+                        currentimageview = typeimage;
+                        startActivityForResult(i, 9);
+                        return true;
+                    }
+                });*/
+
+                dialogbuilder.setView(form);
+                dialogbuilder.create();
+                final AlertDialog dialog = dialogbuilder.show();
+
+                Button positive = form.findViewById(R.id.confirmbtn);
+                positive.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        EditText nameedittxt = form.findViewById(R.id.nametxt);
+                        EditText descedittxt = form.findViewById(R.id.desctxt);
+                        EditText sostedittxt = form.findViewById(R.id.sosttxt);
+                        EditText pricetedittxt = form.findViewById(R.id.pricetxt);
+                        CheckBox liquidckbx = form.findViewById(R.id.liquidcheck);
+
+                        String name = nameedittxt.getText().toString();
+                        if (name.isEmpty()) {
+                            Snackbar.make(null, "Il nome non può essere vuoto", Snackbar.LENGTH_SHORT).show();
+                        } else {
+                            mDataset.get(position).setName(nameedittxt.getText().toString());
+                            mDataset.get(position).setDesc(descedittxt.getText().toString());
+                            mDataset.get(position).setLiquido(liquidckbx.isChecked());
+                            mDataset.get(position).setSostanza(sostedittxt.getText().toString());
+                            mDataset.get(position).setPrice(Float.parseFloat(pricetedittxt.getText().toString()));
+
+                            db.coffetypeDao().update(mDataset.get(position));
+
+                            dialog.dismiss();
+                        }
+                    }
+                });
+
+                Button negative = form.findViewById(R.id.cancelbtn);
+                negative.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mDataset.get(position).setLiquido(liquido);
+                        mDataset.get(position).setQnt(qnt);
+                        dialog.dismiss();
+                    }
+                });
+            }
+        });
+
 
         if (mDataset.get(position).getImg() != null) {
             Log.d("IPATH", "onBindViewHolder: " + mDataset.get(position).getImg());
@@ -178,6 +288,7 @@ public class TypeRecviewAdapter extends RecyclerView.Adapter<TypeRecviewAdapter.
         public TextView descTextView;
         public ImageButton favbtn;
         public ImageView typeimage;
+        public Button editbtn;
 
         public ViewHolder(CardView v) {
             super(v);
@@ -187,6 +298,7 @@ public class TypeRecviewAdapter extends RecyclerView.Adapter<TypeRecviewAdapter.
             descTextView = mCardView.findViewById(R.id.desctxtv);
             favbtn = mCardView.findViewById(R.id.favbtn);
             typeimage = mCardView.findViewById(R.id.cardtypeimageview);
+            editbtn = mCardView.findViewById(R.id.editbtn);
         }
     }
 
