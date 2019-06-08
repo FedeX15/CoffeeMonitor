@@ -97,4 +97,7 @@
     <string name="edit">Edit</string>
     <string name="conferma">Confirm</string>
     <string name="annulla">Cancel</string>
+    <string name="tè">Tea</string>
+    <string name="tèdesc">Aromatic beverage commonly prepared by pouring hot or boiling water over cured leaves</string>
+    <string name="teina">Theine</string>
 </resources>

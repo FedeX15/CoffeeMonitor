@@ -96,4 +96,7 @@
         <item>"Negli Emirati Arabi si consumano in media annualmente 6.24Kg di tè pro capite."</item>
         <item>"L\'inventore delle bustine per il tè è un newyorkese di nome Thomas Sullivan, che le inventò agli inizi del 20esimo secolo."</item>
     </string-array>
+    <string name="teina">テイン</string>
+    <string name="tè">お茶</string>
+    <string name="tèdesc">固い葉の上にお湯または沸騰したお湯を注ぐことによって一般的に香ばしい飲み物</string>
 </resources>

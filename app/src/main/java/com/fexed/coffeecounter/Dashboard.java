@@ -134,6 +134,7 @@ public class Dashboard extends AppCompatActivity {
             db.coffetypeDao().insert(new Coffeetype(getString(R.string.espresso), 30, getString(R.string.espressodesc), true, getString(R.string.caffeina), 0, null));
             db.coffetypeDao().insert(new Coffeetype(getString(R.string.cappuccino), 150, getString(R.string.cappuccinodesc), true, getString(R.string.caffeina), 0, null));
             db.coffetypeDao().insert(new Coffeetype(getString(R.string.ristretto), 15, getString(R.string.ristrettodesc), true, getString(R.string.caffeina), 0, null));
+            db.coffetypeDao().insert(new Coffeetype(getString(R.string.tè), 15, getString(R.string.tèdesc), true, getString(R.string.teina), 0, null));
         }
     }
 
@@ -684,6 +685,16 @@ public class Dashboard extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 editor.putBoolean("historyline", b).apply();
                 graphUpdater();
+            }
+        });
+
+        Button exportdata = findViewById(R.id.exportdatabtn);
+        exportdata.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String currentDBPath = getDatabasePath("typedb").getAbsolutePath();
+                Toast.makeText(getApplicationContext(), currentDBPath, Toast.LENGTH_SHORT).show();
+
             }
         });
 

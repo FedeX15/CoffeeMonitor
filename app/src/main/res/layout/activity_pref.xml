@@ -117,7 +117,10 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_weight="1"
+            android:background="@color/colorPrimary"
             android:gravity="center"
+            android:paddingHorizontal="5dp"
+            android:paddingVertical="2dp"
             android:text="Debug Settings"
             android:textAllCaps="true"
             android:textStyle="bold|italic" />
@@ -126,11 +129,12 @@
             android:id="@+id/debugsettingslyt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:background="@color/colorPrimary"
+            android:orientation="vertical">
 
             <Button
                 android:id="@+id/statbtn"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="8dp"
@@ -143,7 +147,7 @@
 
             <Button
                 android:id="@+id/resetdbbtn"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="8dp"
@@ -165,11 +169,14 @@
                 android:text="Reset tutorial" />
 
             <Button
-                android:id="@+id/button"
-                android:layout_width="wrap_content"
+                android:id="@+id/exportdatabtn"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="8dp"
                 android:layout_weight="0"
-                android:text="Button" />
+                android:gravity="center"
+                android:text="Export data" />
 
         </LinearLayout>
 
