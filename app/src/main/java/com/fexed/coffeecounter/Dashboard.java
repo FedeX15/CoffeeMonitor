@@ -84,33 +84,6 @@ public class Dashboard extends AppCompatActivity {
     public AppDatabase db;
     public RecyclerView typesRecview;
     public RecyclerView cupsRecview;
-    static final Migration MIGRATION_21_22 = new Migration(21, 22) {
-        @Override
-        public void migrate(@NonNull SupportSQLiteDatabase database) {
-            database.execSQL("BEGIN TRANSACTION");
-            database.execSQL("ALTER TABLE coffeetype ADD COLUMN img TEXT");
-            database.execSQL("COMMIT");
-        }
-    };
-    public ImageView currentimageview;
-
-    public static Bitmap loadBitmapFromView(View v) {
-        Bitmap b = Bitmap.createBitmap(v.getMeasuredWidth(), v.getMeasuredHeight(), Bitmap.Config.ARGB_8888);
-        Canvas c = new Canvas(b);
-        v.layout(v.getLeft(), v.getTop(), v.getRight(), v.getBottom());
-        v.draw(c);
-        return b;
-    }
-
-    public String currentbitmap;
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.options, menu);
-        return true;
-    }
-
     static final Migration MIGRATION_19_20 = new Migration(19, 20) {
         @Override
         public void migrate(@NonNull SupportSQLiteDatabase database) {
@@ -122,6 +95,32 @@ public class Dashboard extends AppCompatActivity {
             database.execSQL("COMMIT");
         }
     };
+    public ImageView currentimageview;
+    static final Migration MIGRATION_21_22 = new Migration(21, 22) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            database.execSQL("BEGIN TRANSACTION");
+            database.execSQL("ALTER TABLE coffeetype ADD COLUMN img TEXT");
+            database.execSQL("COMMIT");
+        }
+    };
+    public String currentbitmap;
+
+    public static Bitmap loadBitmapFromView(View v) {
+        Bitmap b = Bitmap.createBitmap(v.getMeasuredWidth(), v.getMeasuredHeight(), Bitmap.Config.ARGB_8888);
+        Canvas c = new Canvas(b);
+        v.layout(v.getLeft(), v.getTop(), v.getRight(), v.getBottom());
+        v.draw(c);
+        return b;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.options, menu);
+        return true;
+    }
+
 
     static final Migration MIGRATION_20_21 = new Migration(20, 21) {
         @Override
@@ -144,8 +143,10 @@ public class Dashboard extends AppCompatActivity {
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
         AdView mAdView2 = findViewById(R.id.banner2);
+        adRequest = new AdRequest.Builder().build();
         mAdView2.loadAd(adRequest);
         AdView mAdView3 = findViewById(R.id.banner3);
+        adRequest = new AdRequest.Builder().build();
         mAdView3.loadAd(adRequest);
     }
 
@@ -421,7 +422,9 @@ public class Dashboard extends AppCompatActivity {
 
             String name = "";
             int n = db.cupDAO().getAll(type.getKey()).size();
-            double perc = (n * 100) / totalcups;
+            double perc;
+            if (totalcups > 0) perc = (n * 100) / totalcups;
+            else perc = 0;
             if (perc > 2.5) name = type.getName();
             Segment segment = new Segment(name, n);
             SegmentFormatter formatter = new SegmentFormatter(clr);
