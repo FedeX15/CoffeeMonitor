@@ -37,6 +37,7 @@ import android.support.v7.widget.LinearSnapHelper;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SnapHelper;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -650,7 +651,7 @@ public class Dashboard extends AppCompatActivity {
                             int i = rnd.nextInt(funfacts.length);
 
                             TextView funfactstxtv = findViewById(R.id.funfacttxt);
-                            funfactstxtv.setText(funfacts[i]);
+                            funfactstxtv.setText(Html.fromHtml(funfacts[i], Html.FROM_HTML_MODE_COMPACT));
                             typesRecview.setAdapter(new TypeRecviewAdapter(db, typesRecview));
 
                             vf.setDisplayedChild(1);
@@ -677,7 +678,7 @@ public class Dashboard extends AppCompatActivity {
                             int i = rnd.nextInt(funfacts.length);
 
                             TextView funfactstxtv = findViewById(R.id.cupsfunfacttxt);
-                            funfactstxtv.setText(funfacts[i]);
+                            funfactstxtv.setText(Html.fromHtml(funfacts[i], Html.FROM_HTML_MODE_COMPACT));
                             cupsRecview.setAdapter(new CupRecviewAdapter(db));
 
                             vf.setDisplayedChild(3);
