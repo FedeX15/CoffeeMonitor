@@ -33,7 +33,7 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver {
             mNotificationManager.createNotificationChannel(mChannel);
             mBuilder = new NotificationCompat.Builder(context, NotifReceiver.NOTIFICATION_ID)
                     .setSmallIcon(R.mipmap.ic_launcher)
-                    .setLights(Color.RED, 300, 300)
+                    .setLights(Color.MAGENTA, 300, 300)
                     .setChannelId(CHANNEL_ID)
                     .setContentTitle(context.getString(R.string.notiftitle));
         } else {

@@ -151,10 +151,10 @@ public class Dashboard extends AppCompatActivity {
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
         AdView mAdView2 = findViewById(R.id.banner2);
-        //adRequest = new AdRequest.Builder().build();
+        adRequest = new AdRequest.Builder().build();
         mAdView2.loadAd(adRequest);
         AdView mAdView3 = findViewById(R.id.banner3);
-        //adRequest = new AdRequest.Builder().build();
+        adRequest = new AdRequest.Builder().build();
         mAdView3.loadAd(adRequest);
     }
 
