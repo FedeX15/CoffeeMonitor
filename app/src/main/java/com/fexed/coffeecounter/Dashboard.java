@@ -494,6 +494,124 @@ public class Dashboard extends AppCompatActivity {
         dayGraph(daygraph);
     }
 
+    public static void startAlarmBroadcastReceiver(Context context) {
+        Intent _intent = new Intent(context, AlarmBroadcastReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, _intent, 0);
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        alarmManager.cancel(pendingIntent);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        calendar.set(Calendar.HOUR_OF_DAY, 20);
+        calendar.set(Calendar.MINUTE, 30);
+        calendar.set(Calendar.SECOND, 0);
+        alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+    }
+
+    public void addCup() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.selecttype);
+        final List<Coffeetype> list = db.coffetypeDao().getAll();
+        Calendar cld = Calendar.getInstance();
+        final DatePickerDialog StartTime = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
+            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                Calendar newDate = Calendar.getInstance();
+                newDate.set(year, monthOfYear, dayOfMonth);
+                SimpleDateFormat sdf = new SimpleDateFormat("dd/MMM/yyy HH:mm:ss:SSS", Locale.getDefault());
+                final String date = sdf.format(newDate.getTime());
+                sdf = new SimpleDateFormat("yyy/MM/dd", Locale.getDefault());
+                final String day = sdf.format(newDate.getTime());
+                builder.setAdapter(new ArrayAdapter<>(getApplicationContext(), R.layout.type_element, list), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int pos) {
+                        list.get(pos).setQnt(list.get(pos).getQnt() + 1);
+                        db.coffetypeDao().update(list.get(pos));
+                        cupsRecview.setAdapter(new CupRecviewAdapter(db));
+                        typesRecview.setAdapter(new TypeRecviewAdapter(db, typesRecview));
+                        db.cupDAO().insert(new Cup(list.get(pos).getKey(), date, day));
+                        graphUpdater();
+                    }
+                });
+                builder.show();
+            }
+        }, cld.get(Calendar.YEAR), cld.get(Calendar.MONTH), cld.get(Calendar.DAY_OF_MONTH));
+        StartTime.show();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == 9 && resultCode == RESULT_OK && data != null) {
+            Uri selectedImage = data.getData();
+            String[] filePathColumn = {MediaStore.Images.Media.DATA};
+
+            Cursor cursor = getContentResolver().query(selectedImage, filePathColumn, null, null, null);
+            cursor.moveToFirst();
+
+            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+            String picturePath = cursor.getString(columnIndex);
+            cursor.close();
+
+            Bitmap bmp = BitmapFactory.decodeFile(picturePath);
+            currentimageview.setImageBitmap(bmp);
+            currentbitmap = saveToInternalStorage(bmp);
+        }
+    }
+
+    public String saveToInternalStorage(Bitmap bitmapImage) {
+        ContextWrapper cw = new ContextWrapper(getApplicationContext());
+        // path to /data/data/yourapp/app_data/imageDir
+        File directory = cw.getDir("images", Context.MODE_PRIVATE);
+        // Create imageDir
+        File mypath = new File(directory, bitmapImage.hashCode() + ".jpg");
+
+        FileOutputStream fos = null;
+        try {
+            fos = new FileOutputStream(mypath);
+            // Use the compress method on the BitMap object to write image to the OutputStream
+            bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, fos);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                fos.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return directory.getAbsolutePath() + "/" + bitmapImage.hashCode() + ".jpg";
+    }
+
+    public Bitmap loadImageFromStorage(String path) {
+        try {
+            File f = new File(path);
+            Bitmap b = BitmapFactory.decodeStream(new FileInputStream(f));
+            return b;
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private void scheduleNotification(Notification notification, int delay) {
+        Intent notificationIntent = new Intent(this, NotifReceiver.class);
+        notificationIntent.putExtra(NotifReceiver.NOTIFICATION_ID, 1);
+        notificationIntent.putExtra(NotifReceiver.NOTIFICATION, notification);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        long futureInMillis = SystemClock.elapsedRealtime() + delay;
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
+    }
+
+    private Notification getNotification(String content) {
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, NotifReceiver.NOTIFICATION_ID);
+        builder.setContentTitle("Scheduled Notification");
+        builder.setContentText(content);
+        builder.setSmallIcon(R.mipmap.coffeeicon);
+        return builder.build();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -502,8 +620,8 @@ public class Dashboard extends AppCompatActivity {
         editor = state.edit();
 
         createNotificationChannel();
-        scheduleNotification(getNotification("5 second delay"), 5000);
-
+        startAlarmBroadcastReceiver(getApplicationContext());
+        //scheduleNotification(getNotification("5 second delay"), 5000);
         Toolbar mTopToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mTopToolbar);
         mTopToolbar.setBackgroundColor(getResources().getColor(R.color.transparent));
@@ -801,117 +919,12 @@ public class Dashboard extends AppCompatActivity {
         }
     }
 
-    public void addCup() {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(R.string.selecttype);
-        final List<Coffeetype> list = db.coffetypeDao().getAll();
-        Calendar cld = Calendar.getInstance();
-        final DatePickerDialog StartTime = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
-            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                Calendar newDate = Calendar.getInstance();
-                newDate.set(year, monthOfYear, dayOfMonth);
-                SimpleDateFormat sdf = new SimpleDateFormat("dd/MMM/yyy HH:mm:ss:SSS", Locale.getDefault());
-                final String date = sdf.format(newDate.getTime());
-                sdf = new SimpleDateFormat("yyy/MM/dd", Locale.getDefault());
-                final String day = sdf.format(newDate.getTime());
-                builder.setAdapter(new ArrayAdapter<>(getApplicationContext(), R.layout.type_element, list), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int pos) {
-                        list.get(pos).setQnt(list.get(pos).getQnt() + 1);
-                        db.coffetypeDao().update(list.get(pos));
-                        cupsRecview.setAdapter(new CupRecviewAdapter(db));
-                        typesRecview.setAdapter(new TypeRecviewAdapter(db, typesRecview));
-                        db.cupDAO().insert(new Cup(list.get(pos).getKey(), date, day));
-                        graphUpdater();
-                    }
-                });
-                builder.show();
-            }
-        }, cld.get(Calendar.YEAR), cld.get(Calendar.MONTH), cld.get(Calendar.DAY_OF_MONTH));
-        StartTime.show();
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == 9 && resultCode == RESULT_OK && data != null) {
-            Uri selectedImage = data.getData();
-            String[] filePathColumn = {MediaStore.Images.Media.DATA};
-
-            Cursor cursor = getContentResolver().query(selectedImage, filePathColumn, null, null, null);
-            cursor.moveToFirst();
-
-            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-            String picturePath = cursor.getString(columnIndex);
-            cursor.close();
-
-            Bitmap bmp = BitmapFactory.decodeFile(picturePath);
-            currentimageview.setImageBitmap(bmp);
-            currentbitmap = saveToInternalStorage(bmp);
-        }
-    }
-
-    public String saveToInternalStorage(Bitmap bitmapImage) {
-        ContextWrapper cw = new ContextWrapper(getApplicationContext());
-        // path to /data/data/yourapp/app_data/imageDir
-        File directory = cw.getDir("images", Context.MODE_PRIVATE);
-        // Create imageDir
-        File mypath = new File(directory, bitmapImage.hashCode() + ".jpg");
-
-        FileOutputStream fos = null;
-        try {
-            fos = new FileOutputStream(mypath);
-            // Use the compress method on the BitMap object to write image to the OutputStream
-            bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, fos);
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                fos.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return directory.getAbsolutePath() + "/" + bitmapImage.hashCode() + ".jpg";
-    }
-
-    public Bitmap loadImageFromStorage(String path) {
-        try {
-            File f = new File(path);
-            Bitmap b = BitmapFactory.decodeStream(new FileInputStream(f));
-            return b;
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    private void scheduleNotification(Notification notification, int delay) {
-        Intent notificationIntent = new Intent(this, NotifReceiver.class);
-        notificationIntent.putExtra(NotifReceiver.NOTIFICATION_ID, 1);
-        notificationIntent.putExtra(NotifReceiver.NOTIFICATION, notification);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-        long futureInMillis = SystemClock.elapsedRealtime() + delay;
-        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
-    }
-
-    private Notification getNotification(String content) {
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, NotifReceiver.NOTIFICATION_ID);
-        builder.setContentTitle("Scheduled Notification");
-        builder.setContentText(content);
-        builder.setSmallIcon(R.mipmap.coffeeicon);
-        return builder.build();
-    }
-
     private void createNotificationChannel() {
         // Create the NotificationChannel, but only on API 26+ because
         // the NotificationChannel class is new and not in the support library
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            CharSequence name = NotifReceiver.NOTIFICATION;
-            String description = "Notifiche";
+            CharSequence name = getString(R.string.notificationstitle);
+            String description = getString(R.string.notificationdescr);
             int importance = NotificationManager.IMPORTANCE_DEFAULT;
             NotificationChannel channel = new NotificationChannel(NotifReceiver.NOTIFICATION_ID, name, importance);
             channel.setDescription(description);
@@ -921,5 +934,4 @@ public class Dashboard extends AppCompatActivity {
             notificationManager.createNotificationChannel(channel);
         }
     }
-
 }

@@ -18,15 +18,15 @@
     <string name="Tazzebevutepertipo">Drunk cups for each type</string>
 
     <string-array name="funfacts">
-        <item>"Sembra che gli elefanti siano ghiotti di caffè."</item>
-        <item>"Il <b>Black Ivory</b> è caffè prodotto dallo sterco degli elefanti che mangiano le bacche di caffè. Viene venduto a 1100$ al kg."</item>
-        <item>"La Finlandia è il paese in cui si consuma più caffè, con <b>10Kg pro capite all\'anno</b>."</item>
-        <item>"Ci sono almeno 1000 composti chimici nel caffè, alcuni di essi ancora in fase di studio dalla comunità scientifica."</item>
-        <item>"Bere troppo caffè può uccidere, ma bisogna berne tra le 80 e le 100 tazze in circa 4 ore."</item>
-        <item>"Bere caffè riduce il rischio di cancro al seno e alla prostata, secondo studi condotti dall\'Università di Lund e dalla Harvard School of Public Health."</item>
-        <item>"Secondo l\'Harvard School of Public Health, il caffè funge da antidepressivo: chi beve 2–4 tazzine al giorno ha il 50% di possibilità in meno di togliersi la vita."</item>
-        <item>"Il Principe Carlo d\'Inghilterra è un fervente sostenitore dei clisteri di caffè come cura anticancro. Su Amazon è possibile acquistare il kit per farli da sé."</item>
-        <item>"Un paio di tazzine di caffè migliorano l\'attenzione e l\'attività cognitiva."</item>
+        <item>"It looks like that the elephants love coffee"</item>
+        <item>"The <b>Black Ivory</b> is coffee made from the dung of those elephants that eat coffee berries. It sells for 1100$/Kg."</item>
+        <item>"Finland is the country that consumes most coffee, with <b>10Kg per capita per year</b>."</item>
+        <item>"Coffee has at least 1000 chemical compunds, some of them are still being studied by the scientific community."</item>
+        <item>"Drinking too much coffee can kill you, but you have to drink between 80 and 100 cups in 4 hours."</item>
+        <item>"Drinking coffee reduces risk of prostate and breast cancer, a study from Lund University and Harvard School of Public Healt says."</item>
+        <item>"According to Harvard School of Public Health, coffee acts as antidepressant: people who drinks 2–4 cups per day have 50% less possibility of killing themselves."</item>
+        <item>"Prince Charles of England is a supporter of coffee enemas as anticancer cure. You can buy the self kit on Amazon."</item>
+        <item>"A coupls of coffee cups improve attention and cognitive ability"</item>
         <item>"Storicamente la consumazione del caffè sembra avere avuto origine dalla popolazione nomade etiope degli <b>Oromo</b> nel primo millennio, che realizzava delle barrette energetiche costituite da chicchi di caffè macinati e grasso animale."</item>
         <item>"Nel 2009, la Durham University ha osservato che gli studenti che bevono tre tazzine di caffè al giorno hanno tre volte più probabilità di sentire voci ed essere soggetti a esperienze extracorporee."</item>
         <item>"Johann Sebastian Bach scrisse il Kaffeekantate in onore al suo amore per il caffè."</item>
@@ -100,4 +100,8 @@
     <string name="tè">Tea</string>
     <string name="tèdesc">Aromatic beverage commonly prepared by pouring hot or boiling water over cured leaves</string>
     <string name="teina">Theine</string>
+    <string name="notificationdescr">Reminders and tips</string>
+    <string name="notificationstitle">Notifications</string>
+    <string name="notiftitle">Coffee Monitor Reminder</string>
+    <string name="notiftext">Have you registered all the cups you had today?</string>
 </resources>
