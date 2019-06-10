@@ -1,12 +1,11 @@
+package com.fexed.coffeecounter;
+
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
 import android.widget.RemoteViews;
-
-import com.fexed.coffeecounter.Dashboard;
-import com.fexed.coffeecounter.R;
 
 public class AddWidgetPrvdr extends AppWidgetProvider {
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
