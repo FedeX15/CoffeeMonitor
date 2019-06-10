@@ -100,8 +100,8 @@
     <string name="tè">Tea</string>
     <string name="tèdesc">Aromatic beverage commonly prepared by pouring hot or boiling water over cured leaves</string>
     <string name="teina">Theine</string>
-    <string name="notificationdescr">Reminders and tips</string>
-    <string name="notificationstitle">Notifications</string>
+    <string name="notificationdescr" translatable="false">Reminders and tips</string>
+    <string name="notificationstitle" translatable="false">Notifications</string>
     <string name="notiftitle">Coffee Monitor Reminder</string>
     <string name="notiftext">Have you registered all the cups you had today?</string>
 </resources>

@@ -99,4 +99,6 @@
     <string name="teina">テイン</string>
     <string name="tè">お茶</string>
     <string name="tèdesc">固い葉の上にお湯または沸騰したお湯を注ぐことによって一般的に香ばしい飲み物</string>
+    <string name="notiftitle">コーヒーモニターリマインダー</string>
+    <string name="notiftext">今日飲んだカップをすべて登録しましたか。</string>
 </resources>

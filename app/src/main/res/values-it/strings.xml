@@ -100,4 +100,6 @@
     <string name="teina">Teina</string>
     <string name="tè">Tè</string>
     <string name="tèdesc">Bevanda aromatica comunemente preparata versando acqua calda o bollente su foglie essiccate</string>
+    <string name="notiftitle">Coffee Monitor Reminder</string>
+    <string name="notiftext">Hai registrato le tazze di caffè bevute oggi?</string>
 </resources>
