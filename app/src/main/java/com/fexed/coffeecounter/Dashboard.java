@@ -946,6 +946,7 @@ public class Dashboard extends AppCompatActivity {
                         editor.putInt("notifmin", minute);
                         editor.commit();
                         notiftimetxtv.setText(String.format(Locale.getDefault(), "%d:%d", state.getInt("notifhour", 20), state.getInt("notifmin", 30)));
+                        startAlarmBroadcastReceiver(getApplicationContext());
                     }
                 }, mHour, mMinute, true);
                 timePickerDialog.show();
