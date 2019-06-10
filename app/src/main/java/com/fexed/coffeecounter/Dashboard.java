@@ -630,7 +630,9 @@ public class Dashboard extends AppCompatActivity {
         editor = state.edit();
 
         createNotificationChannel();
-        startAlarmBroadcastReceiver(getApplicationContext());
+        if (state.getBoolean("notifonoff", true))
+            startAlarmBroadcastReceiver(getApplicationContext());
+        else stopAlarmBroadcastReceiver(getApplicationContext());
         //scheduleNotification(getNotification("5 second delay"), 5000);
         Toolbar mTopToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mTopToolbar);
@@ -951,6 +953,19 @@ public class Dashboard extends AppCompatActivity {
                 }, mHour, mMinute, true);
                 timePickerDialog.show();
                 return true;
+            }
+        });
+
+        final Switch dailynotifswitch = findViewById(R.id.dailynotifswitch);
+        dailynotifswitch.setChecked(state.getBoolean("notifonoff", true));
+        dailynotifswitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                editor.putBoolean("notifonoff", isChecked);
+                editor.commit();
+
+                if (isChecked) startAlarmBroadcastReceiver(getApplicationContext());
+                else stopAlarmBroadcastReceiver(getApplicationContext());
             }
         });
     }
