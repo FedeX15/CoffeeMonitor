@@ -1,6 +1,11 @@
 package com.fexed.coffeecounter;
 
+import android.app.AlarmManager;
 import android.app.DatePickerDialog;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.arch.persistence.db.SupportSQLiteDatabase;
 import android.arch.persistence.room.Room;
 import android.arch.persistence.room.migration.Migration;
@@ -15,11 +20,14 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
@@ -143,10 +151,10 @@ public class Dashboard extends AppCompatActivity {
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
         AdView mAdView2 = findViewById(R.id.banner2);
-        adRequest = new AdRequest.Builder().build();
+        //adRequest = new AdRequest.Builder().build();
         mAdView2.loadAd(adRequest);
         AdView mAdView3 = findViewById(R.id.banner3);
-        adRequest = new AdRequest.Builder().build();
+        //adRequest = new AdRequest.Builder().build();
         mAdView3.loadAd(adRequest);
     }
 
@@ -492,6 +500,9 @@ public class Dashboard extends AppCompatActivity {
         setContentView(R.layout.activity_dashboard);
         state = this.getSharedPreferences(getString(R.string.apppkg), MODE_PRIVATE);
         editor = state.edit();
+
+        createNotificationChannel();
+        scheduleNotification(getNotification("5 second delay"), 5000);
 
         Toolbar mTopToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mTopToolbar);
@@ -874,6 +885,41 @@ public class Dashboard extends AppCompatActivity {
             e.printStackTrace();
         }
         return null;
+    }
+
+    private void scheduleNotification(Notification notification, int delay) {
+        Intent notificationIntent = new Intent(this, NotifReceiver.class);
+        notificationIntent.putExtra(NotifReceiver.NOTIFICATION_ID, 1);
+        notificationIntent.putExtra(NotifReceiver.NOTIFICATION, notification);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        long futureInMillis = SystemClock.elapsedRealtime() + delay;
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
+    }
+
+    private Notification getNotification(String content) {
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, NotifReceiver.NOTIFICATION_ID);
+        builder.setContentTitle("Scheduled Notification");
+        builder.setContentText(content);
+        builder.setSmallIcon(R.mipmap.coffeeicon);
+        return builder.build();
+    }
+
+    private void createNotificationChannel() {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = NotifReceiver.NOTIFICATION;
+            String description = "Notifiche";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel(NotifReceiver.NOTIFICATION_ID, name, importance);
+            channel.setDescription(description);
+            // Register the channel with the system; you can't change the importance
+            // or other notification behaviors after this
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
     }
 
 }
