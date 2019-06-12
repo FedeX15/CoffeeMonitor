@@ -492,16 +492,26 @@ public class Dashboard extends AppCompatActivity {
         PieChart pie = findViewById(R.id.piegraph);
         GraphView daygraph = findViewById(R.id.daygraph);
         TextView totalcupstxtv = findViewById(R.id.totalcups);
+        TextView totalcupslastmonthtxtv = findViewById(R.id.totalcups_lastmonth);
         TextView totalliterstxtv = findViewById(R.id.totalliters);
         int cupstotal = 0;
+        int cupstotal_lastmonth = 0;
         int milliliterstotal = 0;
 
         for (Coffeetype type : db.coffetypeDao().getAll()) {
             if (type.isLiquido()) milliliterstotal += (type.getLiters() * type.getQnt());
             cupstotal += type.getQnt();
         }
+        for (String day : db.cupDAO().getDays()) {
+            LocalDate date = getLocalDateFromString(day);
+            if (date.getMonth().equals(LocalDate.now().getMonth()) && date.getYear() == LocalDate.now().getYear()) {
+                cupstotal_lastmonth += db.cupDAO().getAll(day).size();
+            }
+        }
         totalcupstxtv.setText("" + cupstotal);
-        totalliterstxtv.setText(milliliterstotal + "ml");
+        totalcupslastmonthtxtv.setText("" + cupstotal_lastmonth);
+        if (milliliterstotal < 1000) totalliterstxtv.setText(milliliterstotal + " ml");
+        else totalliterstxtv.setText(milliliterstotal / 1000 + " l");
 
         historyGraph(graph);
         typePie(pie);

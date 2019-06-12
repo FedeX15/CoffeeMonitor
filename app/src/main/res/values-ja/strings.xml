@@ -102,5 +102,6 @@
     <string name="notiftitle">コーヒーモニターリマインダー</string>
     <string name="notiftext">今日飲んだカップをすべて登録しましたか。</string>
     <string name="tazzine_totali">総カップ</string>
-    <string name="ml_totali">総ミリリットル</string>
+    <string name="ml_totali">総量</string>
+    <string name="totalcups_lastmonth">先月の総カップ</string>
 </resources>

@@ -103,5 +103,6 @@
     <string name="notiftitle">Coffee Monitor Reminder</string>
     <string name="notiftext">Hai registrato le tazze di caffè bevute oggi?</string>
     <string name="tazzine_totali">Tazzine totali</string>
-    <string name="ml_totali">Millilitri totali</string>
+    <string name="ml_totali">Quantità totale</string>
+    <string name="totalcups_lastmonth">Tazzine totali nell\'ultimo mese</string>
 </resources>

@@ -45,6 +45,14 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
+                            android:text="@string/totalcups_lastmonth"
+                            android:textAlignment="center"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Small" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
                             android:text="@string/ml_totali"
                             android:textAlignment="center"
                             android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
@@ -64,6 +72,15 @@
                             android:layout_weight="1"
                             android:text="254"
                             android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+                        <TextView
+                            android:id="@+id/totalcups_lastmonth"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="25"
+                            android:textAlignment="center"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Small" />
 
                         <TextView
                             android:id="@+id/totalliters"
