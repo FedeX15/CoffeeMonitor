@@ -20,7 +20,7 @@
             android:layout_gravity="center"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="Settings"
+            android:text="@string/settings"
             android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
 
         <Space
@@ -93,7 +93,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Storico a linee / barre"
+                android:text="@string/storico_a_linee_barre"
                 android:textAlignment="center"
                 android:textAllCaps="false" />
         </LinearLayout>
@@ -131,7 +131,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="Codice e idea\nFederico Matteoni" />
+                android:text="@string/codice_e_idea_nfederico_matteoni" />
 
             <Space
                 android:layout_width="match_parent"
@@ -143,7 +143,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="Design\nMadalin Necula" />
+                android:text="@string/design_nmadalin_necula" />
 
             <Space
                 android:layout_width="match_parent"

@@ -107,4 +107,8 @@
     <string name="totalcups_lastmonth">Tazzine totali nell\'ultimo mese</string>
     <string name="notifica_giornaliera">Notifica giornaliera</string>
     <string name="orario_notifica_giornaliera">Orario notifica giornaliera</string>
+    <string name="codice_e_idea_nfederico_matteoni">Codice e idea\\nFederico Matteoni</string>
+    <string name="design_nmadalin_necula">Design\\nMadalin Necula</string>
+    <string name="settings">Impostazioni</string>
+    <string name="storico_a_linee_barre">Storico a linee / barre</string>
 </resources>
