@@ -105,4 +105,6 @@
     <string name="tazzine_totali">Tazzine totali</string>
     <string name="ml_totali">Quantità totale</string>
     <string name="totalcups_lastmonth">Tazzine totali nell\'ultimo mese</string>
+    <string name="notifica_giornaliera">Notifica giornaliera</string>
+    <string name="orario_notifica_giornaliera">Orario notifica giornaliera</string>
 </resources>

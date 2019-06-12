@@ -115,4 +115,6 @@
     <string name="tazzine_totali">Total cups</string>
     <string name="ml_totali">Total amount</string>
     <string name="totalcups_lastmonth">Total cups in the last month</string>
+    <string name="notifica_giornaliera">Daily notification</string>
+    <string name="orario_notifica_giornaliera">Daily notification time</string>
 </resources>
