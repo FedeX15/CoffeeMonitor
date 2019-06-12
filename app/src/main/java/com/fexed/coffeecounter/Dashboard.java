@@ -454,7 +454,7 @@ public class Dashboard extends AppCompatActivity {
     public void dayGraph(GraphView daygraph) {
         List<Cup> allcups = new ArrayList<>();
         for (Coffeetype type : db.coffetypeDao().getAll()) {
-            for (Cup cup : db.cupDAO().getAll(type.getKey())) allcups.add(cup);
+            allcups.addAll(db.cupDAO().getAll(type.getKey()));
         }
         int[] cupPerDay = new int[7];
         SimpleDateFormat sdf = new SimpleDateFormat("E", Locale.getDefault());
@@ -491,10 +491,22 @@ public class Dashboard extends AppCompatActivity {
         GraphView graph = findViewById(R.id.historygraph);
         PieChart pie = findViewById(R.id.piegraph);
         GraphView daygraph = findViewById(R.id.daygraph);
+        TextView totalcupstxtv = findViewById(R.id.totalcups);
+        TextView totalliterstxtv = findViewById(R.id.totalliters);
+        int cupstotal = 0;
+        int milliliterstotal = 0;
+
+        for (Coffeetype type : db.coffetypeDao().getAll()) {
+            if (type.isLiquido()) milliliterstotal += (type.getLiters() * type.getQnt());
+            cupstotal += type.getQnt();
+        }
+        totalcupstxtv.setText("" + cupstotal);
+        totalliterstxtv.setText(milliliterstotal + "ml");
 
         historyGraph(graph);
         typePie(pie);
         dayGraph(daygraph);
+
     }
 
     public void startAlarmBroadcastReceiver(Context context) {

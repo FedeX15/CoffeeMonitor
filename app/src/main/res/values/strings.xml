@@ -112,4 +112,6 @@
     <string name="notificationstitle" translatable="false">Notifications</string>
     <string name="notiftitle">Coffee Monitor Reminder</string>
     <string name="notiftext">Have you registered all the cups you had today?</string>
+    <string name="tazzine_totali">Total cups</string>
+    <string name="ml_totali">Total milliliters</string>
 </resources>

@@ -102,4 +102,6 @@
     <string name="tèdesc">Bevanda aromatica comunemente preparata versando acqua calda o bollente su foglie essiccate</string>
     <string name="notiftitle">Coffee Monitor Reminder</string>
     <string name="notiftext">Hai registrato le tazze di caffè bevute oggi?</string>
+    <string name="tazzine_totali">Tazzine totali</string>
+    <string name="ml_totali">Millilitri totali</string>
 </resources>
