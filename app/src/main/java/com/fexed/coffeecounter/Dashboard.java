@@ -554,7 +554,7 @@ public class Dashboard extends AppCompatActivity {
         calendar.set(Calendar.HOUR_OF_DAY, state.getInt("notifhour", 20));
         calendar.set(Calendar.MINUTE, state.getInt("notifmin", 30));
         calendar.set(Calendar.SECOND, 0);
-        alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
     }
 
     public void stopAlarmBroadcastReceiver(Context context) {
