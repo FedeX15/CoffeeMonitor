@@ -141,7 +141,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
                 app:adSize="BANNER"
-                app:adUnitId="ca-app-pub-3940256099942544/6300978111" />
+                app:adUnitId="ca-app-pub-9387595638685451/1637433421" />
 
             <!-- ca-app-pub-9387595638685451/1637433421 -->
 
@@ -182,7 +182,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
                 app:adSize="BANNER"
-                app:adUnitId="ca-app-pub-3940256099942544/6300978111" />
+                app:adUnitId="ca-app-pub-9387595638685451/8685001586" />
 
             <!-- ca-app-pub-9387595638685451/8685001586 -->
 
