@@ -198,10 +198,10 @@ public class Dashboard extends AppCompatActivity {
                 break;
             case R.id.action_notifs:
                 final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setTitle("Tips");
+                builder.setTitle(getString(R.string.tips));
                 builder.setIcon(R.drawable.ic_info);
                 builder.setMessage(generateTip());
-                builder.setNeutralButton("Ok", new DialogInterface.OnClickListener() {
+                builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         dialogInterface.dismiss();
@@ -227,7 +227,13 @@ public class Dashboard extends AppCompatActivity {
         String tip = getString(R.string.tipsplaceholder);
 
         if (cupsToday > maxCupsPerDay)
-            tip = "Hai già bevuto più di 5 tazzine oggi, che è la dose massima consigliata dalla Fd (Food and Drug Administration). Fai attenzione!";
+            tip = getString(R.string.toomuchcupstip);
+        else {
+            String[] funfacts = getResources().getStringArray(R.array.funfacts);
+            Random rnd = new Random();
+            int i = rnd.nextInt(funfacts.length);
+            tip = funfacts[i];
+        }
 
         return tip;
     }

@@ -17,6 +17,6 @@
         android:id="@+id/action_notifs"
         android:orderInCategory="100"
         android:title="@string/notif"
-        android:icon="@drawable/ic_notifications"
+        android:icon="@drawable/ic_info"
         app:showAsAction="ifRoom"/>
 </menu>

@@ -113,4 +113,6 @@
     <string name="storico_a_linee_barre">Storico a linee / barre</string>
     <string name="credits">Crediti</string>
     <string name="generalstats">Statistiche generali</string>
+    <string name="toomuchcupstip">Hai già bevuto più di 5 tazzine oggi, che è la dose massima consigliata dalla Fda (Food and Drug Administration). Fai attenzione!</string>
+    <string name="tips">Consigli</string>
 </resources>

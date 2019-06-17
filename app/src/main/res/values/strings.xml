@@ -82,6 +82,7 @@
 
     <string name="sources">Sources\nGraphView\nAndroidplot\ngizzeta.it\ncafestival.it\nmomondo.co.uk\nessentialwonders.com\nhealthline.com</string>
     <string name="notif">Notifications</string>
+    <string name="tips">Tips</string>
     <string name="favs">Favourites</string>
     <string name="title_cups">Register</string>
     <string name="selecttype">Select type</string>
@@ -123,4 +124,5 @@
     <string name="design_nmadalin_necula">Design\nMadalin Necula</string>
     <string name="credits">Credits</string>
     <string name="generalstats">General stats</string>
+    <string name="toomuchcupstip">You have already drunk more than 5 cups today, which is the maximum recommended dose by the FDA (Food and Drug Administration). Be careful!</string>
 </resources>

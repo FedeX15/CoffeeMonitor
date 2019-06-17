@@ -8,7 +8,6 @@
     <string name="name">名</string>
     <string name="desc">説明</string>
     <string name="liters">リットル/ミリグラム</string>
-    <string name="liquid">液体</string>
     <string name="resetdb">データベースをリセット</string>
     <string name="showstat">統計を表示</string>
     <string name="sostanza">物質</string>
@@ -121,4 +120,7 @@
     <string name="storico_a_linee_barre">ライン/バー歴史</string>
     <string name="credits">ありがとう</string>
     <string name="generalstats">一般統計</string>
+    <string name="liquid">液体</string>
+    <string name="toomuchcupstip">あなたはすでに5杯以上を飲んでいます。これはFDA（食品医薬品局）による最大推奨用量です。 注意してください！</string>
+    <string name="tips">ヒント</string>
 </resources>
