@@ -144,7 +144,18 @@ public class Dashboard extends AppCompatActivity {
             db.coffetypeDao().insert(new Coffeetype(getString(R.string.espresso), 30, getString(R.string.espressodesc), true, getString(R.string.caffeina), 0, null));
             db.coffetypeDao().insert(new Coffeetype(getString(R.string.cappuccino), 150, getString(R.string.cappuccinodesc), true, getString(R.string.caffeina), 0, null));
             db.coffetypeDao().insert(new Coffeetype(getString(R.string.ristretto), 15, getString(R.string.ristrettodesc), true, getString(R.string.caffeina), 0, null));
-            db.coffetypeDao().insert(new Coffeetype(getString(R.string.tè), 15, getString(R.string.tèdesc), true, getString(R.string.teina), 0, null));
+            db.coffetypeDao().insert(new Coffeetype(getString(R.string.tè), 200, getString(R.string.tèdesc), true, getString(R.string.teina), 0, null));
+            db.coffetypeDao().insert(new Coffeetype("Starbucks Short", 235, null, true, getString(R.string.caffeina), 0, null));
+            db.coffetypeDao().insert(new Coffeetype("Starbucks Tall", 350, null, true, getString(R.string.caffeina), 0, null));
+            db.coffetypeDao().insert(new Coffeetype("Starbucks Grande", 470, null, true, getString(R.string.caffeina), 0, null));
+            db.coffetypeDao().insert(new Coffeetype("Starbucks Tall", 590, null, true, getString(R.string.caffeina), 0, null));
+            db.coffetypeDao().insert(new Coffeetype("McDonald's Small", 350, null, true, getString(R.string.caffeina), 0, null));
+            db.coffetypeDao().insert(new Coffeetype("McDonald's Medium", 470, null, true, getString(R.string.caffeina), 0, null));
+            db.coffetypeDao().insert(new Coffeetype("McDonald's Large", 650, null, true, getString(R.string.caffeina), 0, null));
+            db.coffetypeDao().insert(new Coffeetype("Dunkin Donuts Small", 295, null, true, getString(R.string.caffeina), 0, null));
+            db.coffetypeDao().insert(new Coffeetype("Dunkin Donuts Medium", 470, null, true, getString(R.string.caffeina), 0, null));
+            db.coffetypeDao().insert(new Coffeetype("Dunkin Donuts Large", 590, null, true, getString(R.string.caffeina), 0, null));
+            db.coffetypeDao().insert(new Coffeetype("Dunkin Donuts Extra Large", 710, null, true, getString(R.string.caffeina), 0, null));
         }
     }
 
@@ -210,7 +221,15 @@ public class Dashboard extends AppCompatActivity {
     }
 
     public String generateTip() {
-        return getString(R.string.tipsplaceholder);
+        int maxCupsPerDay = 5;
+        int maxCaffeinePerDay = 400;
+        int cupsToday = db.cupDAO().getAll(getStringFromLocalDate(LocalDate.now())).size();
+        String tip = getString(R.string.tipsplaceholder);
+
+        if (cupsToday > maxCupsPerDay)
+            tip = "Hai già bevuto più di 5 tazzine oggi, che è la dose massima consigliata dalla Fd (Food and Drug Administration). Fai attenzione!";
+
+        return tip;
     }
 
     public void addNewType() {

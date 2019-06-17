@@ -112,4 +112,5 @@
     <string name="settings">Impostazioni</string>
     <string name="storico_a_linee_barre">Storico a linee / barre</string>
     <string name="credits">Crediti</string>
+    <string name="generalstats">Statistiche generali</string>
 </resources>

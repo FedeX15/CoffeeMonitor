@@ -17,13 +17,22 @@
             android:orientation="vertical">
 
 
-            <LinearLayout
+            <TextView
                 android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/generalstats"
+                android:textAlignment="textEnd" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+                android:layout_gravity="center|center_horizontal"
+                android:gravity="center|center_horizontal"
                 android:orientation="vertical">
 
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
 
@@ -31,7 +40,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:orientation="vertical">
+                        android:orientation="vertical"
+                        android:paddingRight="15dp">
 
                         <TextView
                             android:layout_width="match_parent"
@@ -42,7 +52,7 @@
                             android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
                         <TextView
-                            android:layout_width="match_parent"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="@string/totalcups_lastmonth"
@@ -99,6 +109,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_gravity="right"
+                android:layout_marginTop="15dp"
                 android:orientation="horizontal">
 
                 <TextView

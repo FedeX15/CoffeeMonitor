@@ -106,7 +106,7 @@ public class Coffeetype {
     }
 
     public String toBigString() {
-        return getDesc() + "\n" + getLiters() + ((isLiquido()) ? " ml" : " mg") + "   " + getPrice() + "€   " + getSostanza();
+        return getDesc() + "\n" + getLiters() + ((isLiquido()) ? " ml" : " mg") + "   " + getSostanza();
     }
 
     public float getPrice() {
