@@ -145,17 +145,17 @@ public class Dashboard extends AppCompatActivity {
             db.coffetypeDao().insert(new Coffeetype(getString(R.string.cappuccino), 150, getString(R.string.cappuccinodesc), true, getString(R.string.caffeina), 0, null));
             db.coffetypeDao().insert(new Coffeetype(getString(R.string.ristretto), 15, getString(R.string.ristrettodesc), true, getString(R.string.caffeina), 0, null));
             db.coffetypeDao().insert(new Coffeetype(getString(R.string.tè), 200, getString(R.string.tèdesc), true, getString(R.string.teina), 0, null));
-            db.coffetypeDao().insert(new Coffeetype("Starbucks Short", 235, null, true, getString(R.string.caffeina), 0, null));
-            db.coffetypeDao().insert(new Coffeetype("Starbucks Tall", 350, null, true, getString(R.string.caffeina), 0, null));
-            db.coffetypeDao().insert(new Coffeetype("Starbucks Grande", 470, null, true, getString(R.string.caffeina), 0, null));
-            db.coffetypeDao().insert(new Coffeetype("Starbucks Tall", 590, null, true, getString(R.string.caffeina), 0, null));
-            db.coffetypeDao().insert(new Coffeetype("McDonald's Small", 350, null, true, getString(R.string.caffeina), 0, null));
-            db.coffetypeDao().insert(new Coffeetype("McDonald's Medium", 470, null, true, getString(R.string.caffeina), 0, null));
-            db.coffetypeDao().insert(new Coffeetype("McDonald's Large", 650, null, true, getString(R.string.caffeina), 0, null));
-            db.coffetypeDao().insert(new Coffeetype("Dunkin Donuts Small", 295, null, true, getString(R.string.caffeina), 0, null));
-            db.coffetypeDao().insert(new Coffeetype("Dunkin Donuts Medium", 470, null, true, getString(R.string.caffeina), 0, null));
-            db.coffetypeDao().insert(new Coffeetype("Dunkin Donuts Large", 590, null, true, getString(R.string.caffeina), 0, null));
-            db.coffetypeDao().insert(new Coffeetype("Dunkin Donuts Extra Large", 710, null, true, getString(R.string.caffeina), 0, null));
+            db.coffetypeDao().insert(new Coffeetype("Starbucks Short", 235, "", true, getString(R.string.caffeina), 0, null));
+            db.coffetypeDao().insert(new Coffeetype("Starbucks Tall", 350, "", true, getString(R.string.caffeina), 0, null));
+            db.coffetypeDao().insert(new Coffeetype("Starbucks Grande", 470, "", true, getString(R.string.caffeina), 0, null));
+            db.coffetypeDao().insert(new Coffeetype("Starbucks Venti", 590, "", true, getString(R.string.caffeina), 0, null));
+            db.coffetypeDao().insert(new Coffeetype("McDonald's Small", 350, "", true, getString(R.string.caffeina), 0, null));
+            db.coffetypeDao().insert(new Coffeetype("McDonald's Medium", 470, "", true, getString(R.string.caffeina), 0, null));
+            db.coffetypeDao().insert(new Coffeetype("McDonald's Large", 650, "", true, getString(R.string.caffeina), 0, null));
+            db.coffetypeDao().insert(new Coffeetype("Dunkin Donuts Small", 295, "", true, getString(R.string.caffeina), 0, null));
+            db.coffetypeDao().insert(new Coffeetype("Dunkin Donuts Medium", 470, "", true, getString(R.string.caffeina), 0, null));
+            db.coffetypeDao().insert(new Coffeetype("Dunkin Donuts Large", 590, "", true, getString(R.string.caffeina), 0, null));
+            db.coffetypeDao().insert(new Coffeetype("Dunkin Donuts Extra Large", 710, "", true, getString(R.string.caffeina), 0, null));
         }
     }
 
