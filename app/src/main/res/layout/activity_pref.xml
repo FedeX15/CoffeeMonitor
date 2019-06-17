@@ -123,7 +123,7 @@
                 android:layout_gravity="center"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="Credits"
+                android:text="@string/credits"
                 android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
 
             <TextView
