@@ -408,7 +408,7 @@ public class Dashboard extends AppCompatActivity {
             graph.getViewport().setScalable(true);
             //graph.getViewport().setMinY(0);
             //graph.getViewport().setMaxY(20);
-            graph.getViewport().setMaxX((dates.get(dates.size() - 1)).getTime());
+            graph.getViewport().setMaxX((dates.get(dates.size() - 2)).getTime());
             if (dates.size() <= 30)
                 graph.getViewport().setMinX((dates.get(0)).getTime());
             else
