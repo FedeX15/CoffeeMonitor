@@ -38,7 +38,6 @@ import android.support.v7.widget.LinearSnapHelper;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SnapHelper;
 import android.support.v7.widget.Toolbar;
-import android.text.Html;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -79,9 +78,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -223,7 +219,7 @@ public class Dashboard extends AppCompatActivity {
     public String generateTip() {
         int maxCupsPerDay = 5;
         int maxCaffeinePerDay = 400;
-        int cupsToday = db.cupDAO().getAll(getStringFromLocalDate(LocalDate.now())).size();
+        int cupsToday = db.cupDAO().getAll(getStringFromLocalDate(Calendar.getInstance().getTime())).size();
         String tip = getString(R.string.tipsplaceholder);
 
         if (cupsToday > maxCupsPerDay)
@@ -365,19 +361,31 @@ public class Dashboard extends AppCompatActivity {
         daygraphInitializer(daygraph);
     }
 
-    public LocalDate getLocalDateFromString(String date) {
+    public Date getLocalDateFromString(String date) {
         SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd", Locale.getDefault());
         try {
-            LocalDate ret = format.parse(date).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+            Date ret = format.parse(date);
             return ret;
         } catch (ParseException e) {
             return null;
         }
     }
 
-    public String getStringFromLocalDate(LocalDate date) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
-        return date.format(formatter);
+    public String getStringFromLocalDate(Date date) {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd", Locale.getDefault());
+        return format.format(date);
+    }
+
+    public Date plusDays(Date from, int toadd) {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd", Locale.getDefault());
+        Calendar c = Calendar.getInstance();
+        try {
+            c.setTime(from);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        c.add(Calendar.DAY_OF_MONTH, toadd);
+        return c.getTime();
     }
 
     public void historyGraph(GraphView graph) {
@@ -387,24 +395,24 @@ public class Dashboard extends AppCompatActivity {
         final List<Integer> cups = db.cupDAO().perDay();
 
         if (days.size() > 0) {
-            LocalDate fromDate = getLocalDateFromString(days.get(0));
-            LocalDate toDate = LocalDate.now();
-            LocalDate current = fromDate;
-            toDate = toDate.plusDays(1);
-            List<LocalDate> dates = new ArrayList<>(25);
-            while (current.isBefore(toDate)) {
+            Date fromDate = getLocalDateFromString(days.get(0));
+            Date toDate = Calendar.getInstance().getTime();
+            Date current = fromDate;
+            toDate = plusDays(toDate, 1);
+            List<Date> dates = new ArrayList<>(25);
+            while (current.getTime() < toDate.getTime()) {
                 dates.add(current);
-                current = current.plusDays(1);
+                current = plusDays(current, 1);
             }
 
             graph.getViewport().setScalable(true);
             //graph.getViewport().setMinY(0);
             //graph.getViewport().setMaxY(20);
-            graph.getViewport().setMaxX(Date.from(dates.get(dates.size() - 1).atStartOfDay(ZoneId.systemDefault()).toInstant()).getTime());
+            graph.getViewport().setMaxX((dates.get(dates.size() - 1)).getTime());
             if (dates.size() <= 30)
-                graph.getViewport().setMinX(Date.from(dates.get(0).atStartOfDay(ZoneId.systemDefault()).toInstant()).getTime());
+                graph.getViewport().setMinX((dates.get(0)).getTime());
             else
-                graph.getViewport().setMinX(Date.from(dates.get(dates.size() - 29).atStartOfDay(ZoneId.systemDefault()).toInstant()).getTime());
+                graph.getViewport().setMinX((dates.get(dates.size() - 29)).getTime());
             graph.getViewport().setScalable(false);
 
             List<DataPoint> points = new ArrayList<>();
@@ -412,7 +420,7 @@ public class Dashboard extends AppCompatActivity {
             int i, maxc = 0;
             for (i = 0; i < dates.size(); i++) {
                 String day = getStringFromLocalDate(dates.get(i));
-                Date daydate = Date.from(dates.get(i).atStartOfDay(ZoneId.systemDefault()).toInstant());
+                Date daydate = dates.get(i);
                 if (j < days.size() && day.equals(days.get(j))) {
                     points.add(new DataPoint(daydate, cups.get(j)));
                     if (cups.get(j) > maxc) maxc = cups.get(j);
@@ -427,12 +435,12 @@ public class Dashboard extends AppCompatActivity {
             if (state.getBoolean("historyline", false)) {
                 BarGraphSeries<DataPoint> seriesb = new BarGraphSeries<>(pointsv);
                 seriesb.setDrawValuesOnTop(true);
-                seriesb.setColor(getColor(R.color.colorAccent));
+                seriesb.setColor(getResources().getColor(R.color.colorAccent));
                 seriesb.setSpacing(25);
                 graph.addSeries(seriesb);
             } else {
                 LineGraphSeries<DataPoint> seriesl = new LineGraphSeries<>(pointsv);
-                seriesl.setColor(getColor(R.color.colorAccent));
+                seriesl.setColor(getResources().getColor(R.color.colorAccent));
                 graph.addSeries(seriesl);
             }
 
@@ -453,8 +461,8 @@ public class Dashboard extends AppCompatActivity {
             int clr;
             boolean isfav = favs.contains(type);
             if (isfav) {
-                clr = getColor(R.color.colorAccent);
-            } else clr = getColor(R.color.colorAccentDark);
+                clr = getResources().getColor(R.color.colorAccent);
+            } else clr = getResources().getColor(R.color.colorAccentDark);
 
             String name = "";
             int n = db.cupDAO().getAll(type.getKey()).size();
@@ -505,7 +513,7 @@ public class Dashboard extends AppCompatActivity {
 
         BarGraphSeries<DataPoint> dayseries = new BarGraphSeries<>(pointsv);
         dayseries.setDrawValuesOnTop(true);
-        dayseries.setColor(getColor(R.color.colorAccent));
+        dayseries.setColor(getResources().getColor(R.color.colorAccent));
         dayseries.setSpacing(25);
         daygraph.removeAllSeries();
         daygraph.addSeries(dayseries);
@@ -519,6 +527,11 @@ public class Dashboard extends AppCompatActivity {
         TextView totalcupstxtv = findViewById(R.id.totalcups);
         TextView totalcupslastmonthtxtv = findViewById(R.id.totalcups_lastmonth);
         TextView totalliterstxtv = findViewById(R.id.totalliters);
+        Calendar c = Calendar.getInstance();
+        int curmonth = c.get(Calendar.MONTH);
+        int curyear = c.get(Calendar.YEAR);
+        int month;
+        int year;
         int cupstotal = 0;
         int cupstotal_lastmonth = 0;
         int milliliterstotal = 0;
@@ -528,8 +541,11 @@ public class Dashboard extends AppCompatActivity {
             cupstotal += type.getQnt();
         }
         for (String day : db.cupDAO().getDays()) {
-            LocalDate date = getLocalDateFromString(day);
-            if (date.getMonth().equals(LocalDate.now().getMonth()) && date.getYear() == LocalDate.now().getYear()) {
+            Date date = getLocalDateFromString(day);
+            c.setTime(date);
+            month = c.get(Calendar.MONTH);
+            year = c.get(Calendar.YEAR);
+            if (month == curmonth && year == curyear) {
                 cupstotal_lastmonth += db.cupDAO().getAll(day).size();
             }
         }
@@ -709,7 +725,7 @@ public class Dashboard extends AppCompatActivity {
                             int i = rnd.nextInt(funfacts.length);
 
                             TextView funfactstxtv = findViewById(R.id.funfacttxt);
-                            funfactstxtv.setText(Html.fromHtml(funfacts[i], Html.FROM_HTML_MODE_COMPACT));
+                            funfactstxtv.setText(funfacts[i]);
                             typesRecview.setAdapter(new TypeRecviewAdapter(db, typesRecview));
 
                             vf.setDisplayedChild(1);
@@ -736,7 +752,7 @@ public class Dashboard extends AppCompatActivity {
                             int i = rnd.nextInt(funfacts.length);
 
                             TextView funfactstxtv = findViewById(R.id.cupsfunfacttxt);
-                            funfactstxtv.setText(Html.fromHtml(funfacts[i], Html.FROM_HTML_MODE_COMPACT));
+                            funfactstxtv.setText(funfacts[i]);
                             cupsRecview.setAdapter(new CupRecviewAdapter(db));
 
                             vf.setDisplayedChild(3);
