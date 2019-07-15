@@ -445,8 +445,10 @@ public class Dashboard extends AppCompatActivity {
                 seriesb.setOnDataPointTapListener(new OnDataPointTapListener() {
                     @Override
                     public void onTap(Series series, DataPointInterface dataPoint) {
-
-                        Toast.makeText(Dashboard.this.getApplicationContext(), ": " + dataPoint.getY(), Toast.LENGTH_SHORT).show();
+                        DateFormat mDateFormat = android.text.format.DateFormat.getDateFormat(Dashboard.this.getApplicationContext());
+                        Calendar mCalendar = Calendar.getInstance();
+                        mCalendar.setTimeInMillis((long) dataPoint.getX());
+                        Toast.makeText(Dashboard.this.getApplicationContext(), mDateFormat.format(mCalendar.getTimeInMillis()) + ": " + dataPoint.getY(), Toast.LENGTH_SHORT).show();
                     }
                 });
             } else {
