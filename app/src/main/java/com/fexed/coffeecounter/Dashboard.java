@@ -448,7 +448,8 @@ public class Dashboard extends AppCompatActivity {
                         DateFormat mDateFormat = android.text.format.DateFormat.getDateFormat(Dashboard.this.getApplicationContext());
                         Calendar mCalendar = Calendar.getInstance();
                         mCalendar.setTimeInMillis((long) dataPoint.getX());
-                        Toast.makeText(Dashboard.this.getApplicationContext(), mDateFormat.format(mCalendar.getTimeInMillis()) + ": " + dataPoint.getY(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(Dashboard.this.getApplicationContext(), mDateFormat.format(mCalendar.getTimeInMillis()) + ": " + (int) dataPoint.getY() + " " + getString(R.string.tazzine_totali).toLowerCase(), Toast.LENGTH_LONG).show();
+
                     }
                 });
             } else {
@@ -461,7 +462,7 @@ public class Dashboard extends AppCompatActivity {
                         DateFormat mDateFormat = android.text.format.DateFormat.getDateFormat(Dashboard.this.getApplicationContext());
                         Calendar mCalendar = Calendar.getInstance();
                         mCalendar.setTimeInMillis((long) dataPoint.getX());
-                        Toast.makeText(Dashboard.this.getApplicationContext(), mDateFormat.format(mCalendar.getTimeInMillis()) + ": " + dataPoint.getY(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(Dashboard.this.getApplicationContext(), mDateFormat.format(mCalendar.getTimeInMillis()) + ": " + (int) dataPoint.getY() + " " + getString(R.string.tazzine_totali).toLowerCase(), Toast.LENGTH_LONG).show();
                     }
                 });
             }
