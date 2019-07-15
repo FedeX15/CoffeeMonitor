@@ -68,7 +68,10 @@ import com.jjoe64.graphview.helper.DateAsXAxisLabelFormatter;
 import com.jjoe64.graphview.helper.StaticLabelsFormatter;
 import com.jjoe64.graphview.series.BarGraphSeries;
 import com.jjoe64.graphview.series.DataPoint;
+import com.jjoe64.graphview.series.DataPointInterface;
 import com.jjoe64.graphview.series.LineGraphSeries;
+import com.jjoe64.graphview.series.OnDataPointTapListener;
+import com.jjoe64.graphview.series.Series;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -76,6 +79,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -438,15 +442,31 @@ public class Dashboard extends AppCompatActivity {
                 seriesb.setColor(getResources().getColor(R.color.colorAccent));
                 seriesb.setSpacing(25);
                 graph.addSeries(seriesb);
+                seriesb.setOnDataPointTapListener(new OnDataPointTapListener() {
+                    @Override
+                    public void onTap(Series series, DataPointInterface dataPoint) {
+
+                        Toast.makeText(Dashboard.this.getApplicationContext(), ": " + dataPoint.getY(), Toast.LENGTH_SHORT).show();
+                    }
+                });
             } else {
                 LineGraphSeries<DataPoint> seriesl = new LineGraphSeries<>(pointsv);
                 seriesl.setColor(getResources().getColor(R.color.colorAccent));
                 graph.addSeries(seriesl);
+                seriesl.setOnDataPointTapListener(new OnDataPointTapListener() {
+                    @Override
+                    public void onTap(Series series, DataPointInterface dataPoint) {
+                        DateFormat mDateFormat = android.text.format.DateFormat.getDateFormat(Dashboard.this.getApplicationContext());
+                        Calendar mCalendar = Calendar.getInstance();
+                        mCalendar.setTimeInMillis((long) dataPoint.getX());
+                        Toast.makeText(Dashboard.this.getApplicationContext(), mDateFormat.format(mCalendar.getTimeInMillis()) + ": " + dataPoint.getY(), Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
 
             // set date label formatter
             graph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(this));
-            graph.getGridLabelRenderer().setNumHorizontalLabels(3); // only 4 because of the space
+            graph.getGridLabelRenderer().setHumanRounding(false);
             graph.getViewport().setXAxisBoundsManual(true);
         }
     }
