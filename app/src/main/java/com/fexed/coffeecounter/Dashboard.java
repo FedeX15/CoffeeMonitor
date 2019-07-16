@@ -468,7 +468,19 @@ public class Dashboard extends AppCompatActivity {
             }
 
             // set date label formatter
-            graph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(this));
+            graph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(this) {
+                @Override
+                public String formatLabel(double value, boolean isValueX) {
+                    SimpleDateFormat format = new SimpleDateFormat("dd/MM", Locale.getDefault());
+                    if (isValueX) {
+                        // format as date
+                        mCalendar.setTimeInMillis((long) value);
+                        return format.format(mCalendar.getTimeInMillis());
+                    } else {
+                        return super.formatLabel(value, isValueX);
+                    }
+                }
+            });
             graph.getGridLabelRenderer().setHumanRounding(false);
             graph.getViewport().setXAxisBoundsManual(true);
         }
