@@ -159,6 +159,13 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp" />
 
+            <TextView
+                android:id="@+id/vertxt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textSize="12sp" />
+
         </LinearLayout>
 
         <Space

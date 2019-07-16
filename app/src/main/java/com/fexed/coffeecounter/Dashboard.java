@@ -737,6 +737,8 @@ public class Dashboard extends AppCompatActivity {
         mTopToolbar.setBackgroundColor(getResources().getColor(R.color.transparent));
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         mTopToolbar.setNavigationIcon(R.drawable.ic_hamburger);
+        TextView vertxtv = findViewById(R.id.vertxt);
+        vertxtv.setText("" + BuildConfig.VERSION_CODE);
         final DrawerLayout drawer = findViewById(R.id.containerdrawer);
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
