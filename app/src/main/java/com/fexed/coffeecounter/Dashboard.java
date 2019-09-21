@@ -20,12 +20,15 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.PointF;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.provider.MediaStore;
 import androidx.annotation.NonNull;
+
+import com.androidplot.pie.PieRenderer;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import androidx.core.app.NotificationCompat;
@@ -518,7 +521,7 @@ public class Dashboard extends AppCompatActivity {
         }
     }
 
-    public void typePie(PieChart pie) {
+    public void typePie(final PieChart pie) {
         pie.clear();
         List<Coffeetype> types = db.coffetypeDao().getAll();
         List<Coffeetype> favs = db.coffetypeDao().getFavs();
@@ -548,6 +551,38 @@ public class Dashboard extends AppCompatActivity {
             formatter.setLabelPaint(pnt);
             pie.addSegment(segment, formatter);
         }
+
+        pie.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                PointF click = new PointF(motionEvent.getX(), motionEvent.getY());
+                if(pie.getPie().containsPoint(click)) {
+                    Segment segment = pie.getRenderer(PieRenderer.class).getContainingSegment(click);
+
+                    if(segment != null) {
+                        int n = segment.getValue().intValue();
+                        String str = segment.getTitle();
+
+                        final Balloon balloon = new Balloon.Builder(getBaseContext())
+                                .setText(str + ": " + n)
+                                .setWidthRatio(0.5f)
+                                .setBackgroundColorResource(R.color.colorAccent)
+                                .setBalloonAnimation(BalloonAnimation.FADE)
+                                .setArrowVisible(false)
+                                .build();
+                        balloon.setOnBalloonOutsideTouchListener(new OnBalloonOutsideTouchListener() {
+                            @Override
+                            public void onBalloonOutsideTouch(View view, MotionEvent motionEvent) {
+                                balloon.dismiss();
+                            }
+                        });
+                        balloon.showAlignBottom(pie);
+                    }
+                }
+                return false;
+            }
+        });
+
         pie.redraw();
     }
 
