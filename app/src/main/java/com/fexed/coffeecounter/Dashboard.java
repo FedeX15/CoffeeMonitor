@@ -586,7 +586,42 @@ public class Dashboard extends AppCompatActivity {
         pie.redraw();
     }
 
-    public void dayGraph(GraphView daygraph) {
+    public String dayFromNumber(int n) {
+        Date date = null;
+        SimpleDateFormat sdf = new SimpleDateFormat("E", Locale.getDefault());
+        SimpleDateFormat sdf1 = new SimpleDateFormat("yyy/MM/dd", Locale.getDefault());
+
+        try {
+            switch (n) {
+                case 0:
+                    date = sdf1.parse("2019/09/15");
+                    break;
+                case 1:
+                    date = sdf1.parse("2019/09/16");
+                    break;
+                case 2:
+                    date = sdf1.parse("2019/09/17");
+                    break;
+                case 3:date = sdf1.parse("2019/09/18");
+                    break;
+                case 4:date = sdf1.parse("2019/09/19");
+                    break;
+                case 5:
+                    date = sdf1.parse("2019/09/20");
+                    break;
+                case 6:
+                    date = sdf1.parse("2019/09/21");
+                    break;
+            }
+
+            return sdf.format(date);
+        } catch (ParseException e) {
+            return "";
+        }
+
+    }
+
+    public void dayGraph(final GraphView daygraph) {
         List<Cup> allcups = new ArrayList<>();
         for (Coffeetype type : db.coffetypeDao().getAll()) {
             allcups.addAll(db.cupDAO().getAll(type.getKey()));
@@ -617,6 +652,28 @@ public class Dashboard extends AppCompatActivity {
         dayseries.setDrawValuesOnTop(true);
         dayseries.setColor(getResources().getColor(R.color.colorAccent));
         dayseries.setSpacing(25);
+
+        dayseries.setOnDataPointTapListener(new OnDataPointTapListener() {
+            @Override
+            public void onTap(Series series, DataPointInterface dataPoint) {
+                String day = dayFromNumber((int)dataPoint.getX());
+                final Balloon balloon = new Balloon.Builder(getBaseContext())
+                        .setText(day + ": " + String.format(Locale.getDefault(), "%d",(int)dataPoint.getY()) + " " + getString(R.string.tazzine_totali))
+                        .setWidthRatio(0.5f)
+                        .setBackgroundColorResource(R.color.colorAccent)
+                        .setBalloonAnimation(BalloonAnimation.FADE)
+                        .setArrowVisible(false)
+                        .build();
+                balloon.setOnBalloonOutsideTouchListener(new OnBalloonOutsideTouchListener() {
+                    @Override
+                    public void onBalloonOutsideTouch(View view, MotionEvent motionEvent) {
+                        balloon.dismiss();
+                    }
+                });
+                balloon.showAlignBottom(daygraph);
+            }
+        });
+
         daygraph.removeAllSeries();
         daygraph.addSeries(dayseries);
         daygraph.getViewport().setMaxY(max);
