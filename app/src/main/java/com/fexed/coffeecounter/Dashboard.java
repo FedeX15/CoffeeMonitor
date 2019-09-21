@@ -41,6 +41,7 @@ import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -72,6 +73,9 @@ import com.jjoe64.graphview.series.DataPointInterface;
 import com.jjoe64.graphview.series.LineGraphSeries;
 import com.jjoe64.graphview.series.OnDataPointTapListener;
 import com.jjoe64.graphview.series.Series;
+import com.skydoves.balloon.Balloon;
+import com.skydoves.balloon.BalloonAnimation;
+import com.skydoves.balloon.OnBalloonOutsideTouchListener;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -392,7 +396,7 @@ public class Dashboard extends AppCompatActivity {
         return c.getTime();
     }
 
-    public void historyGraph(GraphView graph) {
+    public void historyGraph(final GraphView graph) {
         //days[0] è sempre il primo giorno nel db
         //days.length = cups.length
         final List<String> days = db.cupDAO().getDays();
@@ -448,8 +452,20 @@ public class Dashboard extends AppCompatActivity {
                         DateFormat mDateFormat = android.text.format.DateFormat.getDateFormat(Dashboard.this.getApplicationContext());
                         Calendar mCalendar = Calendar.getInstance();
                         mCalendar.setTimeInMillis((long) dataPoint.getX());
-                        Toast.makeText(Dashboard.this.getApplicationContext(), mDateFormat.format(mCalendar.getTimeInMillis()) + ": " + (int) dataPoint.getY() + " " + getString(R.string.tazzine_totali).toLowerCase(), Toast.LENGTH_LONG).show();
-
+                        final Balloon balloon = new Balloon.Builder(getBaseContext())
+                                .setText(mDateFormat.format(mCalendar.getTimeInMillis()) + ": " + (int) dataPoint.getY() + " " + getString(R.string.tazzine_totali).toLowerCase())
+                                .setWidthRatio(0.5f)
+                                .setBackgroundColorResource(R.color.colorAccent)
+                                .setBalloonAnimation(BalloonAnimation.FADE)
+                                .setArrowVisible(false)
+                                .build();
+                        balloon.setOnBalloonOutsideTouchListener(new OnBalloonOutsideTouchListener() {
+                            @Override
+                            public void onBalloonOutsideTouch(View view, MotionEvent motionEvent) {
+                                balloon.dismiss();
+                            }
+                        });
+                        balloon.showAlignBottom(graph);
                     }
                 });
             } else {
@@ -462,9 +478,25 @@ public class Dashboard extends AppCompatActivity {
                         DateFormat mDateFormat = android.text.format.DateFormat.getDateFormat(Dashboard.this.getApplicationContext());
                         Calendar mCalendar = Calendar.getInstance();
                         mCalendar.setTimeInMillis((long) dataPoint.getX());
-                        Toast.makeText(Dashboard.this.getApplicationContext(), mDateFormat.format(mCalendar.getTimeInMillis()) + ": " + (int) dataPoint.getY() + " " + getString(R.string.tazzine_totali).toLowerCase(), Toast.LENGTH_LONG).show();
+                        final Balloon balloon = new Balloon.Builder(getBaseContext())
+                                .setText(mDateFormat.format(mCalendar.getTimeInMillis()) + ": " + (int) dataPoint.getY() + " " + getString(R.string.tazzine_totali).toLowerCase())
+                                .setWidthRatio(0.5f)
+                                .setBackgroundColorResource(R.color.colorAccent)
+                                .setBalloonAnimation(BalloonAnimation.FADE)
+                                .setArrowVisible(false)
+                                .build();
+                        balloon.setOnBalloonOutsideTouchListener(new OnBalloonOutsideTouchListener() {
+                            @Override
+                            public void onBalloonOutsideTouch(View view, MotionEvent motionEvent) {
+                                balloon.dismiss();
+                            }
+                        });
+                        balloon.showAlignBottom(graph);
                     }
                 });
+                seriesl.setThickness(5);
+                seriesl.setDataPointsRadius(10);
+                seriesl.setDrawDataPoints(true);
             }
 
             // set date label formatter
