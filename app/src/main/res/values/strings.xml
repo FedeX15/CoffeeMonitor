@@ -103,6 +103,7 @@
     <string name="ristrettodesc">A drink of very strong, concentrated espresso.</string>
     <string name="tutorial_cups">These are the various cups registered. Press and hold on - to remove one, or press and hold on the name to change it</string>
     <string name="tutorial_types">These are the types. Press on the + in the top right corner to add personal types</string>
+    <string name="tutorial_stats">These are the statistics. Tap on graphs to get more informations</string>
     <string name="edit">Edit</string>
     <string name="conferma">Confirm</string>
     <string name="annulla">Cancel</string>

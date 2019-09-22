@@ -123,4 +123,5 @@
     <string name="liquid">液体</string>
     <string name="toomuchcupstip">あなたはすでに5杯以上を飲んでいます。これはFDA（食品医薬品局）による最大推奨用量です。 注意してください！</string>
     <string name="tips">ヒント</string>
+    <string name="tutorial_stats">これらは統計です。 グラフをタップして詳細情報を取得します</string>
 </resources>

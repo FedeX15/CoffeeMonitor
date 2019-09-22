@@ -876,6 +876,11 @@ public class Dashboard extends AppCompatActivity {
                         if (vf.getDisplayedChild() != 0) {
                             graphUpdater();
                             vf.setDisplayedChild(0);
+                            if (state.getBoolean("statstutorial", true)) {
+                                Toast.makeText(getApplicationContext(), getString(R.string.tutorial_stats), Toast.LENGTH_LONG).show();
+                                editor.putBoolean("statstutorial", false);
+                                editor.apply();
+                            }
                         }
 
                         return true;
