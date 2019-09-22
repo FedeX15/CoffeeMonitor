@@ -121,8 +121,8 @@
     <string name="orario_notifica_giornaliera">Daily notification time</string>
     <string name="settings">Settings</string>
     <string name="storico_a_linee_barre">Line / bar history</string>
-    <string name="codice_e_idea_nfederico_matteoni">Code and idea\nFederico Matteoni</string>
-    <string name="design_nmadalin_necula">Design\nMadalin Necula</string>
+    <string name="codice_e_idea_nfederico_matteoni">Code and idea\n\nFederico Matteoni\nfedericomatteoni@live.it</string>
+    <string name="design_nmadalin_necula">Design\n\nMadalin Necula\nFederico Matteoni</string>
     <string name="credits">Credits</string>
     <string name="generalstats">General stats</string>
     <string name="toomuchcupstip">You have already drunk more than 5 cups today, which is the maximum recommended dose by the FDA (Food and Drug Administration). Be careful!</string>
