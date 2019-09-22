@@ -658,7 +658,7 @@ public class Dashboard extends AppCompatActivity {
             public void onTap(Series series, DataPointInterface dataPoint) {
                 String day = dayFromNumber((int)dataPoint.getX());
                 final Balloon balloon = new Balloon.Builder(getBaseContext())
-                        .setText(day + ": " + String.format(Locale.getDefault(), "%d",(int)dataPoint.getY()) + " " + getString(R.string.tazzine_totali))
+                        .setText(day + ": " + String.format(Locale.getDefault(), "%d",(int)dataPoint.getY()) + " " + getString(R.string.tazzine_totali).toLowerCase())
                         .setWidthRatio(0.5f)
                         .setBackgroundColorResource(R.color.colorAccent)
                         .setBalloonAnimation(BalloonAnimation.FADE)
