@@ -39,7 +39,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/notifica_giornaliera"
-                android:textAlignment="center" />
+                android:textAlignment="center"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
             <Switch
                 android:id="@+id/dailynotifswitch"
@@ -52,6 +53,12 @@
                 android:textAllCaps="false" />
         </LinearLayout>
 
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:layout_weight="1" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -63,7 +70,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/orario_notifica_giornaliera"
-                android:textAlignment="center" />
+                android:textAlignment="center"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
             <TextView
                 android:id="@+id/notiftimetxt"
@@ -78,21 +86,33 @@
         <Space
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp" />
+            android:layout_margin="16dp" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/textView7"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/storico_a_linee_barre"
+                android:textAlignment="center"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
             <Switch
                 android:id="@+id/historybarswitch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/storico_a_linee_barre"
+                android:layout_weight="0"
+                android:paddingStart="15dp"
+                android:paddingEnd="15dp"
                 android:textAlignment="center"
-                android:textAllCaps="false" />
+                android:textAllCaps="false"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
         </LinearLayout>
 
         <Space

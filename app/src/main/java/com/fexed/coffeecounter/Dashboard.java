@@ -862,7 +862,7 @@ public class Dashboard extends AppCompatActivity {
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         mTopToolbar.setNavigationIcon(R.drawable.ic_hamburger);
         TextView vertxtv = findViewById(R.id.vertxt);
-        vertxtv.setText("" + BuildConfig.VERSION_CODE);
+        vertxtv.setText("V: " + BuildConfig.VERSION_CODE);
         final DrawerLayout drawer = findViewById(R.id.containerdrawer);
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -1155,28 +1155,34 @@ public class Dashboard extends AppCompatActivity {
         }
 
         final TextView notiftimetxtv = findViewById(R.id.notiftimetxt);
-        notiftimetxtv.setText(String.format(Locale.getDefault(), "%d:%d", state.getInt("notifhour", 20), state.getInt("notifmin", 30)));
+        if (state.getBoolean("notifonoff", true)) notiftimetxtv.setText(String.format(Locale.getDefault(), "%d:%d", state.getInt("notifhour", 20), state.getInt("notifmin", 30)));
+        else notiftimetxtv.setText("--:--");
         notiftimetxtv.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                // Get Current Time
-                final Calendar c = Calendar.getInstance();
-                int mHour = c.get(Calendar.HOUR_OF_DAY);
-                int mMinute = c.get(Calendar.MINUTE);
+                if (state.getBoolean("notifonoff", true)) {
+                    // Get Current Time
+                    final Calendar c = Calendar.getInstance();
+                    int mHour = c.get(Calendar.HOUR_OF_DAY);
+                    int mMinute = c.get(Calendar.MINUTE);
 
-                // Launch Time Picker Dialog
-                TimePickerDialog timePickerDialog = new TimePickerDialog(v.getContext(), new TimePickerDialog.OnTimeSetListener() {
-                    @Override
-                    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                        editor.putInt("notifhour", hourOfDay);
-                        editor.putInt("notifmin", minute);
-                        editor.commit();
-                        notiftimetxtv.setText(String.format(Locale.getDefault(), "%02d:%02d", state.getInt("notifhour", 20), state.getInt("notifmin", 30)));
-                        startAlarmBroadcastReceiver(getApplicationContext());
-                    }
-                }, mHour, mMinute, true);
-                timePickerDialog.show();
-                return true;
+                    // Launch Time Picker Dialog
+                    TimePickerDialog timePickerDialog = new TimePickerDialog(v.getContext(), new TimePickerDialog.OnTimeSetListener() {
+                        @Override
+                        public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                            editor.putInt("notifhour", hourOfDay);
+                            editor.putInt("notifmin", minute);
+                            editor.commit();
+                            notiftimetxtv.setText(String.format(Locale.getDefault(), "%02d:%02d", state.getInt("notifhour", 20), state.getInt("notifmin", 30)));
+                            startAlarmBroadcastReceiver(getApplicationContext());
+                        }
+                    }, mHour, mMinute, true);
+                    timePickerDialog.show();
+                    return true;
+                } else {
+                    Toast.makeText(getApplicationContext(), getString(R.string.notifica_giornaliera) + " OFF", Toast.LENGTH_SHORT).show();
+                    return true;
+                }
             }
         });
 
@@ -1188,8 +1194,14 @@ public class Dashboard extends AppCompatActivity {
                 editor.putBoolean("notifonoff", isChecked);
                 editor.commit();
 
-                if (isChecked) startAlarmBroadcastReceiver(getApplicationContext());
-                else stopAlarmBroadcastReceiver(getApplicationContext());
+                if (isChecked) {
+                    startAlarmBroadcastReceiver(getApplicationContext());
+                    notiftimetxtv.setText(String.format(Locale.getDefault(), "%d:%d", state.getInt("notifhour", 20), state.getInt("notifmin", 30)));
+                }
+                else {
+                    stopAlarmBroadcastReceiver(getApplicationContext());
+                    notiftimetxtv.setText("--:--");
+                }
             }
         });
     }
