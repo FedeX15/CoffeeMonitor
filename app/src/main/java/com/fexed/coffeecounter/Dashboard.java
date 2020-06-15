@@ -146,7 +146,7 @@ public class Dashboard extends AppCompatActivity {
         }
     };
 
-    private void insertStandardTypes() {
+    private void insertStandardTypes() { //TODO transform into downloadable database
         if (db.coffetypeDao().getAll().size() == 0) {
             db.coffetypeDao().insert(new Coffeetype(getString(R.string.espresso), 30, getString(R.string.espressodesc), true, getString(R.string.caffeina), 0, null));
             db.coffetypeDao().insert(new Coffeetype(getString(R.string.cappuccino), 150, getString(R.string.cappuccinodesc), true, getString(R.string.caffeina), 0, null));
@@ -166,7 +166,7 @@ public class Dashboard extends AppCompatActivity {
         }
     }
 
-    public void adInitializer() {
+    public void adInitializer() { //TODO fix deprecated
         MobileAds.initialize(this, "ca-app-pub-9387595638685451~3707270987");
         AdView mAdView = findViewById(R.id.banner1);
         AdRequest adRequest = new AdRequest.Builder().build();
@@ -229,7 +229,7 @@ public class Dashboard extends AppCompatActivity {
 
     public String generateTip() {
         int maxCupsPerDay = 5;
-        int maxCaffeinePerDay = 400;
+        //int maxCaffeinePerDay = 400;
         int cupsToday = db.cupDAO().getAll(getStringFromLocalDate(Calendar.getInstance().getTime())).size();
         String tip = getString(R.string.tipsplaceholder);
 
@@ -255,7 +255,8 @@ public class Dashboard extends AppCompatActivity {
         editor.putInt("qnt", 0);
         editor.putString("suffix", (liquidckbx.isChecked()) ? " ml" : " mg");
         editor.commit();
-        literstxt.setText(state.getInt("qnt", 0) + state.getString("suffix", " ml"));
+        String str = state.getInt("qnt", 0) + state.getString("suffix", " ml");
+        literstxt.setText(str);
 
         ImageButton addbtn = form.findViewById(R.id.incrbtn);
         addbtn.setOnClickListener(new View.OnClickListener() {
@@ -265,7 +266,8 @@ public class Dashboard extends AppCompatActivity {
                 qnt += 5;
                 editor.putInt("qnt", qnt);
                 editor.commit();
-                literstxt.setText(qnt + state.getString("suffix", " ml"));
+                String str = qnt + state.getString("suffix", " ml");
+                literstxt.setText(str);
             }
         });
 
@@ -277,7 +279,8 @@ public class Dashboard extends AppCompatActivity {
                 qnt = (qnt == 0) ? 0 : qnt - 5;
                 editor.putInt("qnt", qnt);
                 editor.commit();
-                literstxt.setText(qnt + state.getString("suffix", " ml"));
+                String str = qnt + state.getString("suffix", " ml");
+                literstxt.setText(str);
             }
         });
 
@@ -285,7 +288,8 @@ public class Dashboard extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 editor.putString("suffix", (isChecked) ? " ml" : " mg");
                 editor.commit();
-                literstxt.setText(state.getInt("qnt", 0) + state.getString("suffix", " ml"));
+                String str = state.getInt("qnt", 0) + state.getString("suffix", " ml");
+                literstxt.setText(str);
             }
         });
 
@@ -366,7 +370,6 @@ public class Dashboard extends AppCompatActivity {
     public void graphInitializer() {
         GraphView graph = findViewById(R.id.historygraph);
         GraphView daygraph = findViewById(R.id.daygraph);
-        PieChart pie = findViewById(R.id.piegraph);
 
         historyGraphInitializer(graph);
         daygraphInitializer(daygraph);
@@ -375,8 +378,7 @@ public class Dashboard extends AppCompatActivity {
     public Date getLocalDateFromString(String date) {
         SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd", Locale.getDefault());
         try {
-            Date ret = format.parse(date);
-            return ret;
+            return format.parse(date);
         } catch (ParseException e) {
             return null;
         }
@@ -388,7 +390,6 @@ public class Dashboard extends AppCompatActivity {
     }
 
     public Date plusDays(Date from, int toadd) {
-        SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd", Locale.getDefault());
         Calendar c = Calendar.getInstance();
         try {
             c.setTime(from);
@@ -464,7 +465,7 @@ public class Dashboard extends AppCompatActivity {
                                 .build();
                         balloon.setOnBalloonOutsideTouchListener(new OnBalloonOutsideTouchListener() {
                             @Override
-                            public void onBalloonOutsideTouch(View view, MotionEvent motionEvent) {
+                            public void onBalloonOutsideTouch(@NonNull View view, @NonNull MotionEvent motionEvent) {
                                 balloon.dismiss();
                             }
                         });
@@ -490,7 +491,7 @@ public class Dashboard extends AppCompatActivity {
                                 .build();
                         balloon.setOnBalloonOutsideTouchListener(new OnBalloonOutsideTouchListener() {
                             @Override
-                            public void onBalloonOutsideTouch(View view, MotionEvent motionEvent) {
+                            public void onBalloonOutsideTouch(@NonNull View view, @NonNull MotionEvent motionEvent) {
                                 balloon.dismiss();
                             }
                         });
@@ -512,7 +513,7 @@ public class Dashboard extends AppCompatActivity {
                         mCalendar.setTimeInMillis((long) value);
                         return format.format(mCalendar.getTimeInMillis());
                     } else {
-                        return super.formatLabel(value, isValueX);
+                        return super.formatLabel(value, false);
                     }
                 }
             });
@@ -537,7 +538,7 @@ public class Dashboard extends AppCompatActivity {
             String name = "";
             int n = db.cupDAO().getAll(type.getKey()).size();
             double perc;
-            if (totalcups > 0) perc = (n * 100) / totalcups;
+            if (totalcups > 0) perc = (double) (n * 100) / totalcups;
             else perc = 0;
             if (perc > 2.5) name = type.getName();
             Segment segment = new Segment(name, n);
@@ -552,7 +553,7 @@ public class Dashboard extends AppCompatActivity {
             pie.addSegment(segment, formatter);
         }
 
-        pie.setOnTouchListener(new View.OnTouchListener() {
+        pie.setOnTouchListener(new View.OnTouchListener() { //TODO fix
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 PointF click = new PointF(motionEvent.getX(), motionEvent.getY());
@@ -586,7 +587,7 @@ public class Dashboard extends AppCompatActivity {
         pie.redraw();
     }
 
-    public String dayFromNumber(int n) {
+    public String dayFromNumber(int n) { //Get localized day name
         Date date = null;
         SimpleDateFormat sdf = new SimpleDateFormat("E", Locale.getDefault());
         SimpleDateFormat sdf1 = new SimpleDateFormat("yyy/MM/dd", Locale.getDefault());
@@ -637,8 +638,7 @@ public class Dashboard extends AppCompatActivity {
                 clndr.setTime(sdf1.parse(cup.getDay()));
                 day = clndr.get(Calendar.DAY_OF_WEEK) - 1;
                 cupPerDay[day]++;
-            } catch (ParseException e) {
-            }
+            } catch (ParseException ignored) {}
         }
         int max = 0;
 
@@ -666,7 +666,7 @@ public class Dashboard extends AppCompatActivity {
                         .build();
                 balloon.setOnBalloonOutsideTouchListener(new OnBalloonOutsideTouchListener() {
                     @Override
-                    public void onBalloonOutsideTouch(View view, MotionEvent motionEvent) {
+                    public void onBalloonOutsideTouch(@NonNull View view, @NonNull MotionEvent motionEvent) {
                         balloon.dismiss();
                     }
                 });
@@ -708,10 +708,18 @@ public class Dashboard extends AppCompatActivity {
                 cupstotal_lastmonth += db.cupDAO().getAll(day).size();
             }
         }
-        totalcupstxtv.setText("" + cupstotal);
-        totalcupslastmonthtxtv.setText("" + cupstotal_lastmonth);
-        if (milliliterstotal < 1000) totalliterstxtv.setText(milliliterstotal + " ml");
-        else totalliterstxtv.setText(milliliterstotal / 1000 + " l");
+        String str = "" + cupstotal;
+        totalcupstxtv.setText(str);
+        str = "" + cupstotal_lastmonth;
+        totalcupslastmonthtxtv.setText(str);
+        if (milliliterstotal < 1000) {
+            str = milliliterstotal + " ml";
+            totalliterstxtv.setText(str);
+        }
+        else {
+            str = milliliterstotal / 1000 + " l";
+            totalliterstxtv.setText(str);
+        }
 
         historyGraph(graph);
         typePie(pie);
@@ -862,12 +870,13 @@ public class Dashboard extends AppCompatActivity {
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         mTopToolbar.setNavigationIcon(R.drawable.ic_hamburger);
         TextView vertxtv = findViewById(R.id.vertxt);
-        vertxtv.setText("V: " + BuildConfig.VERSION_CODE);
+        String str = "V: " + BuildConfig.VERSION_CODE;
+        vertxtv.setText(str);
         final DrawerLayout drawer = findViewById(R.id.containerdrawer);
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
-            public boolean onNavigationItemSelected(MenuItem menuItem) {
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                 drawer.closeDrawers();
                 ViewFlipper vf = findViewById(R.id.viewflipper);
 
@@ -1033,14 +1042,14 @@ public class Dashboard extends AppCompatActivity {
             public void onClick(View v) {
                 int milliliterstotal = 0;
                 int cupstotal = 0;
-                String cupsstat = "";
+                StringBuilder cupsstat = new StringBuilder();
 
                 for (Coffeetype type : db.coffetypeDao().getAll()) {
-                    cupsstat = cupsstat + type.getName() + "\n";
+                    cupsstat.append(type.getName()).append("\n");
                     milliliterstotal += (type.getLiters() * type.getQnt());
                     cupstotal += type.getQnt();
                     for (Cup cup : db.cupDAO().getAll(type.getKey()))
-                        cupsstat = cupsstat + ("\t[" + cup.toString() + "]\n");
+                        cupsstat.append("\t[").append(cup.toString()).append("]\n");
                 }
 
                 AlertDialog.Builder dialogbuilder = new AlertDialog.Builder(v.getContext());
