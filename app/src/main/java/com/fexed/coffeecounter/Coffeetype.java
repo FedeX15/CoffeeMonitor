@@ -100,6 +100,7 @@ public class Coffeetype {
     public void setSostanza(String sostanza) { this.sostanza = sostanza; }
 
     @Override
+    @NonNull
     public String toString() {
         //return getName() + "\n" + getDesc() + "\n" + getPrice() + "€\n" + "\nSostanza: " + getSostanza().toLowerCase() + "\nQuantità: " + getLiters() + ((isLiquido()) ? " ml" : " mg");
         return getName();

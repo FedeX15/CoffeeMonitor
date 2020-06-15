@@ -66,6 +66,7 @@ public class Cup {
         this.date = date;
     }
 
+    @NonNull
     public String toString() {
 
         return day;
