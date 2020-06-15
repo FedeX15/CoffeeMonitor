@@ -7,6 +7,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import com.google.android.material.snackbar.Snackbar;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
@@ -43,15 +45,16 @@ public class TypeRecviewAdapter extends RecyclerView.Adapter<TypeRecviewAdapter.
         this.recv = recv;
     }
 
-    public static Bitmap getBitmapFromView(View view) {
+    /*public static Bitmap getBitmapFromView(View view) {
         Bitmap bitmap = Bitmap.createBitmap(view.getWidth(), view.getHeight(), Bitmap.Config.ARGB_8888);
         Canvas c = new Canvas(bitmap);
         view.layout(view.getLeft(), view.getTop(), view.getRight(), view.getBottom());
         view.draw(c);
         return bitmap;
-    }
+    }*/
 
     @Override
+    @NonNull
     public TypeRecviewAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         CardView v = (CardView) LayoutInflater.from(parent.getContext()).inflate(R.layout.coffee_card, parent, false);
         ViewHolder vh = new ViewHolder(v);
@@ -64,7 +67,8 @@ public class TypeRecviewAdapter extends RecyclerView.Adapter<TypeRecviewAdapter.
         holder.nameTextView.setText(mDataset.get(position).getName());
 
         final TextView cupstxtv = holder.cupsTextView;
-        cupstxtv.setText("" + mDataset.get(position).getQnt());
+        String str = "" + mDataset.get(position).getQnt();
+        cupstxtv.setText(str);
 
         TextView desctxtv = holder.descTextView;
         desctxtv.setText(mDataset.get(position).toBigString()/* + "\n\n\n" + db.cupDAO().getAll(mDataset.get(position).getKey()).toString()*/);
@@ -76,7 +80,8 @@ public class TypeRecviewAdapter extends RecyclerView.Adapter<TypeRecviewAdapter.
                 mDataset.get(position).setQnt(mDataset.get(position).getQnt() + 1);
                 db.coffetypeDao().update(mDataset.get(position));
                 db.cupDAO().insert(new Cup(mDataset.get(position).getKey()));
-                cupstxtv.setText("" + mDataset.get(position).getQnt());
+                String str = "" + mDataset.get(position).getQnt();
+                cupstxtv.setText(str);
             }
         });
         addbtn.setOnLongClickListener(new View.OnLongClickListener() {
@@ -85,7 +90,8 @@ public class TypeRecviewAdapter extends RecyclerView.Adapter<TypeRecviewAdapter.
                 mDataset.get(position).setQnt(mDataset.get(position).getQnt() + 5);
                 db.coffetypeDao().update(mDataset.get(position));
                 for (int i = 0; i < 5; i++) db.cupDAO().insert(new Cup(mDataset.get(position).getKey()));
-                cupstxtv.setText("" + mDataset.get(position).getQnt());
+                String str = "" + mDataset.get(position).getQnt();
+                cupstxtv.setText(str);
                 return true;
             }
         });
@@ -98,7 +104,8 @@ public class TypeRecviewAdapter extends RecyclerView.Adapter<TypeRecviewAdapter.
                 mDataset.get(position).setQnt((n == 0) ? 0 : n-1);
                 db.coffetypeDao().update(mDataset.get(position));
                 db.cupDAO().deleteMostRecent(mDataset.get(position).getKey());
-                cupstxtv.setText("" + mDataset.get(position).getQnt());
+                String str = "" + mDataset.get(position).getQnt();
+                cupstxtv.setText(str);
             }
         });
         removebtn.setOnLongClickListener(new View.OnLongClickListener() {
@@ -107,7 +114,8 @@ public class TypeRecviewAdapter extends RecyclerView.Adapter<TypeRecviewAdapter.
                 mDataset.get(position).setQnt(0);
                 db.coffetypeDao().update(mDataset.get(position));
                 db.cupDAO().deleteAll(mDataset.get(position).getKey());
-                cupstxtv.setText("" + mDataset.get(position).getQnt());
+                String str = "" + mDataset.get(position).getQnt();
+                cupstxtv.setText(str);
                 return true;
             }
         });
@@ -161,18 +169,21 @@ public class TypeRecviewAdapter extends RecyclerView.Adapter<TypeRecviewAdapter.
                 nameedittxt.setText(mDataset.get(position).getName());
                 descedittxt.setText(mDataset.get(position).getDesc());
                 sostedittxt.setText(mDataset.get(position).getSostanza());
-                pricetedittxt.setText("" + mDataset.get(position).getPrice());
+                String str = "" + mDataset.get(position).getPrice();
+                pricetedittxt.setText(str);
 
                 if (liquido) liquidckbx.setChecked(true);
                 else liquidckbx.setChecked(false);
-                literstxt.setText(qnt + (liquido ? " ml" : " mg"));
+                str = qnt + (liquido ? " ml" : " mg");
+                literstxt.setText(str);
 
                 ImageButton addbtn = form.findViewById(R.id.incrbtn);
                 addbtn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         mDataset.get(position).setLiters(mDataset.get(position).getLiters() + 5);
-                        literstxt.setText(mDataset.get(position).getLiters() + (liquidckbx.isChecked() ? " ml" : " mg"));
+                        String str = mDataset.get(position).getLiters() + (liquidckbx.isChecked() ? " ml" : " mg");
+                        literstxt.setText(str);
                     }
                 });
 
@@ -183,18 +194,18 @@ public class TypeRecviewAdapter extends RecyclerView.Adapter<TypeRecviewAdapter.
                         mDataset.get(position).setLiters(mDataset.get(position).getLiters() - 5);
                         if (mDataset.get(position).getLiters() < 0)
                             mDataset.get(position).setLiters(0);
-                        literstxt.setText(mDataset.get(position).getLiters() + (liquidckbx.isChecked() ? " ml" : " mg"));
+                        String str = mDataset.get(position).getLiters() + (liquidckbx.isChecked() ? " ml" : " mg");
+                        literstxt.setText(str);
                     }
                 });
 
                 liquidckbx.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                         mDataset.get(position).setLiquido(isChecked);
-                        literstxt.setText(mDataset.get(position).getLiters() + (liquidckbx.isChecked() ? " ml" : " mg"));
+                        String str = mDataset.get(position).getLiters() + (liquidckbx.isChecked() ? " ml" : " mg");
+                        literstxt.setText(str);
                     }
                 });
-
-
 
                 /*typeimage.setOnLongClickListener(new View.OnLongClickListener() { //TODO
                     @Override
@@ -267,8 +278,7 @@ public class TypeRecviewAdapter extends RecyclerView.Adapter<TypeRecviewAdapter.
     public Bitmap loadImageFromStorage(String path) {
         try {
             File f = new File(path);
-            Bitmap b = BitmapFactory.decodeStream(new FileInputStream(f));
-            return b;
+            return BitmapFactory.decodeStream(new FileInputStream(f));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
