@@ -1,240 +1,245 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:background="@color/colorBgDark"
+    android:fillViewport="true"
+    android:scrollbars="vertical"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintHorizontal_bias="0.5"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent"
     tools:context="com.fexed.coffeecounter.Stat">
 
-    <ScrollView
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:fillViewport="true"
+        android:scrollbars="vertical">
 
-        <LinearLayout
-            android:layout_width="match_parent"
+
+        <TextView
+            android:id="@+id/textView15"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_marginStart="32dp"
+            android:paddingBottom="5dp"
+            android:text="@string/generalstats"
+            android:textAlignment="center"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:paddingBottom="5dp"
-                android:text="@string/generalstats"
-                android:textAlignment="center" />
+        <TextView
+            android:id="@+id/textView16"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:paddingBottom="5dp"
+            android:text="@string/tazzine_totali"
+            android:textAlignment="textStart"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView15" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="center|center_horizontal"
-                android:gravity="center|center_horizontal"
-                android:orientation="vertical"
-                android:paddingStart="15dp"
-                android:paddingEnd="15dp">
+        <TextView
+            android:id="@+id/textView17"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:text="@string/totalcups_lastmonth"
+            android:textAlignment="textStart"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:textSize="18sp"
+            app:layout_constraintStart_toStartOf="@+id/textView16"
+            app:layout_constraintTop_toBottomOf="@+id/textView16" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+        <TextView
+            android:id="@+id/textView18"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:paddingTop="5dp"
+            android:text="@string/ml_totali"
+            android:textAlignment="textStart"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            app:layout_constraintEnd_toEndOf="@+id/textView17"
+            app:layout_constraintStart_toStartOf="@+id/textView17"
+            app:layout_constraintTop_toBottomOf="@+id/textView17" />
 
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="0"
-                        android:orientation="vertical"
-                        android:paddingRight="15dp">
 
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:paddingBottom="5dp"
-                            android:text="@string/tazzine_totali"
-                            android:textAlignment="textStart"
-                            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+        <TextView
+            android:id="@+id/totalcups"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="130dp"
+            android:paddingBottom="5dp"
+            android:text="254"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/textView17"
+            app:layout_constraintTop_toTopOf="@+id/textView16" />
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:paddingTop="5dp"
-                            android:paddingBottom="5dp"
-                            android:text="@string/totalcups_lastmonth"
-                            android:textAlignment="textStart"
-                            android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                            android:textSize="18sp" />
+        <TextView
+            android:id="@+id/totalcups_lastmonth"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:text="25"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:textSize="18sp"
+            app:layout_constraintStart_toStartOf="@+id/totalcups"
+            app:layout_constraintTop_toTopOf="@+id/textView17" />
 
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:paddingTop="5dp"
-                            android:text="@string/ml_totali"
-                            android:textAlignment="textStart"
-                            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
-                    </LinearLayout>
+        <TextView
+            android:id="@+id/totalliters"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="5dp"
+            android:text="4545646ml"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            app:layout_constraintStart_toStartOf="@+id/totalcups_lastmonth"
+            app:layout_constraintTop_toTopOf="@+id/textView18" />
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
+        <TextView
+            android:id="@+id/textView19"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="16dp"
+            android:paddingBottom="5dp"
+            android:text="@string/storico"
+            android:textAlignment="center"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView18" />
 
-                        <TextView
-                            android:id="@+id/totalcups"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:paddingBottom="5dp"
-                            android:text="254"
-                            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+        <ImageButton
+            android:id="@+id/sharegraph1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/transparent"
+            android:visibility="gone"
+            app:layout_constraintStart_toEndOf="@+id/textView19"
+            app:layout_constraintTop_toTopOf="@+id/textView19"
+            app:srcCompat="@drawable/ic_share" />
 
-                        <TextView
-                            android:id="@+id/totalcups_lastmonth"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:paddingTop="5dp"
-                            android:paddingBottom="5dp"
-                            android:text="25"
-                            android:textAlignment="center"
-                            android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                            android:textSize="18sp" />
 
-                        <TextView
-                            android:id="@+id/totalliters"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:paddingTop="5dp"
-                            android:text="4545646ml"
-                            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
-                    </LinearLayout>
+        <com.jjoe64.graphview.GraphView
+            android:id="@+id/historygraph"
+            android:layout_width="wrap_content"
+            android:layout_height="200dip"
+            android:layout_marginTop="4dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView19" />
 
-                </LinearLayout>
+        <com.google.android.gms.ads.AdView
+            android:id="@+id/banner2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="4dp"
+            app:adSize="BANNER"
+            app:adUnitId="ca-app-pub-9387595638685451/1637433421"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/historygraph" />
 
-            </LinearLayout>
+        <!-- ca-app-pub-9387595638685451/1637433421 -->
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="right"
-                android:layout_marginTop="15dp"
-                android:orientation="horizontal">
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0"
-                    android:paddingBottom="5dp"
-                    android:text="@string/storico"
-                    android:textAlignment="center" />
+        <TextView
+            android:id="@+id/textView20"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="8dp"
+            android:paddingBottom="5dp"
+            android:text="@string/title_dashboard"
+            android:textAlignment="center"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/banner2" />
 
-                <ImageButton
-                    android:id="@+id/sharegraph1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@color/transparent"
-                    android:visibility="gone"
-                    app:srcCompat="@drawable/ic_share" />
-            </LinearLayout>
+        <ImageButton
+            android:id="@+id/sharegraph2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/transparent"
+            android:visibility="gone"
+            app:layout_constraintStart_toEndOf="@+id/textView20"
+            app:layout_constraintTop_toTopOf="@+id/textView20"
+            app:srcCompat="@drawable/ic_share" />
 
-            <com.jjoe64.graphview.GraphView
-                android:id="@+id/historygraph"
-                android:layout_width="match_parent"
-                android:layout_height="200dip" />
 
-            <com.google.android.gms.ads.AdView
-                android:id="@+id/banner2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                app:adSize="BANNER"
-                app:adUnitId="ca-app-pub-9387595638685451/1637433421" />
+        <com.androidplot.pie.PieChart
+            android:id="@+id/piegraph"
+            android:layout_width="wrap_content"
+            android:layout_height="400dip"
+            android:layout_marginTop="4dp"
+            app:backgroundColor="@color/transparent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textView20"
+            app:renderMode="use_background_thread" />
 
-            <!-- ca-app-pub-9387595638685451/1637433421 -->
+        <com.google.android.gms.ads.AdView
+            android:id="@+id/banner3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="4dp"
+            app:adSize="BANNER"
+            app:adUnitId="ca-app-pub-9387595638685451/8685001586"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/piegraph" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="right"
-                android:layout_marginTop="15dp"
-                android:orientation="horizontal">
+        <!-- ca-app-pub-9387595638685451/8685001586 -->
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="00"
-                    android:paddingBottom="5dp"
-                    android:text="@string/title_dashboard"
-                    android:textAlignment="center" />
 
-                <ImageButton
-                    android:id="@+id/sharegraph2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@color/transparent"
-                    android:visibility="gone"
-                    app:srcCompat="@drawable/ic_share" />
+        <TextView
+            android:id="@+id/textView21"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="8dp"
+            android:paddingBottom="5dp"
+            android:text="@string/giorni_della_settimana"
+            android:textAlignment="center"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/banner3" />
 
-            </LinearLayout>
+        <ImageButton
+            android:id="@+id/sharegraph3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/transparent"
+            android:visibility="gone"
+            app:layout_constraintStart_toEndOf="@+id/textView21"
+            app:layout_constraintTop_toTopOf="@+id/textView21"
+            app:srcCompat="@drawable/ic_share" />
 
-            <com.androidplot.pie.PieChart xmlns:ap="http://schemas.android.com/apk/res-auto"
-                android:id="@+id/piegraph"
-                android:layout_width="match_parent"
-                android:layout_height="400dip"
-                ap:backgroundColor="@color/transparent"
-                ap:renderMode="use_background_thread" />
 
-            <com.google.android.gms.ads.AdView
-                android:id="@+id/banner3"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                app:adSize="BANNER"
-                app:adUnitId="ca-app-pub-9387595638685451/8685001586" />
+        <com.jjoe64.graphview.GraphView
+            android:id="@+id/daygraph"
+            android:layout_width="wrap_content"
+            android:layout_height="200dip"
+            android:layout_marginTop="4dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView21"
+            tools:visibility="visible" />
 
-            <!-- ca-app-pub-9387595638685451/8685001586 -->
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="right"
-                android:layout_marginTop="15dp"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0"
-                    android:paddingBottom="5dp"
-                    android:text="@string/giorni_della_settimana"
-                    android:textAlignment="center" />
-
-                <ImageButton
-                    android:id="@+id/sharegraph3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@color/transparent"
-                    android:visibility="gone"
-                    app:srcCompat="@drawable/ic_share" />
-
-            </LinearLayout>
-
-            <com.jjoe64.graphview.GraphView
-                android:id="@+id/daygraph"
-                android:layout_width="match_parent"
-                android:layout_height="200dip" />
-
-        </LinearLayout>
-    </ScrollView>
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>
