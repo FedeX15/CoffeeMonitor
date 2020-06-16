@@ -26,6 +26,10 @@ public class Cup {
 
     private String day;
 
+    private double latitude;
+
+    private double longitude;
+
     public Cup(int typekey) {
         this.typekey = typekey;
 
@@ -42,41 +46,30 @@ public class Cup {
     }
 
     @NonNull
-    public int getKey() {
-        return key;
-    }
+    public int getKey() { return key; }
 
-    public void setKey(@NonNull int key) {
-        this.key = key;
-    }
+    public void setKey(@NonNull int key) { this.key = key; }
 
-    public int getTypekey() {
-        return typekey;
-    }
+    public int getTypekey() { return typekey; }
 
-    public void setTypekey(@NonNull int typekey) {
-        this.typekey = typekey;
-    }
+    public void setTypekey(@NonNull int typekey) { this.typekey = typekey; }
 
-    public String getDate() {
-        return date;
-    }
+    public String getDate() { return date; }
 
-    public void setDate(String date) {
-        this.date = date;
-    }
+    public void setDate(String date) { this.date = date; }
 
     @NonNull
-    public String toString() {
+    public String toString() { return day; }
 
-        return day;
-    }
+    public String getDay() { return day; }
 
-    public String getDay() {
-        return day;
-    }
+    public void setDay(String day) { this.day = day; }
 
-    public void setDay(String day) {
-        this.day = day;
-    }
+    public double getLatitude() { return this.latitude; }
+
+    public void setLatitude(double latitude) { this.latitude = latitude; }
+
+    public double getLongitude() { return this.longitude; }
+
+    public void setLongitude(double longitude) { this.longitude = longitude; }
 }

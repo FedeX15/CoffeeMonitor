@@ -123,6 +123,15 @@ public class Dashboard extends AppCompatActivity {
         }
     };
     public String currentbitmap;
+    static final Migration MIGRATION_22_23 = new Migration(22, 23) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            database.execSQL("BEGIN TRANSACTION");
+            database.execSQL("ALTER TABLE cup ADD COLUMN latitude REAL NOT NULL DEFAULT 0.0");
+            database.execSQL("ALTER TABLE cup ADD COLUMN longitude REAL NOT NULL DEFAULT 0.0");
+            database.execSQL("COMMIT");
+        }
+    };
 
     public static Bitmap loadBitmapFromView(View v) {
         Bitmap b = Bitmap.createBitmap(v.getMeasuredWidth(), v.getMeasuredHeight(), Bitmap.Config.ARGB_8888);
@@ -954,8 +963,8 @@ public class Dashboard extends AppCompatActivity {
         });
 
         db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "typedb")
-                .allowMainThreadQueries()
-                .addMigrations(MIGRATION_19_20, MIGRATION_20_21, MIGRATION_21_22)
+                .allowMainThreadQueries() //TODO fix
+                .addMigrations(MIGRATION_19_20, MIGRATION_20_21, MIGRATION_21_22, MIGRATION_22_23)
                 .build();
         Log.d("ROOMDB", "path: " + getDatabasePath("typedb").getAbsolutePath());
         insertStandardTypes();
