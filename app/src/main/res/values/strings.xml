@@ -102,7 +102,7 @@
     <string name="cappuccinodesc">Coffee made with milk that has been frothed up with pressurized steam.</string>
     <string name="ristrettodesc">A drink of very strong, concentrated espresso.</string>
     <string name="tutorial_cups">These are the various cups registered. Press and hold on - to remove one, or press and hold on the name to change it</string>
-    <string name="tutorial_types">These are the types. Press on the + in the top right corner to add personal types</string>
+    <string name="tutorial_types">These are the types. Press on the + in the top right corner to add custom types</string>
     <string name="tutorial_stats">These are the statistics. Tap on graphs to get more informations</string>
     <string name="edit">Edit</string>
     <string name="conferma">Confirm</string>
@@ -116,7 +116,7 @@
     <string name="notiftext">Have you registered all the cups you had today?</string>
     <string name="tazzine_totali">Total cups</string>
     <string name="ml_totali">Total amount</string>
-    <string name="totalcups_lastmonth">Total cups in the last month</string>
+    <string name="totalcups_lastmonth">Last month</string>
     <string name="notifica_giornaliera">Daily notification</string>
     <string name="orario_notifica_giornaliera">Daily notification time</string>
     <string name="settings">Settings</string>

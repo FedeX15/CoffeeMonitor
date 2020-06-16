@@ -92,7 +92,7 @@
     <string name="espressodesc">Tazzina di caffè da bar o da moka.</string>
     <string name="cappuccinodesc">Tazza di cappuccino da bar.</string>
     <string name="ristrettodesc">Tazzina di caffè ristretto.</string>
-    <string name="tutorial_types">Queste sono le tipologie. Premi sul + in alto a destra per aggiungerne di personali</string>
+    <string name="tutorial_types">Queste sono le tipologie. Premi sul + in alto a destra per aggiungere tipologie personalizzate</string>
     <string name="tutorial_cups">Queste sono le varie tazze registrate. Tieni premuto su - per rimuoverne una, oppure tieni premuto sul nome per modificarla</string>
     <string name="edit">Modifica</string>
     <string name="annulla">Annulla</string>
@@ -104,7 +104,7 @@
     <string name="notiftext">Hai registrato le tazze di caffè bevute oggi?</string>
     <string name="tazzine_totali">Tazzine totali</string>
     <string name="ml_totali">Quantità totale</string>
-    <string name="totalcups_lastmonth">Tazzine totali nell\'ultimo mese</string>
+    <string name="totalcups_lastmonth">Ultimo mese</string>
     <string name="notifica_giornaliera">Notifica giornaliera</string>
     <string name="orario_notifica_giornaliera">Orario notifica giornaliera</string>
     <string name="codice_e_idea_nfederico_matteoni">Codice e idea\n\nFederico Matteoni\nfedericomatteoni@live.it</string>
@@ -113,7 +113,7 @@
     <string name="storico_a_linee_barre">Storico a linee / barre</string>
     <string name="credits">Crediti</string>
     <string name="generalstats">Statistiche generali</string>
-    <string name="toomuchcupstip">Hai già bevuto più di 5 tazzine oggi, che è la dose massima consigliata dalla Fda (Food and Drug Administration). Fai attenzione!</string>
+    <string name="toomuchcupstip">Hai già bevuto più di 5 tazzine oggi, che è la dose massima consigliata dalla FDA (Food and Drug Administration). Fai attenzione!</string>
     <string name="tips">Consigli</string>
-    <string name="tutorial_stats">"     Queste sono le statistiche. Tocca un grafico per avere ulteriori info!"</string>
+    <string name="tutorial_stats">Queste sono le statistiche. Tocca un grafico per avere ulteriori info!</string>
 </resources>
