@@ -727,7 +727,7 @@ public class Dashboard extends AppCompatActivity {
 
     }
 
-    public void startAlarmBroadcastReceiver(Context context) {
+    public void startAlarmBroadcastReceiver(Context context) { //TODO reimplementare
         Intent _intent = new Intent(context, AlarmBroadcastReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, _intent, 0);
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
@@ -740,7 +740,7 @@ public class Dashboard extends AppCompatActivity {
         alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
     }
 
-    public void stopAlarmBroadcastReceiver(Context context) {
+    public void stopAlarmBroadcastReceiver(Context context) { //TODO reimplementare
         Intent _intent = new Intent(context, AlarmBroadcastReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, _intent, 0);
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
@@ -778,7 +778,7 @@ public class Dashboard extends AppCompatActivity {
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) { //TODO reimplementare
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == 9 && resultCode == RESULT_OK && data != null) {
@@ -798,7 +798,7 @@ public class Dashboard extends AppCompatActivity {
         }
     }
 
-    public String saveToInternalStorage(Bitmap bitmapImage) {
+    public String saveToInternalStorage(Bitmap bitmapImage) { //TODO reimplementare
         ContextWrapper cw = new ContextWrapper(getApplicationContext());
         // path to /data/data/yourapp/app_data/imageDir
         File directory = cw.getDir("images", Context.MODE_PRIVATE);
