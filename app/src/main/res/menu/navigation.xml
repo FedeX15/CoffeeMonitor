@@ -5,7 +5,6 @@
         android:id="@+id/navigation_statistics"
         android:icon="@drawable/ic_stats"
         android:title="@string/title_statistics" />
-
     <item
         android:id="@+id/navigation_types"
         android:icon="@mipmap/coffeeicon_w"

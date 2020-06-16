@@ -886,7 +886,7 @@ public class Dashboard extends AppCompatActivity {
                             graphUpdater();
                             vf.setDisplayedChild(0);
                             if (state.getBoolean("statstutorial", true)) {
-                                Toast.makeText(getApplicationContext(), getString(R.string.tutorial_stats), Toast.LENGTH_LONG).show();
+                                Snackbar.make(findViewById(R.id.viewflipper), getString(R.string.tutorial_stats), Snackbar.LENGTH_LONG).show();
                                 editor.putBoolean("statstutorial", false);
                                 editor.apply();
                             }
@@ -906,7 +906,7 @@ public class Dashboard extends AppCompatActivity {
                             vf.setDisplayedChild(1);
 
                             if (state.getBoolean("typestutorial", true)) {
-                                Toast.makeText(getApplicationContext(), getString(R.string.tutorial_types), Toast.LENGTH_LONG).show();
+                                Snackbar.make(findViewById(R.id.viewflipper), getString(R.string.tutorial_types), Snackbar.LENGTH_LONG).show();
                                 editor.putBoolean("typestutorial", false);
                                 editor.apply();
                             }
@@ -933,7 +933,7 @@ public class Dashboard extends AppCompatActivity {
                             vf.setDisplayedChild(3);
 
                             if (state.getBoolean("cupstutorial", true)) {
-                                Toast.makeText(getApplicationContext(), getString(R.string.tutorial_cups), Toast.LENGTH_LONG).show();
+                                Snackbar.make(findViewById(R.id.viewflipper), getString(R.string.tutorial_cups), Snackbar.LENGTH_LONG).show();
                                 editor.putBoolean("cupstutorial", false);
                                 editor.apply();
                             }
@@ -1022,7 +1022,7 @@ public class Dashboard extends AppCompatActivity {
                                 insertStandardTypes();
                                 cupsRecview.setAdapter(new CupRecviewAdapter(db, 0));
                                 typesRecview.setAdapter(new TypeRecviewAdapter(db, typesRecview));
-                                Snackbar.make(findViewById(R.id.container), "Database resettato", Snackbar.LENGTH_SHORT).show();
+                                Snackbar.make(findViewById(R.id.container), "Database resettato", Snackbar.LENGTH_LONG).show();
                             }
                         })
                         .setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -1163,7 +1163,7 @@ public class Dashboard extends AppCompatActivity {
         });
 
         if (state.getBoolean("dashboardtutorial", true)) {
-            Toast.makeText(this, getString(R.string.tutorial_dashboard), Toast.LENGTH_LONG).show();
+            Snackbar.make(findViewById(R.id.viewflipper), getString(R.string.tutorial_dashboard), Snackbar.LENGTH_LONG).show();
             editor.putBoolean("dashboardtutorial", false);
             editor.apply();
         }
