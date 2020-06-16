@@ -1,167 +1,177 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/linearLayout"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:alpha="100"
     android:background="@color/colorBg"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:padding="5dp">
 
+
+    <ImageButton
+        android:id="@+id/scanqrbtn"
+        style="@style/Base.Widget.AppCompat.Button.Borderless"
+        android:layout_width="50dp"
+        android:layout_height="0dp"
+        android:layout_gravity="start|top"
+        android:contentDescription="QR Code"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_qr" />
 
     <EditText
         android:id="@+id/nametxt"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp"
-        android:layout_marginLeft="4dp"
-        android:layout_marginRight="4dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:background="@color/transparent"
         android:hint="@string/name"
         android:inputType="text"
-        android:textAlignment="center" />
+        android:textAlignment="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/typeimage"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:layout_gravity="center"
-        android:layout_marginLeft="4dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginRight="4dp"
-        android:layout_marginBottom="4dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="32dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/nametxt"
         app:srcCompat="@mipmap/coffeeicon_w" />
 
-    <LinearLayout
+
+    <ImageButton
+        android:id="@+id/decrbtn"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_gravity="center"
-        android:layout_marginTop="16dp"
-        android:orientation="horizontal">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:background="@color/transparent"
+        app:layout_constraintEnd_toStartOf="@+id/ltrsmgtext"
+        app:layout_constraintTop_toBottomOf="@+id/typeimage"
+        app:srcCompat="@drawable/ic_remove_circle" />
 
-        <ImageButton
-            android:id="@+id/decrbtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_weight="0"
-            android:background="@color/transparent"
-            app:srcCompat="@drawable/ic_remove_circle" />
+    <TextView
+        android:id="@+id/ltrsmgtext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toBottomOf="@+id/decrbtn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/decrbtn" />
 
-        <TextView
-            android:id="@+id/ltrsmgtext"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_weight="0"
-            android:text="TextView"
-            android:textAlignment="center" />
+    <ImageButton
+        android:id="@+id/incrbtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:background="@color/transparent"
+        app:layout_constraintStart_toEndOf="@+id/ltrsmgtext"
+        app:layout_constraintTop_toBottomOf="@+id/typeimage"
+        app:srcCompat="@drawable/ic_add_circle" />
 
-        <ImageButton
-            android:id="@+id/incrbtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_weight="0"
-            android:background="@color/transparent"
-            app:srcCompat="@drawable/ic_add_circle" />
-    </LinearLayout>
 
     <CheckBox
         android:id="@+id/liquidcheck"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
+        android:layout_marginTop="4dp"
         android:checked="true"
         android:text="@string/liquid"
-        android:textAlignment="center" />
+        android:textAlignment="center"
+        app:layout_constraintEnd_toEndOf="@+id/incrbtn"
+        app:layout_constraintStart_toStartOf="@+id/decrbtn"
+        app:layout_constraintTop_toBottomOf="@+id/ltrsmgtext" />
 
     <EditText
         android:id="@+id/desctxt"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginBottom="4dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="32dp"
         android:background="@drawable/rounded_edittext"
         android:hint="@string/desc"
         android:inputType="text|textMultiLine"
         android:singleLine="false"
-        android:textAlignment="center" />
+        android:textAlignment="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/liquidcheck" />
 
     <EditText
         android:id="@+id/sosttxt"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp"
-        android:layout_marginLeft="4dp"
-        android:layout_marginRight="4dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:background="#00000000"
         android:hint="@string/sostanza"
         android:inputType="text"
-        android:textAlignment="center" />
+        android:textAlignment="center"
+        app:layout_constraintEnd_toEndOf="@+id/desctxt"
+        app:layout_constraintStart_toStartOf="@+id/desctxt"
+        app:layout_constraintTop_toBottomOf="@+id/desctxt" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
+
+    <EditText
+        android:id="@+id/pricetxt"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="4dp"
+        android:layout_marginTop="8dp"
+        android:background="#00000000"
+        android:hint="@string/price"
+        android:inputType="numberDecimal"
+        android:text="0.0"
+        android:textAlignment="center"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="@+id/sosttxt"
+        app:layout_constraintStart_toStartOf="@+id/sosttxt"
+        app:layout_constraintTop_toBottomOf="@+id/sosttxt" />
+
+    <TextView
+        android:id="@+id/textView8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="€/$/£/¥"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/pricetxt"
+        app:layout_constraintStart_toEndOf="@+id/pricetxt"
+        app:layout_constraintTop_toTopOf="@+id/pricetxt" />
+
+
+    <Button
+        android:id="@+id/cancelbtn"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:layout_marginRight="4dp"
-        android:layout_marginBottom="4dp"
-        android:orientation="horizontal"
-        android:visibility="gone">
+        android:text="Annulla"
+        android:textAppearance="@style/TextAppearance.AppCompat"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/pricetxt" />
 
-        <EditText
-            android:id="@+id/pricetxt"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="#00000000"
-            android:hint="@string/price"
-            android:inputType="numberDecimal"
-            android:text="0.0"
-            android:textAlignment="center" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_weight="0"
-            android:text="€/$/£/¥" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="0"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/cancelbtn"
-            style="@style/Widget.AppCompat.Button.Borderless"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Annulla"
-            android:textAppearance="@style/TextAppearance.AppCompat" />
-
-        <Button
-            android:id="@+id/confirmbtn"
-            style="@style/Widget.AppCompat.Button.Borderless"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Conferma"
-            android:textAppearance="@style/TextAppearance.AppCompat"
-            android:textSize="14sp" />
-
-    </LinearLayout>
+    <Button
+        android:id="@+id/confirmbtn"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Conferma"
+        android:textAppearance="@style/TextAppearance.AppCompat"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/pricetxt" />
 
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
