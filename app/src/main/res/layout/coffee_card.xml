@@ -23,17 +23,18 @@
             style="@style/Base.Widget.AppCompat.Button.Borderless"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:layout_gravity="top|left"
+            android:layout_gravity="start|top"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_qr" />
+            app:srcCompat="@drawable/ic_qr"
+            android:contentDescription="QR Code" />
 
         <ImageButton
             android:id="@+id/favbtn"
             style="@style/Base.Widget.AppCompat.Button.Borderless"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:layout_gravity="top|right"
+            android:layout_gravity="top|end"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_favstarempty" />
@@ -42,10 +43,10 @@
             android:id="@+id/nameTxtV"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Coffee"
+            tools:text="Coffee"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Display1"
-            android:textColor="@color/cardview_light_background"
+            android:textColor="@color/colorText"
             android:textSize="30sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -70,15 +71,15 @@
             android:layout_gravity="center"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="0"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Display1"
-            android:textColor="@color/cardview_light_background"
+            android:textColor="@color/colorText"
             android:textSize="25sp"
             app:layout_constraintBottom_toBottomOf="@+id/removebtn"
             app:layout_constraintEnd_toEndOf="@+id/cardtypeimageview"
             app:layout_constraintStart_toStartOf="@+id/cardtypeimageview"
-            app:layout_constraintTop_toBottomOf="@+id/cardtypeimageview" />
+            app:layout_constraintTop_toBottomOf="@+id/cardtypeimageview"
+            tools:text="0" />
 
         <Button
             android:id="@+id/removebtn"
@@ -111,11 +112,11 @@
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:layout_weight="0"
-            android:text="TextView"
             android:textAlignment="center"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/removebtn" />
+            app:layout_constraintTop_toBottomOf="@+id/removebtn"
+            tools:text="TextView" />
 
         <Button
             android:id="@+id/editbtn"
