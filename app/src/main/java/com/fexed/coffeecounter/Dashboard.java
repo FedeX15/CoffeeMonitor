@@ -169,8 +169,8 @@ public class Dashboard extends AppCompatActivity {
         try {
             Locale locale = Locale.getDefault();
             String dbtxt;
-            if (locale.getLanguage().equals("it")) dbtxt = new DBDownloader().execute("https://fexed.github.io/db/it/defaultcoffeetypes").get();
-            else dbtxt = new DBDownloader().execute("https://fexed.github.io/db/en/defaultcoffeetypes").get();
+            if (locale.getLanguage().equals("it")) dbtxt = new DBDownloader(state).execute("https://fexed.github.io/db/it/defaultcoffeetypes").get();
+            else dbtxt = new DBDownloader(state).execute("https://fexed.github.io/db/en/defaultcoffeetypes").get();
 
             if (dbtxt != null) {
                 if (db.coffetypeDao().getAll().size() == 0) {
