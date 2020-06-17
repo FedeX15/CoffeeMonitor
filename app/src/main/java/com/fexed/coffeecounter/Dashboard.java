@@ -370,7 +370,7 @@ public class Dashboard extends AppCompatActivity {
     public void daygraphInitializer(GraphView daygraph) {
         daygraph.getViewport().setMaxXAxisSize(7);
         StaticLabelsFormatter staticLabelsFormatter = new StaticLabelsFormatter(daygraph);
-        staticLabelsFormatter.setHorizontalLabels(new String[]{"Dom", "Lun", "Mar", "Mer", "Gio", "Ven", "Sab"});
+        staticLabelsFormatter.setHorizontalLabels(new String[]{dayFromNumber(0), dayFromNumber(1), dayFromNumber(2), dayFromNumber(3), dayFromNumber(4), dayFromNumber(5), dayFromNumber(6)});
         daygraph.getGridLabelRenderer().setLabelFormatter(staticLabelsFormatter);
         daygraph.getViewport().setYAxisBoundsManual(true);
         daygraph.getViewport().setMinY(0);
