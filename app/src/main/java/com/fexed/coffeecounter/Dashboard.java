@@ -164,7 +164,7 @@ public class Dashboard extends AppCompatActivity {
         }
     };
 
-    private void insertStandardTypes() { //TODO transform into downloadable database
+    private void insertStandardTypes() {
         //name::desc::liters::isLiquido::sostanza::price
         try {
             Locale locale = Locale.getDefault();
@@ -178,7 +178,7 @@ public class Dashboard extends AppCompatActivity {
                         String[] strtype = str.split("::");
                         db.coffetypeDao().insert(new Coffeetype(strtype[0], Integer.parseInt(strtype[2]), strtype[1], Boolean.parseBoolean(strtype[3]), strtype[4], Float.parseFloat(strtype[5]), null, true));
                     }
-                    Snackbar.make(findViewById(R.id.viewflipper), "Downloaded default database", Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(findViewById(R.id.viewflipper), R.string.dbupdated, Snackbar.LENGTH_SHORT).show();
                 } else {
                     List<Coffeetype> coffeelist = db.coffetypeDao().getAll();
                     for (String str : dbtxt.split("\n")) {
@@ -202,12 +202,12 @@ public class Dashboard extends AppCompatActivity {
                             db.coffetypeDao().update(type);
                         }
                     }
-                    Snackbar.make(findViewById(R.id.viewflipper), "Updated default database", Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(findViewById(R.id.viewflipper), R.string.dbupdated, Snackbar.LENGTH_SHORT).show();
                 }
             }
         } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
-            Snackbar.make(findViewById(R.id.viewflipper), "Aggiornamento del database fallito", Snackbar.LENGTH_SHORT).show();
+            Snackbar.make(findViewById(R.id.viewflipper), R.string.dbupdatefailed, Snackbar.LENGTH_SHORT).show();
         }
     }
 

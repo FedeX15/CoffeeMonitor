@@ -126,4 +126,9 @@
     <string name="credits">Credits</string>
     <string name="generalstats">General stats</string>
     <string name="toomuchcupstip">You have already drunk more than 5 cups today, which is the maximum recommended dose by the FDA (Food and Drug Administration). Be careful!</string>
+    <string name="editdefaultalert">This is a default type! If you confirm the edit, it will be considered a custom type and no will no longer be updated from the internet</string>
+    <string name="nameemptyalert">Name cannot be empty</string>
+    <string name="defaulttxt">Default</string>
+    <string name="dbupdated">Default database updated</string>
+    <string name="dbupdatefailed">Default database update failed</string>
 </resources>

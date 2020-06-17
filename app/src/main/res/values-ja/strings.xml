@@ -124,4 +124,9 @@
     <string name="toomuchcupstip">あなたはすでに5杯以上を飲んでいます。これはFDA（食品医薬品局）による最大推奨用量です。 注意してください！</string>
     <string name="tips">ヒント</string>
     <string name="tutorial_stats">これらは統計です。 グラフをタップして詳細情報を取得します</string>
+    <string name="editdefaultalert">これはデフォルトのタイプです！編集を確認すると、カスタムタイプと見なされ、インターネットから更新されなくなります。</string>
+    <string name="nameemptyalert">名前は空白にできません</string>
+    <string name="defaulttxt">デフォルト</string>
+    <string name="dbupdated">デフォルトのデータベースが更新されました</string>
+    <string name="dbupdatefailed">デフォルトのデータベースの更新に失敗しました</string>
 </resources>

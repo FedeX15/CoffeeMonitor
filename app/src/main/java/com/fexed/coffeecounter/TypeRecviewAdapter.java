@@ -73,6 +73,9 @@ public class TypeRecviewAdapter extends RecyclerView.Adapter<TypeRecviewAdapter.
         TextView desctxtv = holder.descTextView;
         desctxtv.setText(mDataset.get(position).toBigString()/* + "\n\n\n" + db.cupDAO().getAll(mDataset.get(position).getKey()).toString()*/);
 
+        if(mDataset.get(position).isDefaulttype()) holder.defaultTextView.setText(R.string.defaulttxt);
+        else holder.defaultTextView.setText("");
+
         Button addbtn = holder.mCardView.findViewById(R.id.addbtn);
         addbtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -221,6 +224,9 @@ public class TypeRecviewAdapter extends RecyclerView.Adapter<TypeRecviewAdapter.
                 dialogbuilder.setView(form);
                 dialogbuilder.create();
                 final AlertDialog dialog = dialogbuilder.show();
+                if (mDataset.get(position).isDefaulttype()) {
+                    Snackbar.make(form.findViewById(R.id.linearLayout), R.string.editdefaultalert, Snackbar.LENGTH_SHORT).show();
+                }
 
                 Button positive = form.findViewById(R.id.confirmbtn);
                 positive.setOnClickListener(new View.OnClickListener() {
@@ -234,13 +240,14 @@ public class TypeRecviewAdapter extends RecyclerView.Adapter<TypeRecviewAdapter.
 
                         String name = nameedittxt.getText().toString();
                         if (name.isEmpty()) {
-                            Snackbar.make(null, "Il nome non può essere vuoto", Snackbar.LENGTH_SHORT).show();
+                            Snackbar.make(form.findViewById(R.id.linearLayout), R.string.nameemptyalert, Snackbar.LENGTH_SHORT).show();
                         } else {
                             mDataset.get(position).setName(nameedittxt.getText().toString());
                             mDataset.get(position).setDesc(descedittxt.getText().toString());
                             mDataset.get(position).setLiquido(liquidckbx.isChecked());
                             mDataset.get(position).setSostanza(sostedittxt.getText().toString());
                             mDataset.get(position).setPrice(Float.parseFloat(pricetedittxt.getText().toString()));
+                            mDataset.get(position).setDefaulttype(false);
 
                             db.coffetypeDao().update(mDataset.get(position));
                             TypeRecviewAdapter.this.recv.setAdapter(new TypeRecviewAdapter(db, TypeRecviewAdapter.this.recv));
@@ -298,6 +305,7 @@ public class TypeRecviewAdapter extends RecyclerView.Adapter<TypeRecviewAdapter.
         public TextView nameTextView;
         public TextView cupsTextView;
         public TextView descTextView;
+        public TextView defaultTextView;
         public ImageButton favbtn;
         public ImageView typeimage;
         public Button editbtn;
@@ -308,6 +316,7 @@ public class TypeRecviewAdapter extends RecyclerView.Adapter<TypeRecviewAdapter.
             nameTextView = mCardView.findViewById(R.id.nameTxtV);
             cupsTextView = mCardView.findViewById(R.id.cups_textv);
             descTextView = mCardView.findViewById(R.id.desctxtv);
+            defaultTextView = mCardView.findViewById(R.id.defaulttxtv);
             favbtn = mCardView.findViewById(R.id.favbtn);
             typeimage = mCardView.findViewById(R.id.cardtypeimageview);
             editbtn = mCardView.findViewById(R.id.editbtn);

@@ -116,4 +116,9 @@
     <string name="toomuchcupstip">Hai già bevuto più di 5 tazzine oggi, che è la dose massima consigliata dalla FDA (Food and Drug Administration). Fai attenzione!</string>
     <string name="tips">Consigli</string>
     <string name="tutorial_stats">Queste sono le statistiche. Tocca un grafico per avere ulteriori info!</string>
+    <string name="editdefaultalert">Questa è una tipologia predefinita! Se confermi la modifica, sarà considerata come personalizzata e non sarà più aggiornata tramite internet.</string>
+    <string name="nameemptyalert">Il nome non può essere vuoto</string>
+    <string name="defaulttxt">Predefinito</string>
+    <string name="dbupdatefailed">Aggiornamento del database fallito</string>
+    <string name="dbupdated">Database aggiornato</string>
 </resources>
