@@ -28,13 +28,6 @@
     <string name="eliminarecup">\"％s\"を削除しますか？</string>
     <string name="tutorial_dashboard">これらは統計です。 一杯のコーヒーを加えるために右上隅のをタップしてください！</string>
     <string name="tipsplaceholder">これは助言です。うまく扱ってください</string>
-    <string name="cappuccino">カプチーノ</string>
-    <string name="caffeina">カフェイン</string>
-    <string name="espresso">エスプレッソ</string>
-    <string name="ristretto">タイトコーヒー</string>
-    <string name="espressodesc">挽いたコーヒー豆を通して蒸気を強制することによって作られた強いブラックコーヒー</string>
-    <string name="cappuccinodesc">加圧蒸気で泡立てたミルクで作ったコーヒー。</string>
-    <string name="ristrettodesc">非常に強くて濃縮されたエスプレッソの飲み物。</string>
     <string name="tutorial_cups">これらは登録されている様々なカップです。長押し - 削除するには、名前を押したままにして名前を変更します。</string>
     <string name="tutorial_types">これらはタイプです。個人タイプを追加するには、右上隅の+を押します</string>
     <string name="edit">編集する</string>
@@ -104,9 +97,6 @@
         <item> "The inventor of tea bags is a New Yorker named Thomas Sullivan, who invented them in the early 20th century." </item>
     </string-array>
 
-    <string name="teina">テイン</string>
-    <string name="tè">お茶</string>
-    <string name="tèdesc">固い葉の上にお湯または沸騰したお湯を注ぐことによって一般的に香ばしい飲み物</string>
     <string name="notiftitle">コーヒーモニターリマインダー</string>
     <string name="notiftext">今日飲んだカップをすべて登録しましたか。</string>
     <string name="tazzine_totali">総カップ</string>

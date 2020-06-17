@@ -94,22 +94,12 @@
     <string name="eliminarecup">Delete \"%s\"?</string>
     <string name="tutorial_dashboard">These are the statistics. Tap on the + in the top right corner to add a cup of coffee!</string>
     <string name="tipsplaceholder">This is a tip. Please treat it nicely</string>
-    <string name="cappuccino">Cappuccino</string>
-    <string name="caffeina">Caffeine</string>
-    <string name="espresso">Espresso</string>
-    <string name="ristretto">Ristretto</string>
-    <string name="espressodesc">Strong black coffee made by forcing steam through ground coffee beans</string>
-    <string name="cappuccinodesc">Coffee made with milk that has been frothed up with pressurized steam.</string>
-    <string name="ristrettodesc">A drink of very strong, concentrated espresso.</string>
     <string name="tutorial_cups">These are the various cups registered. Press and hold on - to remove one, or press and hold on the name to change it</string>
     <string name="tutorial_types">These are the types. Press on the + in the top right corner to add custom types</string>
     <string name="tutorial_stats">These are the statistics. Tap on graphs to get more informations</string>
     <string name="edit">Edit</string>
     <string name="conferma">Confirm</string>
     <string name="annulla">Cancel</string>
-    <string name="tè">Tea</string>
-    <string name="tèdesc">Aromatic beverage commonly prepared by pouring hot or boiling water over cured leaves</string>
-    <string name="teina">Theine</string>
     <string name="notificationdescr" translatable="false">Reminders and tips</string>
     <string name="notificationstitle" translatable="false">Notifications</string>
     <string name="notiftitle">Coffee Monitor Reminder</string>
