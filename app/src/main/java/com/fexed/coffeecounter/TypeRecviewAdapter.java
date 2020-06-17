@@ -71,7 +71,7 @@ public class TypeRecviewAdapter extends RecyclerView.Adapter<TypeRecviewAdapter.
         cupstxtv.setText(str);
 
         TextView desctxtv = holder.descTextView;
-        desctxtv.setText(mDataset.get(position).toBigString()/* + "\n\n\n" + db.cupDAO().getAll(mDataset.get(position).getKey()).toString()*/);
+        desctxtv.setText(mDataset.get(position).toBigString());
 
         if(mDataset.get(position).isDefaulttype()) holder.defaultTextView.setText(R.string.defaulttxt);
         else holder.defaultTextView.setText("");

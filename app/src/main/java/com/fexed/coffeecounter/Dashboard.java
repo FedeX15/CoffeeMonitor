@@ -1,5 +1,6 @@
 package com.fexed.coffeecounter;
 
+import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.DatePickerDialog;
 import android.app.Notification;
@@ -165,7 +166,6 @@ public class Dashboard extends AppCompatActivity {
     };
 
     private void insertStandardTypes() {
-        //name::desc::liters::isLiquido::sostanza::price
         try {
             Locale locale = Locale.getDefault();
             String dbtxt;
@@ -567,6 +567,7 @@ public class Dashboard extends AppCompatActivity {
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     public void typePie(final PieChart pie) {
         pie.clear();
         List<Coffeetype> types = db.coffetypeDao().getAll();
@@ -598,9 +599,10 @@ public class Dashboard extends AppCompatActivity {
             pie.addSegment(segment, formatter);
         }
 
-        pie.setOnTouchListener(new View.OnTouchListener() { //TODO fix
+        pie.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
+            public boolean onTouch(@NonNull  View view, @NonNull MotionEvent motionEvent) {
+                view.performClick();
                 PointF click = new PointF(motionEvent.getX(), motionEvent.getY());
                 if(pie.getPie().containsPoint(click)) {
                     Segment segment = pie.getRenderer(PieRenderer.class).getContainingSegment(click);
@@ -618,14 +620,14 @@ public class Dashboard extends AppCompatActivity {
                                 .build();
                         balloon.setOnBalloonOutsideTouchListener(new OnBalloonOutsideTouchListener() {
                             @Override
-                            public void onBalloonOutsideTouch(View view, MotionEvent motionEvent) {
+                            public void onBalloonOutsideTouch(@NonNull  View view, @NonNull MotionEvent motionEvent) {
                                 balloon.dismiss();
                             }
                         });
                         balloon.showAlignBottom(pie);
                     }
                 }
-                return false;
+                return true;
             }
         });
 
