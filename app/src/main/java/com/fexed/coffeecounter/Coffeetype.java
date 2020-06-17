@@ -2,6 +2,7 @@ package com.fexed.coffeecounter;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 import androidx.annotation.NonNull;
 
@@ -31,10 +32,13 @@ public class Coffeetype {
 
     private boolean fav;
 
+    private boolean defaulttype;
+
     private float price;
 
     public String img;
 
+    @Ignore
     public Coffeetype(String name, int liters, String desc, boolean liquido, String sostanza, float price, String img) {
         this.liters = liters;
         this.name = name;
@@ -45,6 +49,19 @@ public class Coffeetype {
         this.price = price;
         this.fav = false;
         this.img = img;
+    }
+
+    public Coffeetype(String name, int liters, String desc, boolean liquido, String sostanza, float price, String img, boolean defaulttype) {
+        this.liters = liters;
+        this.name = name;
+        this.desc = desc;
+        this.liquido = liquido;
+        this.sostanza = sostanza;
+        this.qnt = 0;
+        this.price = price;
+        this.fav = false;
+        this.img = img;
+        this.defaulttype = defaulttype;
     }
 
     public int getQnt() {
@@ -145,6 +162,14 @@ public class Coffeetype {
 
     public void setFav(boolean fav) {
         this.fav = fav;
+    }
+
+    public boolean isDefaulttype() {
+        return defaulttype;
+    }
+
+    public void setDefaulttype(boolean defaulttype) {
+        this.defaulttype = defaulttype;
     }
 
     @Override

@@ -95,6 +95,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Random;
+import java.util.concurrent.ExecutionException;
 
 public class Dashboard extends AppCompatActivity {
     public SharedPreferences state;
@@ -132,6 +133,14 @@ public class Dashboard extends AppCompatActivity {
             database.execSQL("COMMIT");
         }
     };
+    static final Migration MIGRATION_23_24 = new Migration(23, 24) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            database.execSQL("BEGIN TRANSACTION");
+            database.execSQL("ALTER TABLE coffeetype ADD COLUMN defaulttype INTEGER NOT NULL DEFAULT 0");
+            database.execSQL("COMMIT");
+        }
+    };
 
     public static Bitmap loadBitmapFromView(View v) {
         Bitmap b = Bitmap.createBitmap(v.getMeasuredWidth(), v.getMeasuredHeight(), Bitmap.Config.ARGB_8888);
@@ -156,22 +165,49 @@ public class Dashboard extends AppCompatActivity {
     };
 
     private void insertStandardTypes() { //TODO transform into downloadable database
-        if (db.coffetypeDao().getAll().size() == 0) {
-            db.coffetypeDao().insert(new Coffeetype(getString(R.string.espresso), 30, getString(R.string.espressodesc), true, getString(R.string.caffeina), 0, null));
-            db.coffetypeDao().insert(new Coffeetype(getString(R.string.cappuccino), 150, getString(R.string.cappuccinodesc), true, getString(R.string.caffeina), 0, null));
-            db.coffetypeDao().insert(new Coffeetype(getString(R.string.ristretto), 15, getString(R.string.ristrettodesc), true, getString(R.string.caffeina), 0, null));
-            db.coffetypeDao().insert(new Coffeetype(getString(R.string.tè), 200, getString(R.string.tèdesc), true, getString(R.string.teina), 0, null));
-            db.coffetypeDao().insert(new Coffeetype("Starbucks Short", 235, "", true, getString(R.string.caffeina), 0, null));
-            db.coffetypeDao().insert(new Coffeetype("Starbucks Tall", 350, "", true, getString(R.string.caffeina), 0, null));
-            db.coffetypeDao().insert(new Coffeetype("Starbucks Grande", 470, "", true, getString(R.string.caffeina), 0, null));
-            db.coffetypeDao().insert(new Coffeetype("Starbucks Venti", 590, "", true, getString(R.string.caffeina), 0, null));
-            db.coffetypeDao().insert(new Coffeetype("McDonald's Small", 350, "", true, getString(R.string.caffeina), 0, null));
-            db.coffetypeDao().insert(new Coffeetype("McDonald's Medium", 470, "", true, getString(R.string.caffeina), 0, null));
-            db.coffetypeDao().insert(new Coffeetype("McDonald's Large", 650, "", true, getString(R.string.caffeina), 0, null));
-            db.coffetypeDao().insert(new Coffeetype("Dunkin Donuts Small", 295, "", true, getString(R.string.caffeina), 0, null));
-            db.coffetypeDao().insert(new Coffeetype("Dunkin Donuts Medium", 470, "", true, getString(R.string.caffeina), 0, null));
-            db.coffetypeDao().insert(new Coffeetype("Dunkin Donuts Large", 590, "", true, getString(R.string.caffeina), 0, null));
-            db.coffetypeDao().insert(new Coffeetype("Dunkin Donuts Extra Large", 710, "", true, getString(R.string.caffeina), 0, null));
+        //name::desc::liters::isLiquido::sostanza::price
+        try {
+            Locale locale = Locale.getDefault();
+            String dbtxt;
+            if (locale.getLanguage().equals("it")) dbtxt = new DBDownloader().execute("https://fexed.github.io/db/it/defaultcoffeetypes").get();
+            else dbtxt = new DBDownloader().execute("https://fexed.github.io/db/en/defaultcoffeetypes").get();
+
+            if (dbtxt != null) {
+                if (db.coffetypeDao().getAll().size() == 0) {
+                    for (String str : dbtxt.split("\n")) {
+                        String[] strtype = str.split("::");
+                        db.coffetypeDao().insert(new Coffeetype(strtype[0], Integer.parseInt(strtype[2]), strtype[1], Boolean.parseBoolean(strtype[3]), strtype[4], Float.parseFloat(strtype[5]), null, true));
+                    }
+                    Snackbar.make(findViewById(R.id.viewflipper), "Downloaded default database", Snackbar.LENGTH_SHORT).show();
+                } else {
+                    List<Coffeetype> coffeelist = db.coffetypeDao().getAll();
+                    for (String str : dbtxt.split("\n")) {
+                        String[] strtype = str.split("::");
+                        Coffeetype type = null;
+                        for (Coffeetype listtype : coffeelist) {
+                            if (listtype.getName().equals(strtype[0])) {
+                                type = listtype; break;
+                            }
+                        }
+                        if (type == null) {
+                            type = new Coffeetype(strtype[0], Integer.parseInt(strtype[2]), strtype[1], Boolean.parseBoolean(strtype[3]), strtype[4], Float.parseFloat(strtype[5]), null, true);
+                            db.coffetypeDao().insert(type);
+                        }
+                        else {
+                            type.setLiters(Integer.parseInt(strtype[2]));
+                            type.setDesc(strtype[1]);
+                            type.setLiquido(Boolean.parseBoolean(strtype[3]));
+                            type.setSostanza(strtype[4]);
+                            type.setPrice(Float.parseFloat(strtype[5]));
+                            db.coffetypeDao().update(type);
+                        }
+                    }
+                    Snackbar.make(findViewById(R.id.viewflipper), "Updated default database", Snackbar.LENGTH_SHORT).show();
+                }
+            }
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+            Snackbar.make(findViewById(R.id.viewflipper), "Aggiornamento del database fallito", Snackbar.LENGTH_SHORT).show();
         }
     }
 
@@ -643,7 +679,7 @@ public class Dashboard extends AppCompatActivity {
         int day;
         for (Cup cup : allcups) {
             try {
-                Log.d("DAYS", sdf.format(sdf1.parse(cup.getDay())));
+                //Log.d("DAYS", sdf.format(sdf1.parse(cup.getDay())));
                 clndr.setTime(sdf1.parse(cup.getDay()));
                 day = clndr.get(Calendar.DAY_OF_WEEK) - 1;
                 cupPerDay[day]++;
@@ -964,7 +1000,7 @@ public class Dashboard extends AppCompatActivity {
 
         db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "typedb")
                 .allowMainThreadQueries() //TODO fix
-                .addMigrations(MIGRATION_19_20, MIGRATION_20_21, MIGRATION_21_22, MIGRATION_22_23)
+                .addMigrations(MIGRATION_19_20, MIGRATION_20_21, MIGRATION_21_22, MIGRATION_22_23, MIGRATION_23_24)
                 .build();
         Log.d("ROOMDB", "path: " + getDatabasePath("typedb").getAbsolutePath());
         insertStandardTypes();
