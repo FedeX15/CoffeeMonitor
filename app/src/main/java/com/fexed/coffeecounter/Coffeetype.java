@@ -110,6 +110,19 @@ public class Coffeetype {
         return getDesc() + "\n" + getLiters() + ((isLiquido()) ? " ml" : " mg") + "   " + getSostanza();
     }
 
+    /**
+     * Returns a formatted string with all the infos about this type
+     * @return {@code codedString}: name::desc::liters::isLiquido::sostanza::price
+     */
+    public String codedString() {
+        return getName().replace("::", "") + "::" +
+               getDesc().replace("::", "") + "::" +
+               getLiters() + "::" +
+               isLiquido() + "::" +
+               getSostanza() + "::" +
+               getPrice();
+    }
+
     public float getPrice() {
         return price;
     }
@@ -117,7 +130,6 @@ public class Coffeetype {
     public void setPrice(float price) {
         this.price = price;
     }
-
 
     public String getImg() {
         return img;
