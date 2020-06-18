@@ -45,6 +45,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SnapHelper;
 import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -79,6 +80,7 @@ import com.jjoe64.graphview.series.DataPointInterface;
 import com.jjoe64.graphview.series.LineGraphSeries;
 import com.jjoe64.graphview.series.OnDataPointTapListener;
 import com.jjoe64.graphview.series.Series;
+import com.skydoves.balloon.ArrowOrientation;
 import com.skydoves.balloon.Balloon;
 import com.skydoves.balloon.BalloonAnimation;
 import com.skydoves.balloon.OnBalloonOutsideTouchListener;
@@ -965,13 +967,25 @@ public class Dashboard extends AppCompatActivity {
                 drawer.closeDrawers();
                 ViewFlipper vf = findViewById(R.id.viewflipper);
 
-                switch (menuItem.getItemId()) {
+                switch (menuItem.getItemId()) { //TODO REDO
                     case R.id.navigation_statistics:
                         if (vf.getDisplayedChild() != 0) {
                             graphUpdater();
                             vf.setDisplayedChild(0);
                             if (state.getBoolean("statstutorial", true)) {
-                                Snackbar.make(findViewById(R.id.viewflipper), getString(R.string.tutorial_stats), Snackbar.LENGTH_LONG).show();
+                                final Balloon balloon = new Balloon.Builder(getBaseContext())
+                                        .setText(getString(R.string.tutorial_stats))
+                                        .setBackgroundColorResource(R.color.colorAccent)
+                                        .setBalloonAnimation(BalloonAnimation.FADE)
+                                        .setArrowVisible(false)
+                                        .build();
+                                balloon.setOnBalloonOutsideTouchListener(new OnBalloonOutsideTouchListener() {
+                                    @Override
+                                    public void onBalloonOutsideTouch(@NonNull View view, @NonNull MotionEvent motionEvent) {
+                                        balloon.dismiss();
+                                    }
+                                });
+                                balloon.showAlignTop(findViewById(R.id.toolbar));
                                 editor.putBoolean("statstutorial", false);
                                 editor.apply();
                             }
@@ -991,9 +1005,22 @@ public class Dashboard extends AppCompatActivity {
                             vf.setDisplayedChild(1);
 
                             if (state.getBoolean("typestutorial", true)) {
-                                Snackbar.make(findViewById(R.id.viewflipper), getString(R.string.tutorial_types), Snackbar.LENGTH_LONG).show();
-                                editor.putBoolean("typestutorial", false);
-                                editor.apply();
+                                final Balloon balloon = new Balloon.Builder(getBaseContext())
+                                        .setText(getString(R.string.tutorial_types))
+                                        .setBackgroundColorResource(R.color.colorAccent)
+                                        .setBalloonAnimation(BalloonAnimation.FADE)
+                                        .setArrowVisible(true)
+                                        .setArrowPosition(0.90f)
+                                        .setArrowOrientation(ArrowOrientation.TOP)
+                                        .build();
+                                balloon.setOnBalloonOutsideTouchListener(new OnBalloonOutsideTouchListener() {
+                                    @Override
+                                    public void onBalloonOutsideTouch(@NonNull View view, @NonNull MotionEvent motionEvent) {
+                                        balloon.dismiss();
+                                    }
+                                });
+                                balloon.showAlignBottom(findViewById(R.id.action_add));
+                                editor.putBoolean("typestutorial", false).apply();
                             }
                         }
 
@@ -1017,11 +1044,25 @@ public class Dashboard extends AppCompatActivity {
 
                             vf.setDisplayedChild(3);
 
-                            if (state.getBoolean("cupstutorial", true)) {
-                                Snackbar.make(findViewById(R.id.viewflipper), getString(R.string.tutorial_cups), Snackbar.LENGTH_LONG).show();
-                                editor.putBoolean("cupstutorial", false);
-                                editor.apply();
-                            }
+                            try {
+                                if (state.getBoolean("cupstutorial", true)) {
+                                    final Balloon balloon = new Balloon.Builder(getBaseContext())
+                                            .setText(getString(R.string.tutorial_cups))
+                                            .setBackgroundColorResource(R.color.colorAccent)
+                                            .setBalloonAnimation(BalloonAnimation.FADE)
+                                            .setArrowVisible(true)
+                                            .setArrowOrientation(ArrowOrientation.BOTTOM)
+                                            .build();
+                                    balloon.setOnBalloonOutsideTouchListener(new OnBalloonOutsideTouchListener() {
+                                        @Override
+                                        public void onBalloonOutsideTouch(@NonNull View view, @NonNull MotionEvent motionEvent) {
+                                            balloon.dismiss();
+                                        }
+                                    });
+                                    balloon.showAlignBottom(findViewById(R.id.cupsrecview));
+                                    editor.putBoolean("cupstutorial", false).apply();
+                                }
+                            } catch (Exception ignored) {}
                         }
 
                         return true;
@@ -1247,12 +1288,6 @@ public class Dashboard extends AppCompatActivity {
             }
         });
 
-        if (state.getBoolean("dashboardtutorial", true)) {
-            Snackbar.make(findViewById(R.id.viewflipper), getString(R.string.tutorial_dashboard), Snackbar.LENGTH_LONG).show();
-            editor.putBoolean("dashboardtutorial", false);
-            editor.apply();
-        }
-
         final TextView notiftimetxtv = findViewById(R.id.notiftimetxt);
         if (state.getBoolean("notifonoff", true)) notiftimetxtv.setText(String.format(Locale.getDefault(), "%d:%d", state.getInt("notifhour", 20), state.getInt("notifmin", 30)));
         else notiftimetxtv.setText("--:--");
@@ -1303,6 +1338,8 @@ public class Dashboard extends AppCompatActivity {
                 }
             }
         });
+
+
     }
 
     private void createNotificationChannel() {
