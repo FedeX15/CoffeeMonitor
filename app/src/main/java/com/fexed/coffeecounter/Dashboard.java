@@ -69,6 +69,8 @@ import com.androidplot.pie.SegmentFormatter;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.helper.DateAsXAxisLabelFormatter;
 import com.jjoe64.graphview.helper.StaticLabelsFormatter;
@@ -429,6 +431,20 @@ public class Dashboard extends AppCompatActivity {
                 } else {
                     Toast.makeText(getApplicationContext(), R.string.defaultdbnotavailalert, Toast.LENGTH_LONG).show();
                 }
+            }
+        });
+
+        ImageButton qrscan = form.findViewById(R.id.scanqrbtn);
+        qrscan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                IntentIntegrator integrator = new IntentIntegrator(Dashboard.this);
+                integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE);
+                integrator.setPrompt("Scansiona un codice QR");
+                integrator.setOrientationLocked(true);
+                integrator.setCaptureActivity(CaptureActivityPortrait.class);
+                integrator.initiateScan();
+                dialog.dismiss();
             }
         });
     }
@@ -865,21 +881,128 @@ public class Dashboard extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) { //TODO reimplementare
         super.onActivityResult(requestCode, resultCode, data);
+        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+        if(result != null) {
+            if(result.getContents() == null) {
+                Toast.makeText(this, R.string.annulla, Toast.LENGTH_SHORT).show();
+            } else {
+                String str = result.getContents();
+                String[] strtype = str.split("::");
+                final Coffeetype coffeetype = new Coffeetype(strtype[0], Integer.parseInt(strtype[2]), strtype[1], Boolean.parseBoolean(strtype[3]), strtype[4], Float.parseFloat(strtype[5]), null, false);
+                final AlertDialog.Builder dialogbuilder = new AlertDialog.Builder(this);
+                final View form = View.inflate(this, R.layout.addtypedialog, null);
+                final TextView literstxt = form.findViewById(R.id.ltrsmgtext);
+                final CheckBox liquidckbx = form.findViewById(R.id.liquidcheck);
+                final boolean liquido = coffeetype.isLiquido();
+                final int qnt = coffeetype.getLiters();
+                EditText nameedittxt = form.findViewById(R.id.nametxt);
+                EditText descedittxt = form.findViewById(R.id.desctxt);
+                EditText sostedittxt = form.findViewById(R.id.sosttxt);
+                EditText pricetedittxt = form.findViewById(R.id.pricetxt);
+                ImageButton defaultdbbtn = form.findViewById(R.id.defaultbtn);
+                ImageButton qrbtn = form.findViewById(R.id.scanqrbtn);
+                defaultdbbtn.setVisibility(View.INVISIBLE);
+                qrbtn.setVisibility(View.INVISIBLE);
 
-        if (requestCode == 9 && resultCode == RESULT_OK && data != null) {
-            Uri selectedImage = data.getData();
-            String[] filePathColumn = {MediaStore.Images.Media.DATA};
+                nameedittxt.setText(coffeetype.getName());
+                descedittxt.setText(coffeetype.getDesc());
+                sostedittxt.setText(coffeetype.getSostanza());
+                str = "" + coffeetype.getPrice();
+                pricetedittxt.setText(str);
 
-            Cursor cursor = getContentResolver().query(selectedImage, filePathColumn, null, null, null);
-            cursor.moveToFirst();
+                if (liquido) liquidckbx.setChecked(true);
+                else liquidckbx.setChecked(false);
+                str = qnt + (liquido ? " ml" : " mg");
+                literstxt.setText(str);
 
-            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-            String picturePath = cursor.getString(columnIndex);
-            cursor.close();
+                ImageButton addbtn = form.findViewById(R.id.incrbtn);
+                addbtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        coffeetype.setLiters(coffeetype.getLiters() + 5);
+                        String str = coffeetype.getLiters() + (liquidckbx.isChecked() ? " ml" : " mg");
+                        literstxt.setText(str);
+                    }
+                });
 
-            Bitmap bmp = BitmapFactory.decodeFile(picturePath);
-            currentimageview.setImageBitmap(bmp);
-            currentbitmap = saveToInternalStorage(bmp);
+                ImageButton rmvbtn = form.findViewById(R.id.decrbtn);
+                rmvbtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        coffeetype.setLiters(coffeetype.getLiters() - 5);
+                        if (coffeetype.getLiters() < 0)
+                            coffeetype.setLiters(0);
+                        String str = coffeetype.getLiters() + (liquidckbx.isChecked() ? " ml" : " mg");
+                        literstxt.setText(str);
+                    }
+                });
+
+                liquidckbx.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                        coffeetype.setLiquido(isChecked);
+                        String str = coffeetype.getLiters() + (liquidckbx.isChecked() ? " ml" : " mg");
+                        literstxt.setText(str);
+                    }
+                });
+
+                /*typeimage.setOnLongClickListener(new View.OnLongClickListener() { //TODO
+                    @Override
+                    public boolean onLongClick(View view) {
+                        Intent i = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                        currentbitmap = null;
+                        currentimageview = typeimage;
+                        startActivityForResult(i, 9);
+                        return true;
+                    }
+                });*/
+
+                dialogbuilder.setView(form);
+                dialogbuilder.create();
+                final AlertDialog dialog = dialogbuilder.show();
+                if (coffeetype.isDefaulttype()) {
+                    Snackbar.make(form.findViewById(R.id.linearLayout), R.string.editdefaultalert, Snackbar.LENGTH_SHORT).show();
+                }
+
+                Button positive = form.findViewById(R.id.confirmbtn);
+                positive.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        EditText nameedittxt = form.findViewById(R.id.nametxt);
+                        EditText descedittxt = form.findViewById(R.id.desctxt);
+                        EditText sostedittxt = form.findViewById(R.id.sosttxt);
+                        EditText pricetedittxt = form.findViewById(R.id.pricetxt);
+                        CheckBox liquidckbx = form.findViewById(R.id.liquidcheck);
+
+                        String name = nameedittxt.getText().toString();
+                        if (name.isEmpty()) {
+                            Snackbar.make(form.findViewById(R.id.linearLayout), R.string.nameemptyalert, Snackbar.LENGTH_SHORT).show();
+                        } else {
+                            coffeetype.setName(nameedittxt.getText().toString());
+                            coffeetype.setDesc(descedittxt.getText().toString());
+                            coffeetype.setLiquido(liquidckbx.isChecked());
+                            coffeetype.setSostanza(sostedittxt.getText().toString());
+                            coffeetype.setPrice(Float.parseFloat(pricetedittxt.getText().toString()));
+                            coffeetype.setDefaulttype(false);
+
+                            db.coffetypeDao().insert(coffeetype);
+                            cupsRecview.setAdapter(new CupRecviewAdapter(db, 0));
+                            typesRecview.setAdapter(new TypeRecviewAdapter(db, typesRecview));
+                            dialog.dismiss();
+                        }
+                    }
+                });
+
+                Button negative = form.findViewById(R.id.cancelbtn);
+                negative.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        coffeetype.setLiquido(liquido);
+                        coffeetype.setQnt(qnt);
+                        dialog.dismiss();
+                    }
+                });
+                Toast.makeText(this, coffeetype.getName(), Toast.LENGTH_LONG).show();
+            }
         }
     }
 
