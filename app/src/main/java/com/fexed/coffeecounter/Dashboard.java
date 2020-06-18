@@ -44,8 +44,6 @@ import androidx.recyclerview.widget.LinearSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SnapHelper;
 import androidx.appcompat.widget.Toolbar;
-import android.util.Log;
-import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -1083,7 +1081,7 @@ public class Dashboard extends AppCompatActivity {
                 .allowMainThreadQueries() //TODO fix
                 .addMigrations(MIGRATION_19_20, MIGRATION_20_21, MIGRATION_21_22, MIGRATION_22_23, MIGRATION_23_24)
                 .build();
-        Log.d("ROOMDB", "path: " + getDatabasePath("typedb").getAbsolutePath());
+        //Log.d("ROOMDB", "path: " + getDatabasePath("typedb").getAbsolutePath());
         updateDefaultDatabase();
 
         for (Coffeetype type : db.coffetypeDao().getAll()) {

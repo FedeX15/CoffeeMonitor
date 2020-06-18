@@ -274,7 +274,6 @@ public class TypeRecviewAdapter extends RecyclerView.Adapter<TypeRecviewAdapter.
 
 
         if (mDataset.get(position).getImg() != null) {
-            Log.d("IPATH", "onBindViewHolder: " + mDataset.get(position).getImg());
             Bitmap bmp = loadImageFromStorage(mDataset.get(position).getImg());
             if (bmp != null) holder.typeimage.setImageBitmap(bmp);
         }
