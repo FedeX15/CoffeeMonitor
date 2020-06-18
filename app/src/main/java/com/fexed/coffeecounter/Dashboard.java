@@ -165,7 +165,7 @@ public class Dashboard extends AppCompatActivity {
         }
     };
 
-    private void insertStandardTypes() {
+    private void updateDefaultDatabase() {
         try {
             Locale locale = Locale.getDefault();
             String dbtxt;
@@ -1005,7 +1005,7 @@ public class Dashboard extends AppCompatActivity {
                 .addMigrations(MIGRATION_19_20, MIGRATION_20_21, MIGRATION_21_22, MIGRATION_22_23, MIGRATION_23_24)
                 .build();
         Log.d("ROOMDB", "path: " + getDatabasePath("typedb").getAbsolutePath());
-        insertStandardTypes();
+        updateDefaultDatabase();
 
         for (Coffeetype type : db.coffetypeDao().getAll()) {
             type.setQnt(db.cupDAO().getAll(type.getKey()).size());
@@ -1066,7 +1066,7 @@ public class Dashboard extends AppCompatActivity {
                             public void onClick(DialogInterface dialog, int which) {
                                 db.cupDAO().nuke();
                                 db.coffetypeDao().nuke();
-                                insertStandardTypes();
+                                updateDefaultDatabase();
                                 cupsRecview.setAdapter(new CupRecviewAdapter(db, 0));
                                 typesRecview.setAdapter(new TypeRecviewAdapter(db, typesRecview));
                                 Snackbar.make(findViewById(R.id.container), "Database resettato", Snackbar.LENGTH_LONG).show();
