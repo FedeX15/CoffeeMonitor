@@ -124,7 +124,6 @@ public class Dashboard extends AppCompatActivity {
             database.execSQL("COMMIT");
         }
     };
-    public String currentbitmap;
     static final Migration MIGRATION_22_23 = new Migration(22, 23) {
         @Override
         public void migrate(@NonNull SupportSQLiteDatabase database) {
@@ -157,13 +156,6 @@ public class Dashboard extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.options, menu);
         return true;
     }
-
-
-    static final Migration MIGRATION_20_21 = new Migration(20, 21) {
-        @Override
-        public void migrate(@NonNull SupportSQLiteDatabase database) {
-        }
-    };
 
     private void updateDefaultDatabase() {
         try {
@@ -211,17 +203,22 @@ public class Dashboard extends AppCompatActivity {
         }
     }
 
-    public void adInitializer() { //TODO fix deprecated
-        MobileAds.initialize(this, "ca-app-pub-9387595638685451~3707270987");
-        AdView mAdView = findViewById(R.id.banner1);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);
-        AdView mAdView2 = findViewById(R.id.banner2);
-        adRequest = new AdRequest.Builder().build();
-        mAdView2.loadAd(adRequest);
-        AdView mAdView3 = findViewById(R.id.banner3);
-        adRequest = new AdRequest.Builder().build();
-        mAdView3.loadAd(adRequest);
+    public void adInitializer() {
+
+        MobileAds.initialize(this, new OnInitializationCompleteListener() {
+            @Override
+            public void onInitializationComplete(InitializationStatus initializationStatus) {
+                AdView mAdView = findViewById(R.id.banner1);
+                AdRequest adRequest = new AdRequest.Builder().build();
+                mAdView.loadAd(adRequest);
+                AdView mAdView2 = findViewById(R.id.banner2);
+                adRequest = new AdRequest.Builder().build();
+                mAdView2.loadAd(adRequest);
+                AdView mAdView3 = findViewById(R.id.banner3);
+                adRequest = new AdRequest.Builder().build();
+                mAdView3.loadAd(adRequest);
+            }
+        });
     }
 
     @Override
