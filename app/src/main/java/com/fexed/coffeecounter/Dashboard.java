@@ -886,122 +886,124 @@ public class Dashboard extends AppCompatActivity {
             if(result.getContents() == null) {
                 Toast.makeText(this, R.string.annulla, Toast.LENGTH_SHORT).show();
             } else {
-                String str = result.getContents();
-                String[] strtype = str.split("::");
-                final Coffeetype coffeetype = new Coffeetype(strtype[0], Integer.parseInt(strtype[2]), strtype[1], Boolean.parseBoolean(strtype[3]), strtype[4], Float.parseFloat(strtype[5]), null, false);
-                final AlertDialog.Builder dialogbuilder = new AlertDialog.Builder(this);
-                final View form = View.inflate(this, R.layout.addtypedialog, null);
-                final TextView literstxt = form.findViewById(R.id.ltrsmgtext);
-                final CheckBox liquidckbx = form.findViewById(R.id.liquidcheck);
-                final boolean liquido = coffeetype.isLiquido();
-                final int qnt = coffeetype.getLiters();
-                EditText nameedittxt = form.findViewById(R.id.nametxt);
-                EditText descedittxt = form.findViewById(R.id.desctxt);
-                EditText sostedittxt = form.findViewById(R.id.sosttxt);
-                EditText pricetedittxt = form.findViewById(R.id.pricetxt);
-                ImageButton defaultdbbtn = form.findViewById(R.id.defaultbtn);
-                ImageButton qrbtn = form.findViewById(R.id.scanqrbtn);
-                defaultdbbtn.setVisibility(View.INVISIBLE);
-                qrbtn.setVisibility(View.INVISIBLE);
+                try {
+                    String str = result.getContents();
+                    String[] strtype = str.split("::");
+                    final Coffeetype coffeetype = new Coffeetype(strtype[0], Integer.parseInt(strtype[2]), strtype[1], Boolean.parseBoolean(strtype[3]), strtype[4], Float.parseFloat(strtype[5]), null, false);
+                    final AlertDialog.Builder dialogbuilder = new AlertDialog.Builder(this);
+                    final View form = View.inflate(this, R.layout.addtypedialog, null);
+                    final TextView literstxt = form.findViewById(R.id.ltrsmgtext);
+                    final CheckBox liquidckbx = form.findViewById(R.id.liquidcheck);
+                    final boolean liquido = coffeetype.isLiquido();
+                    final int qnt = coffeetype.getLiters();
+                    EditText nameedittxt = form.findViewById(R.id.nametxt);
+                    EditText descedittxt = form.findViewById(R.id.desctxt);
+                    EditText sostedittxt = form.findViewById(R.id.sosttxt);
+                    EditText pricetedittxt = form.findViewById(R.id.pricetxt);
+                    ImageButton defaultdbbtn = form.findViewById(R.id.defaultbtn);
+                    ImageButton qrbtn = form.findViewById(R.id.scanqrbtn);
+                    defaultdbbtn.setVisibility(View.INVISIBLE);
+                    qrbtn.setVisibility(View.INVISIBLE);
 
-                nameedittxt.setText(coffeetype.getName());
-                descedittxt.setText(coffeetype.getDesc());
-                sostedittxt.setText(coffeetype.getSostanza());
-                str = "" + coffeetype.getPrice();
-                pricetedittxt.setText(str);
+                    nameedittxt.setText(coffeetype.getName());
+                    descedittxt.setText(coffeetype.getDesc());
+                    sostedittxt.setText(coffeetype.getSostanza());
+                    str = "" + coffeetype.getPrice();
+                    pricetedittxt.setText(str);
 
-                if (liquido) liquidckbx.setChecked(true);
-                else liquidckbx.setChecked(false);
-                str = qnt + (liquido ? " ml" : " mg");
-                literstxt.setText(str);
+                    if (liquido) liquidckbx.setChecked(true);
+                    else liquidckbx.setChecked(false);
+                    str = qnt + (liquido ? " ml" : " mg");
+                    literstxt.setText(str);
 
-                ImageButton addbtn = form.findViewById(R.id.incrbtn);
-                addbtn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        coffeetype.setLiters(coffeetype.getLiters() + 5);
-                        String str = coffeetype.getLiters() + (liquidckbx.isChecked() ? " ml" : " mg");
-                        literstxt.setText(str);
+                    ImageButton addbtn = form.findViewById(R.id.incrbtn);
+                    addbtn.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            coffeetype.setLiters(coffeetype.getLiters() + 5);
+                            String str = coffeetype.getLiters() + (liquidckbx.isChecked() ? " ml" : " mg");
+                            literstxt.setText(str);
+                        }
+                    });
+
+                    ImageButton rmvbtn = form.findViewById(R.id.decrbtn);
+                    rmvbtn.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            coffeetype.setLiters(coffeetype.getLiters() - 5);
+                            if (coffeetype.getLiters() < 0)
+                                coffeetype.setLiters(0);
+                            String str = coffeetype.getLiters() + (liquidckbx.isChecked() ? " ml" : " mg");
+                            literstxt.setText(str);
+                        }
+                    });
+
+                    liquidckbx.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                            coffeetype.setLiquido(isChecked);
+                            String str = coffeetype.getLiters() + (liquidckbx.isChecked() ? " ml" : " mg");
+                            literstxt.setText(str);
+                        }
+                    });
+
+                    /*typeimage.setOnLongClickListener(new View.OnLongClickListener() { //TODO
+                        @Override
+                        public boolean onLongClick(View view) {
+                            Intent i = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                            currentbitmap = null;
+                            currentimageview = typeimage;
+                            startActivityForResult(i, 9);
+                            return true;
+                        }
+                    });*/
+
+                    dialogbuilder.setView(form);
+                    dialogbuilder.create();
+                    final AlertDialog dialog = dialogbuilder.show();
+                    if (coffeetype.isDefaulttype()) {
+                        Snackbar.make(form.findViewById(R.id.linearLayout), R.string.editdefaultalert, Snackbar.LENGTH_SHORT).show();
                     }
-                });
 
-                ImageButton rmvbtn = form.findViewById(R.id.decrbtn);
-                rmvbtn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        coffeetype.setLiters(coffeetype.getLiters() - 5);
-                        if (coffeetype.getLiters() < 0)
-                            coffeetype.setLiters(0);
-                        String str = coffeetype.getLiters() + (liquidckbx.isChecked() ? " ml" : " mg");
-                        literstxt.setText(str);
-                    }
-                });
+                    Button positive = form.findViewById(R.id.confirmbtn);
+                    positive.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            EditText nameedittxt = form.findViewById(R.id.nametxt);
+                            EditText descedittxt = form.findViewById(R.id.desctxt);
+                            EditText sostedittxt = form.findViewById(R.id.sosttxt);
+                            EditText pricetedittxt = form.findViewById(R.id.pricetxt);
+                            CheckBox liquidckbx = form.findViewById(R.id.liquidcheck);
 
-                liquidckbx.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                        coffeetype.setLiquido(isChecked);
-                        String str = coffeetype.getLiters() + (liquidckbx.isChecked() ? " ml" : " mg");
-                        literstxt.setText(str);
-                    }
-                });
+                            String name = nameedittxt.getText().toString();
+                            if (name.isEmpty()) {
+                                Snackbar.make(form.findViewById(R.id.linearLayout), R.string.nameemptyalert, Snackbar.LENGTH_SHORT).show();
+                            } else {
+                                coffeetype.setName(nameedittxt.getText().toString());
+                                coffeetype.setDesc(descedittxt.getText().toString());
+                                coffeetype.setLiquido(liquidckbx.isChecked());
+                                coffeetype.setSostanza(sostedittxt.getText().toString());
+                                coffeetype.setPrice(Float.parseFloat(pricetedittxt.getText().toString()));
+                                coffeetype.setDefaulttype(false);
 
-                /*typeimage.setOnLongClickListener(new View.OnLongClickListener() { //TODO
-                    @Override
-                    public boolean onLongClick(View view) {
-                        Intent i = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                        currentbitmap = null;
-                        currentimageview = typeimage;
-                        startActivityForResult(i, 9);
-                        return true;
-                    }
-                });*/
+                                db.coffetypeDao().insert(coffeetype);
+                                cupsRecview.setAdapter(new CupRecviewAdapter(db, 0));
+                                typesRecview.setAdapter(new TypeRecviewAdapter(db, typesRecview));
+                                dialog.dismiss();
+                            }
+                        }
+                    });
 
-                dialogbuilder.setView(form);
-                dialogbuilder.create();
-                final AlertDialog dialog = dialogbuilder.show();
-                if (coffeetype.isDefaulttype()) {
-                    Snackbar.make(form.findViewById(R.id.linearLayout), R.string.editdefaultalert, Snackbar.LENGTH_SHORT).show();
-                }
-
-                Button positive = form.findViewById(R.id.confirmbtn);
-                positive.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        EditText nameedittxt = form.findViewById(R.id.nametxt);
-                        EditText descedittxt = form.findViewById(R.id.desctxt);
-                        EditText sostedittxt = form.findViewById(R.id.sosttxt);
-                        EditText pricetedittxt = form.findViewById(R.id.pricetxt);
-                        CheckBox liquidckbx = form.findViewById(R.id.liquidcheck);
-
-                        String name = nameedittxt.getText().toString();
-                        if (name.isEmpty()) {
-                            Snackbar.make(form.findViewById(R.id.linearLayout), R.string.nameemptyalert, Snackbar.LENGTH_SHORT).show();
-                        } else {
-                            coffeetype.setName(nameedittxt.getText().toString());
-                            coffeetype.setDesc(descedittxt.getText().toString());
-                            coffeetype.setLiquido(liquidckbx.isChecked());
-                            coffeetype.setSostanza(sostedittxt.getText().toString());
-                            coffeetype.setPrice(Float.parseFloat(pricetedittxt.getText().toString()));
-                            coffeetype.setDefaulttype(false);
-
-                            db.coffetypeDao().insert(coffeetype);
-                            cupsRecview.setAdapter(new CupRecviewAdapter(db, 0));
-                            typesRecview.setAdapter(new TypeRecviewAdapter(db, typesRecview));
+                    Button negative = form.findViewById(R.id.cancelbtn);
+                    negative.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            coffeetype.setLiquido(liquido);
+                            coffeetype.setQnt(qnt);
                             dialog.dismiss();
                         }
-                    }
-                });
-
-                Button negative = form.findViewById(R.id.cancelbtn);
-                negative.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        coffeetype.setLiquido(liquido);
-                        coffeetype.setQnt(qnt);
-                        dialog.dismiss();
-                    }
-                });
-                Toast.makeText(this, coffeetype.getName(), Toast.LENGTH_LONG).show();
+                    });
+                    Toast.makeText(this, coffeetype.getName(), Toast.LENGTH_LONG).show();
+                } catch (Exception e) { Toast.makeText(this, "Error", Toast.LENGTH_LONG).show(); }
             }
         }
     }
