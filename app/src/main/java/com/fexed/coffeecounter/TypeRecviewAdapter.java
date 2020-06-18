@@ -5,17 +5,23 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.MultiFormatWriter;
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitMatrix;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.cardview.widget.CardView;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -29,11 +35,16 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.List;
 
+
 /**
  * Created by fexed on 01/12/2017.
  */
 
 public class TypeRecviewAdapter extends RecyclerView.Adapter<TypeRecviewAdapter.ViewHolder> {
+
+    public static int WHITE = 0xFFFFFFFF;
+    public static int BLACK = 0xFF000000;
+    public final static int WIDTH = 500;
     AppDatabase db;
     private List<Coffeetype> mDataset;
     Context context;
@@ -272,12 +283,60 @@ public class TypeRecviewAdapter extends RecyclerView.Adapter<TypeRecviewAdapter.
             }
         });
 
+        holder.qrbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final String codedstring = mDataset.get(position).codedString();
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setNeutralButton(R.string.annulla, null);
+                final AlertDialog dialog = builder.create();
+                View dialogLayout = View.inflate(context, R.layout.qrpopup, null);
+
+                dialog.setView(dialogLayout);
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+                dialog.show();
+                dialog.getWindow().setBackgroundDrawable(context.getDrawable(R.color.colorBgDark));
+                ImageView image =  dialog.findViewById(R.id.qrimage);
+                try {
+                    Bitmap bmp = encodeAsBitmap(codedstring);
+                    if (bmp != null) {
+                        image.setImageBitmap(bmp);
+                    }
+                    else dialog.dismiss();
+                } catch (Exception ignored) {}
+            }
+        });
 
         if (mDataset.get(position).getImg() != null) {
             Bitmap bmp = loadImageFromStorage(mDataset.get(position).getImg());
             if (bmp != null) holder.typeimage.setImageBitmap(bmp);
         }
     }
+
+    Bitmap encodeAsBitmap(String str) throws WriterException {
+        BitMatrix result;
+        try {
+            result = new MultiFormatWriter().encode(str, BarcodeFormat.QR_CODE, WIDTH, WIDTH, null);
+        } catch (IllegalArgumentException iae) {
+            Log.e("QRCODE", "IllegalArgument");
+            return null;
+        }
+        int w = result.getWidth();
+        int h = result.getHeight();
+        int[] pixels = new int[w * h];
+        for (int y = 0; y < h; y++) {
+            int offset = y * w;
+            for (int x = 0; x < w; x++) {
+                pixels[offset + x] = result.get(x, y) ? BLACK : WHITE;
+            }
+        }
+        Bitmap bitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+        bitmap.setPixels(pixels, 0, WIDTH, 0, 0, w, h);
+        return bitmap;
+    }
+
 
     @Override
     public int getItemCount() {
@@ -310,6 +369,7 @@ public class TypeRecviewAdapter extends RecyclerView.Adapter<TypeRecviewAdapter.
         public TextView descTextView;
         public TextView defaultTextView;
         public ImageButton favbtn;
+        public ImageButton qrbtn;
         public ImageView typeimage;
         public Button editbtn;
 
@@ -321,6 +381,7 @@ public class TypeRecviewAdapter extends RecyclerView.Adapter<TypeRecviewAdapter.
             descTextView = mCardView.findViewById(R.id.desctxtv);
             defaultTextView = mCardView.findViewById(R.id.defaulttxtv);
             favbtn = mCardView.findViewById(R.id.favbtn);
+            qrbtn = mCardView.findViewById(R.id.qrbtn);
             typeimage = mCardView.findViewById(R.id.cardtypeimageview);
             editbtn = mCardView.findViewById(R.id.editbtn);
         }
