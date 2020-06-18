@@ -189,11 +189,7 @@ public class Dashboard extends AppCompatActivity {
                                 type = listtype; break;
                             }
                         }
-                        if (type == null) {
-                            type = new Coffeetype(strtype[0], Integer.parseInt(strtype[2]), strtype[1], Boolean.parseBoolean(strtype[3]), strtype[4], Float.parseFloat(strtype[5]), null, true);
-                            db.coffetypeDao().insert(type);
-                        }
-                        else {
+                        if (type != null && type.isDefaulttype()) {
                             type.setLiters(Integer.parseInt(strtype[2]));
                             type.setDesc(strtype[1]);
                             type.setLiquido(Boolean.parseBoolean(strtype[3]));
@@ -370,7 +366,7 @@ public class Dashboard extends AppCompatActivity {
 
                 String name = nameedittxt.getText().toString();
                 if (name.isEmpty()) {
-                    Snackbar.make(findViewById(R.id.containerdrawer), "Il nome non può essere vuoto", Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(findViewById(R.id.containerdrawer), R.string.nameemptyalert, Snackbar.LENGTH_SHORT).show();
                 } else {
                     int liters = state.getInt("qnt", 0);
                     String desc = descedittxt.getText().toString();
@@ -384,7 +380,6 @@ public class Dashboard extends AppCompatActivity {
 
                     cupsRecview.setAdapter(new CupRecviewAdapter(db, 0));
                     typesRecview.setAdapter(new TypeRecviewAdapter(db, typesRecview));
-                    Snackbar.make(findViewById(R.id.containerdrawer), "Tipo " + newtype.getName() + " aggiunto", Snackbar.LENGTH_SHORT).show();
 
                     dialog.dismiss();
                 }
@@ -396,6 +391,44 @@ public class Dashboard extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
+            }
+        });
+
+        ImageButton fromdefaultbtn = form.findViewById(R.id.defaultbtn);
+        fromdefaultbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String dbtxt = state.getString("defaultdb", null);
+                final ArrayList<Coffeetype> defaultlist = new ArrayList<>();
+                ArrayList<String> defaultindb = new ArrayList<>();
+                for (Coffeetype type : db.coffetypeDao().getAll()) { if (type.isDefaulttype()) defaultindb.add(type.getName()); }
+                ArrayList<String> namelist = new ArrayList<>();
+                if (dbtxt != null) {
+                    for (String str : dbtxt.split("\n")) {
+                        String[] strtype = str.split("::");
+                        if (strtype.length == 6) {
+                            Coffeetype type = new Coffeetype(strtype[0], Integer.parseInt(strtype[2]), strtype[1], Boolean.parseBoolean(strtype[3]), strtype[4], Float.parseFloat(strtype[5]), null, true);
+                            if (!defaultindb.contains(type.getName())) {
+                                defaultlist.add(type);
+                                namelist.add(strtype[0]);
+                            }
+                        }
+                    }
+                    AlertDialog.Builder builder = new AlertDialog.Builder(Dashboard.this);
+                    builder.setTitle(R.string.defaultdbtitle);
+                    builder.setItems(namelist.toArray(new CharSequence[namelist.size()]), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            db.coffetypeDao().insert(defaultlist.get(i));
+                            cupsRecview.setAdapter(new CupRecviewAdapter(db, 0));
+                            typesRecview.setAdapter(new TypeRecviewAdapter(db, typesRecview));
+                            dialog.dismiss();
+                        }
+                    });
+                    builder.show();
+                } else {
+                    Toast.makeText(getApplicationContext(), R.string.defaultdbnotavailalert, Toast.LENGTH_LONG).show();
+                }
             }
         });
     }

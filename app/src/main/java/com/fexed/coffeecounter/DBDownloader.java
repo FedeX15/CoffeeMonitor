@@ -21,7 +21,6 @@ public class DBDownloader extends AsyncTask<String, Void, String> {
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        //TODO dialog?
     }
 
     @Override
@@ -45,9 +44,10 @@ public class DBDownloader extends AsyncTask<String, Void, String> {
                 }
 
                 istream.close();
-
-                return new String(strbuff);
-            } else {
+                String defaultdb = new String(strbuff);
+                state.edit().putString("defaultdb", defaultdb).apply();
+                return defaultdb;
+            } else { //Database Already updated
                 return null;
             }
         } catch (MalformedURLException ex) {

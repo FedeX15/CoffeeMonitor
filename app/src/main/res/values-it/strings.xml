@@ -111,4 +111,6 @@
     <string name="defaulttxt">Predefinito</string>
     <string name="dbupdatefailed">Aggiornamento del database fallito</string>
     <string name="dbupdated">Database aggiornato</string>
+    <string name="defaultdbtitle">Database predefinito</string>
+    <string name="defaultdbnotavailalert">Database predefinito non disponibile, riprova più tardi.</string>
 </resources>
