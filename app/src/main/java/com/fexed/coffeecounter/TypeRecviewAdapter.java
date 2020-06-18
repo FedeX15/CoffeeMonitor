@@ -168,6 +168,10 @@ public class TypeRecviewAdapter extends RecyclerView.Adapter<TypeRecviewAdapter.
                 EditText descedittxt = form.findViewById(R.id.desctxt);
                 EditText sostedittxt = form.findViewById(R.id.sosttxt);
                 EditText pricetedittxt = form.findViewById(R.id.pricetxt);
+                ImageButton defaultdbbtn = form.findViewById(R.id.defaultbtn);
+                ImageButton qrbtn = form.findViewById(R.id.scanqrbtn);
+                defaultdbbtn.setVisibility(View.INVISIBLE);
+                qrbtn.setVisibility(View.INVISIBLE);
 
                 nameedittxt.setText(mDataset.get(position).getName());
                 descedittxt.setText(mDataset.get(position).getDesc());
