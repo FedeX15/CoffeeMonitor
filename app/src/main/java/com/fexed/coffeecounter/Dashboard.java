@@ -30,6 +30,8 @@ import android.provider.MediaStore;
 import androidx.annotation.NonNull;
 
 import com.androidplot.pie.PieRenderer;
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import androidx.core.app.NotificationCompat;
@@ -104,6 +106,8 @@ public class Dashboard extends AppCompatActivity {
     public AppDatabase db;
     public RecyclerView typesRecview;
     public RecyclerView cupsRecview;
+    public ImageView currentimageview;
+    public String currentbitmap;
     static final Migration MIGRATION_19_20 = new Migration(19, 20) {
         @Override
         public void migrate(@NonNull SupportSQLiteDatabase database) {
@@ -115,7 +119,11 @@ public class Dashboard extends AppCompatActivity {
             database.execSQL("COMMIT");
         }
     };
-    public ImageView currentimageview;
+    static final Migration MIGRATION_20_21 = new Migration(20, 21) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+        }
+    };
     static final Migration MIGRATION_21_22 = new Migration(21, 22) {
         @Override
         public void migrate(@NonNull SupportSQLiteDatabase database) {
