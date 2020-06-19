@@ -1,6 +1,7 @@
 package com.fexed.coffeecounter;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.DatePickerDialog;
 import android.app.Notification;
@@ -90,6 +91,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -108,7 +110,7 @@ public class Dashboard extends AppCompatActivity {
     public RecyclerView typesRecview;
     public RecyclerView cupsRecview;
     public ImageView currentimageview;
-    public String currentbitmap;
+    public Bitmap currentbitmap;
 
     static final Migration MIGRATION_19_20 = new Migration(19, 20) {
         @Override
@@ -386,9 +388,9 @@ public class Dashboard extends AppCompatActivity {
                     String desc = descedittxt.getText().toString();
                     String sostanza = sostedittxt.getText().toString();
                     float price = Float.parseFloat(pricetedittxt.getText().toString());
-
                     boolean liquid = liquidckbx.isChecked();
-                    Coffeetype newtype = new Coffeetype(name, liters, desc, liquid, sostanza, price, currentbitmap);
+                    String bmpuri = saveToInternalStorage(currentbitmap);
+                    Coffeetype newtype = new Coffeetype(name, liters, desc, liquid, sostanza, price, bmpuri);
 
                     db.coffetypeDao().insert(newtype);
 
@@ -1030,6 +1032,23 @@ public class Dashboard extends AppCompatActivity {
                     Toast.makeText(this, coffeetype.getName(), Toast.LENGTH_LONG).show();
                 } catch (Exception e) { Toast.makeText(this, "Error", Toast.LENGTH_LONG).show(); }
             }
+        } else {
+            if (requestCode == 9) {
+                //TODO image picked
+                if (resultCode == Activity.RESULT_OK) {
+                    final Uri uri = data.getData();
+                    InputStream in;
+                    try {
+                        in = getContentResolver().openInputStream(uri);
+                        final Bitmap selected_img = BitmapFactory.decodeStream(in);
+                        currentimageview.setImageBitmap(selected_img);
+                        currentbitmap = selected_img;
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                        Toast.makeText(this, R.string.placeholder, Toast.LENGTH_LONG).show(); //TODO error message
+                    }
+                }
+            }
         }
     }
 
@@ -1038,7 +1057,7 @@ public class Dashboard extends AppCompatActivity {
         // path to /data/data/yourapp/app_data/imageDir
         File directory = cw.getDir("images", Context.MODE_PRIVATE);
         // Create imageDir
-        File mypath = new File(directory, bitmapImage.hashCode() + ".jpg");
+        File mypath = new File(directory, bitmapImage.hashCode() + ".png");
 
         FileOutputStream fos = null;
         try {
@@ -1050,11 +1069,11 @@ public class Dashboard extends AppCompatActivity {
         } finally {
             try {
                 fos.close();
-            } catch (IOException e) {
+            } catch (IOException | NullPointerException e) {
                 e.printStackTrace();
             }
         }
-        return directory.getAbsolutePath() + "/" + bitmapImage.hashCode() + ".jpg";
+        return directory.getAbsolutePath() + "/" + bitmapImage.hashCode() + ".png";
     }
 
     public Bitmap loadImageFromStorage(String path) {
