@@ -35,14 +35,14 @@
         android:id="@+id/dailynotifswitch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="32dp"
         android:layout_weight="0"
         android:paddingStart="15dp"
         android:paddingEnd="15dp"
         android:textAlignment="center"
         android:textAllCaps="false"
         app:layout_constraintBottom_toBottomOf="@+id/textView6"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/barstxtv"
+        app:layout_constraintStart_toEndOf="@+id/linestxtv"
         app:layout_constraintTop_toTopOf="@+id/textView6" />
 
     <TextView
@@ -62,12 +62,12 @@
         android:id="@+id/notiftimetxt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="32dp"
         android:layout_weight="0"
         android:paddingStart="15dp"
         android:paddingEnd="15dp"
         app:layout_constraintBottom_toBottomOf="@+id/textView5"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/barstxtv"
+        app:layout_constraintStart_toEndOf="@+id/linestxtv"
         app:layout_constraintTop_toTopOf="@+id/textView5"
         tools:text="hh:mm" />
 
@@ -84,11 +84,34 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView5" />
 
+    <TextView
+        android:id="@+id/linestxtv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="0"
+        android:paddingStart="15dp"
+        android:paddingEnd="15dp"
+        android:text="@string/linee"
+        app:layout_constraintBottom_toBottomOf="@+id/historybarswitch"
+        app:layout_constraintEnd_toStartOf="@+id/historybarswitch"
+        app:layout_constraintTop_toTopOf="@+id/historybarswitch" />
+
+    <TextView
+        android:id="@+id/barstxtv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="0"
+        android:paddingStart="15dp"
+        android:paddingEnd="15dp"
+        android:text="@string/barre"
+        app:layout_constraintBottom_toBottomOf="@+id/historybarswitch"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/historybarswitch" />
+
     <Switch
         android:id="@+id/historybarswitch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="32dp"
         android:layout_weight="0"
         android:paddingStart="15dp"
         android:paddingEnd="15dp"
@@ -96,7 +119,7 @@
         android:textAllCaps="false"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         app:layout_constraintBottom_toBottomOf="@+id/textView7"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/barstxtv"
         app:layout_constraintTop_toTopOf="@+id/textView7" />
 
     <com.google.android.gms.ads.AdView

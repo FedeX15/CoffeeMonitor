@@ -99,7 +99,7 @@
     <string name="design_nmadalin_necula">設計\n\nMadalin Necula\nFederico Matteoni</string>
     <string name="codice_e_idea_nfederico_matteoni">コードとアイデア\n\nFederico Matteoni\nfedericomatteoni@live.it</string>
     <string name="settings">設定</string>
-    <string name="storico_a_linee_barre">ライン/バー歴史</string>
+    <string name="storico_a_linee_barre">歴史</string>
     <string name="credits">ありがとう</string>
     <string name="generalstats">一般統計</string>
     <string name="liquid">液体</string>
@@ -113,4 +113,6 @@
     <string name="dbupdatefailed">デフォルトのデータベースの更新に失敗しました</string>
     <string name="defaultdbtitle">デフォルトのデータベース</string>
     <string name="defaultdbnotavailalert">デフォルトのデータベースが利用できません。後でもう一度やり直してください。</string>
+    <string name="linee">ライン</string>
+    <string name="barre">バー</string>
 </resources>

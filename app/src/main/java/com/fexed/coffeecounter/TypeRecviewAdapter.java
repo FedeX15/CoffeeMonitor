@@ -297,12 +297,13 @@ public class TypeRecviewAdapter extends RecyclerView.Adapter<TypeRecviewAdapter.
                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
                 dialog.show();
-                dialog.getWindow().setBackgroundDrawable(context.getDrawable(R.color.colorBgDark));
+                TextView titletxtv = dialog.findViewById(R.id.popuptitletxtv);
                 ImageView image =  dialog.findViewById(R.id.qrimage);
                 try {
                     Bitmap bmp = encodeAsBitmap(codedstring);
                     if (bmp != null) {
                         image.setImageBitmap(bmp);
+                        titletxtv.setText(mDataset.get(position).getName());
                     }
                     else dialog.dismiss();
                 } catch (Exception ignored) {}

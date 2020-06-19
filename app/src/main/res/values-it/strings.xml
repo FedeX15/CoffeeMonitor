@@ -100,7 +100,7 @@
     <string name="codice_e_idea_nfederico_matteoni">Codice e idea\n\nFederico Matteoni\nfedericomatteoni@live.it</string>
     <string name="design_nmadalin_necula">Design\n\nMadalin Necula\nFederico Matteoni</string>
     <string name="settings">Impostazioni</string>
-    <string name="storico_a_linee_barre">Storico a linee / barre</string>
+    <string name="storico_a_linee_barre">Storico</string>
     <string name="credits">Crediti</string>
     <string name="generalstats">Statistiche generali</string>
     <string name="toomuchcupstip">Hai già bevuto più di 5 tazzine oggi, che è la dose massima consigliata dalla FDA (Food and Drug Administration). Fai attenzione!</string>
@@ -113,4 +113,6 @@
     <string name="dbupdated">Database aggiornato</string>
     <string name="defaultdbtitle">Database predefinito</string>
     <string name="defaultdbnotavailalert">Database predefinito non disponibile, riprova più tardi.</string>
+    <string name="linee">Linee</string>
+    <string name="barre">Barre</string>
 </resources>
