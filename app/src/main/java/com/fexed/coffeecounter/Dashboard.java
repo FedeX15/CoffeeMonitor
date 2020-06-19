@@ -389,7 +389,11 @@ public class Dashboard extends AppCompatActivity {
                     String sostanza = sostedittxt.getText().toString();
                     float price = Float.parseFloat(pricetedittxt.getText().toString());
                     boolean liquid = liquidckbx.isChecked();
-                    String bmpuri = saveToInternalStorage(currentbitmap);
+                    String bmpuri = "";
+                    if (currentbitmap != null) {
+                        bmpuri = saveToInternalStorage(currentbitmap);
+                        currentbitmap = null;
+                    }
                     Coffeetype newtype = new Coffeetype(name, liters, desc, liquid, sostanza, price, bmpuri);
 
                     db.coffetypeDao().insert(newtype);
@@ -907,6 +911,7 @@ public class Dashboard extends AppCompatActivity {
                     final View form = View.inflate(this, R.layout.addtypedialog, null);
                     final TextView literstxt = form.findViewById(R.id.ltrsmgtext);
                     final CheckBox liquidckbx = form.findViewById(R.id.liquidcheck);
+                    final ImageView typeimage = form.findViewById(R.id.typeimage);
                     final boolean liquido = coffeetype.isLiquido();
                     final int qnt = coffeetype.getLiters();
                     EditText nameedittxt = form.findViewById(R.id.nametxt);
@@ -959,7 +964,7 @@ public class Dashboard extends AppCompatActivity {
                         }
                     });
 
-                    /*typeimage.setOnLongClickListener(new View.OnLongClickListener() { //TODO
+                    typeimage.setOnLongClickListener(new View.OnLongClickListener() {
                         @Override
                         public boolean onLongClick(View view) {
                             Intent i = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
@@ -968,7 +973,7 @@ public class Dashboard extends AppCompatActivity {
                             startActivityForResult(i, 9);
                             return true;
                         }
-                    });*/
+                    });
 
                     dialogbuilder.setView(form);
                     dialogbuilder.create();
@@ -1010,6 +1015,11 @@ public class Dashboard extends AppCompatActivity {
                                 coffeetype.setLiquido(liquidckbx.isChecked());
                                 coffeetype.setSostanza(sostedittxt.getText().toString());
                                 coffeetype.setPrice(Float.parseFloat(pricetedittxt.getText().toString()));
+                                if (currentbitmap != null) {
+                                    String uri = saveToInternalStorage(currentbitmap);
+                                    coffeetype.setImg(uri);
+                                    currentbitmap = null;
+                                }
                                 coffeetype.setDefaulttype(false);
 
                                 db.coffetypeDao().insert(coffeetype);
@@ -1034,7 +1044,6 @@ public class Dashboard extends AppCompatActivity {
             }
         } else {
             if (requestCode == 9) {
-                //TODO image picked
                 if (resultCode == Activity.RESULT_OK) {
                     final Uri uri = data.getData();
                     InputStream in;

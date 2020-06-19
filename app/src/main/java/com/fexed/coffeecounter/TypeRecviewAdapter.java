@@ -230,7 +230,8 @@ public class TypeRecviewAdapter extends RecyclerView.Adapter<TypeRecviewAdapter.
                     }
                 });
 
-                /*typeimage.setOnLongClickListener(new View.OnLongClickListener() { //TODO
+                //TODO immagine in modifica
+                /*typeimage.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
                     public boolean onLongClick(View view) {
                         Intent i = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
@@ -282,6 +283,11 @@ public class TypeRecviewAdapter extends RecyclerView.Adapter<TypeRecviewAdapter.
                             mDataset.get(position).setSostanza(sostedittxt.getText().toString());
                             mDataset.get(position).setPrice(Float.parseFloat(pricetedittxt.getText().toString()));
                             mDataset.get(position).setDefaulttype(false);
+                            /*String bmpuri = "";
+                            if (currentbitmap != null) {
+                                bmpuri = saveToInternalStorage(currentbitmap);
+                                currentbitmap = null;
+                            }*/
 
                             db.coffetypeDao().update(mDataset.get(position));
                             TypeRecviewAdapter.this.recv.setAdapter(new TypeRecviewAdapter(db, TypeRecviewAdapter.this.recv));
