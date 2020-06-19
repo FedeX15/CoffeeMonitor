@@ -360,6 +360,57 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
         dialogbuilder.create();
         final AlertDialog dialog = dialogbuilder.show();
 
+        if (state.getBoolean("addtypetutorial", true)) {
+            final Balloon qrballoon = new Balloon.Builder(Dashboard.this)
+                    .setText("Scansiona un codie QR")
+                    .setWidthRatio(0.25f)
+                    .setBackgroundColorResource(R.color.colorAccent)
+                    .setBalloonAnimation(BalloonAnimation.FADE)
+                    .setArrowVisible(true)
+                    .setArrowOrientation(ArrowOrientation.TOP)
+                    .setArrowPosition(0.4f)
+                    .build();
+            qrballoon.setOnBalloonOutsideTouchListener(new OnBalloonOutsideTouchListener() {
+                @Override
+                public void onBalloonOutsideTouch(@NonNull View view, @NonNull MotionEvent motionEvent) {
+                    qrballoon.dismiss();
+                }
+            });
+            qrballoon.showAlignBottom(form.findViewById(R.id.scanqrbtn));
+            final Balloon defballoon = new Balloon.Builder(Dashboard.this)
+                    .setText("Scegli un tipo predefinito")
+                    .setWidthRatio(0.25f)
+                    .setBackgroundColorResource(R.color.colorAccent)
+                    .setBalloonAnimation(BalloonAnimation.FADE)
+                    .setArrowVisible(true)
+                    .setArrowOrientation(ArrowOrientation.TOP)
+                    .setArrowPosition(0.6f)
+                    .build();
+            defballoon.setOnBalloonOutsideTouchListener(new OnBalloonOutsideTouchListener() {
+                @Override
+                public void onBalloonOutsideTouch(@NonNull View view, @NonNull MotionEvent motionEvent) {
+                    defballoon.dismiss();
+                }
+            });
+            defballoon.showAlignBottom(form.findViewById(R.id.defaultbtn));
+            final Balloon databalloon = new Balloon.Builder(Dashboard.this)
+                    .setText("Oppure riempi i campi per un tipo personalizzato")
+                    .setWidthRatio(0.65f)
+                    .setBackgroundColorResource(R.color.colorAccent)
+                    .setBalloonAnimation(BalloonAnimation.FADE)
+                    .setArrowVisible(true)
+                    .setArrowOrientation(ArrowOrientation.BOTTOM)
+                    .build();
+            databalloon.setOnBalloonOutsideTouchListener(new OnBalloonOutsideTouchListener() {
+                @Override
+                public void onBalloonOutsideTouch(@NonNull View view, @NonNull MotionEvent motionEvent) {
+                    databalloon.dismiss();
+                }
+            });
+            databalloon.showAlignTop(form.findViewById(R.id.nametxt));
+            //editor.putBoolean("addtypetutorial", false).apply();
+        }
+
         Button positive = form.findViewById(R.id.confirmbtn);
         positive.setOnClickListener(new View.OnClickListener() {
             @Override
