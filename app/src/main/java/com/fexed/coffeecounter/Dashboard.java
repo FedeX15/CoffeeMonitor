@@ -16,7 +16,6 @@ import android.content.ContextWrapper;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -110,6 +109,7 @@ public class Dashboard extends AppCompatActivity {
     public RecyclerView cupsRecview;
     public ImageView currentimageview;
     public String currentbitmap;
+
     static final Migration MIGRATION_19_20 = new Migration(19, 20) {
         @Override
         public void migrate(@NonNull SupportSQLiteDatabase database) {
@@ -162,7 +162,6 @@ public class Dashboard extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.options, menu);
         return true;
     }
@@ -210,7 +209,6 @@ public class Dashboard extends AppCompatActivity {
     }
 
     public void adInitializer() {
-
         MobileAds.initialize(this, new OnInitializationCompleteListener() {
             @Override
             public void onInitializationComplete(InitializationStatus initializationStatus) {
@@ -251,7 +249,7 @@ public class Dashboard extends AppCompatActivity {
                 });
                 popup.show();
                 break;
-            case R.id.action_notifs:
+            case R.id.action_notifs: //TODO rework
                 final AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setTitle(getString(R.string.tips));
                 builder.setIcon(R.drawable.ic_info);
@@ -464,7 +462,6 @@ public class Dashboard extends AppCompatActivity {
     }
 
     public void historyGraphInitializer(GraphView graph) {
-        //graph.getViewport().setMinimalViewport(Double.NaN, Double.NaN, 0, Double.NaN);
         graph.getViewport().setMaxXAxisSize(30);
         graph.getViewport().setScrollable(true);
         graph.getViewport().setYAxisBoundsManual(true);
@@ -1102,6 +1099,7 @@ public class Dashboard extends AppCompatActivity {
             startAlarmBroadcastReceiver(getApplicationContext());
         else stopAlarmBroadcastReceiver(getApplicationContext());
         //scheduleNotification(getNotification("5 second delay"), 5000);
+
         Toolbar mTopToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mTopToolbar);
         mTopToolbar.setBackgroundColor(getResources().getColor(R.color.transparent));
@@ -1110,6 +1108,7 @@ public class Dashboard extends AppCompatActivity {
         TextView vertxtv = findViewById(R.id.vertxt);
         String str = "V: " + BuildConfig.VERSION_CODE;
         vertxtv.setText(str);
+
         final DrawerLayout drawer = findViewById(R.id.containerdrawer);
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -1244,7 +1243,6 @@ public class Dashboard extends AppCompatActivity {
 
         adInitializer();
         graphInitializer();
-        graphUpdater();
 
         cupsRecview = findViewById(R.id.cupsrecview);
         cupsRecview.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
@@ -1489,8 +1487,12 @@ public class Dashboard extends AppCompatActivity {
                 }
             }
         });
+    }
 
-
+    @Override
+    protected void onResume() {
+        super.onResume();
+        graphUpdater();
     }
 
     private void createNotificationChannel() {

@@ -48,13 +48,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.fexed.coffeecounter.Stat">
-            <intent-filter android:label="@string/title_statistics">
-                <action android:name="android.intent.action.VIEW" />
-            </intent-filter>
-        </activity>
-        <activity android:name="com.fexed.coffeecounter.types" />
-        <activity android:name="com.fexed.coffeecounter.pref" />
         <activity android:name="com.fexed.coffeecounter.AddWidgetCnfg">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
