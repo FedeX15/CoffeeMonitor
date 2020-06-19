@@ -61,14 +61,6 @@ public class TypeRecviewAdapter extends RecyclerView.Adapter<TypeRecviewAdapter.
         this.recv = recv;
     }
 
-    /*public static Bitmap getBitmapFromView(View view) {
-        Bitmap bitmap = Bitmap.createBitmap(view.getWidth(), view.getHeight(), Bitmap.Config.ARGB_8888);
-        Canvas c = new Canvas(bitmap);
-        view.layout(view.getLeft(), view.getTop(), view.getRight(), view.getBottom());
-        view.draw(c);
-        return bitmap;
-    }*/
-
     @Override
     @NonNull
     public TypeRecviewAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {

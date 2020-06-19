@@ -896,7 +896,7 @@ public class Dashboard extends AppCompatActivity {
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) { //TODO reimplementare
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
         if(result != null) {
@@ -1061,7 +1061,7 @@ public class Dashboard extends AppCompatActivity {
         }
     }
 
-    public String saveToInternalStorage(Bitmap bitmapImage) { //TODO reimplementare
+    public String saveToInternalStorage(Bitmap bitmapImage) {
         ContextWrapper cw = new ContextWrapper(getApplicationContext());
         // path to /data/data/yourapp/app_data/imageDir
         File directory = cw.getDir("images", Context.MODE_PRIVATE);
@@ -1134,7 +1134,7 @@ public class Dashboard extends AppCompatActivity {
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         mTopToolbar.setNavigationIcon(R.drawable.ic_hamburger);
         TextView vertxtv = findViewById(R.id.vertxt);
-        String str = "V: " + BuildConfig.VERSION_CODE;
+        String str = "Version " + BuildConfig.VERSION_NAME;
         vertxtv.setText(str);
 
         final DrawerLayout drawer = findViewById(R.id.containerdrawer);
@@ -1380,77 +1380,6 @@ public class Dashboard extends AppCompatActivity {
                 String currentDBPath = getDatabasePath("typedb").getAbsolutePath();
                 Toast.makeText(getApplicationContext(), currentDBPath, Toast.LENGTH_SHORT).show();
 
-            }
-        });
-
-        ImageButton sharebtn1 = findViewById(R.id.sharegraph1);
-        final GraphView graph1 = findViewById(R.id.historygraph);
-        sharebtn1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                try {
-                    ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-                    Bitmap inImage = loadBitmapFromView(graph1);
-                    inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-
-                    String path = MediaStore.Images.Media.insertImage(getApplicationContext().getContentResolver(), inImage, "Coffee Monitor Pie Chart", null);
-                    if (path == null) {
-                        // most likely a security problem
-                        throw new SecurityException("Could not get path from MediaStore. Please check permissions.");
-                    }
-
-                    Intent i = new Intent(Intent.ACTION_SEND);
-                    i.setType("image/*");
-                    i.putExtra(Intent.EXTRA_STREAM, Uri.parse(path));
-                    i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    try {
-                        getApplicationContext().startActivity(Intent.createChooser(i, "Coffee Monitor History Graph"));
-                    } catch (android.content.ActivityNotFoundException ex) {
-                        ex.printStackTrace();
-                    }
-                } catch (Exception e) {
-                    Toast.makeText(getApplicationContext(), e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-
-        ImageButton sharebtn2 = findViewById(R.id.sharegraph2);
-        final PieChart graph2 = findViewById(R.id.piegraph);
-        sharebtn2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                try {
-                    ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-                    Bitmap inImage = loadBitmapFromView(graph2);
-                    inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-
-                    String path = MediaStore.Images.Media.insertImage(getApplicationContext().getContentResolver(), inImage, "Coffee Monitor Pie Chart", null);
-                    if (path == null) {
-                        // most likely a security problem
-                        throw new SecurityException("Could not get path from MediaStore. Please check permissions.");
-                    }
-
-                    Intent i = new Intent(Intent.ACTION_SEND);
-                    i.setType("image/*");
-                    i.putExtra(Intent.EXTRA_STREAM, Uri.parse(path));
-                    i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    try {
-                        getApplicationContext().startActivity(Intent.createChooser(i, "Coffee Monitor Pie Chart"));
-                    } catch (android.content.ActivityNotFoundException ex) {
-                        ex.printStackTrace();
-                    }
-                } catch (Exception e) {
-                    Toast.makeText(getApplicationContext(), e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-
-        ImageButton sharebtn3 = findViewById(R.id.sharegraph3);
-        final GraphView graph3 = findViewById(R.id.daygraph);
-        sharebtn3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                graph3.takeSnapshotAndShare(getApplicationContext(), "Coffee Monitor Days Graph", "Coffee Monitor Days Graph");
             }
         });
 

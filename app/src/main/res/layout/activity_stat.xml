@@ -118,16 +118,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/totalliters" />
 
-        <ImageButton
-            android:id="@+id/sharegraph1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@color/transparent"
-            android:visibility="gone"
-            app:layout_constraintStart_toEndOf="@+id/textView19"
-            app:layout_constraintTop_toTopOf="@+id/textView19"
-            app:srcCompat="@drawable/ic_share" />
-
 
         <com.jjoe64.graphview.GraphView
             android:id="@+id/historygraph"
@@ -165,16 +155,6 @@
             android:textAlignment="center"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/banner2" />
-
-        <ImageButton
-            android:id="@+id/sharegraph2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@color/transparent"
-            android:visibility="gone"
-            app:layout_constraintStart_toEndOf="@+id/textView20"
-            app:layout_constraintTop_toTopOf="@+id/textView20"
-            app:srcCompat="@drawable/ic_share" />
 
 
         <com.androidplot.pie.PieChart
@@ -215,16 +195,6 @@
             android:textAlignment="center"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/banner3" />
-
-        <ImageButton
-            android:id="@+id/sharegraph3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@color/transparent"
-            android:visibility="gone"
-            app:layout_constraintStart_toEndOf="@+id/textView21"
-            app:layout_constraintTop_toTopOf="@+id/textView21"
-            app:srcCompat="@drawable/ic_share" />
 
 
         <com.jjoe64.graphview.GraphView
