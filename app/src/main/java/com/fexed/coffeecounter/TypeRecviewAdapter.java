@@ -10,6 +10,10 @@ import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
+import com.skydoves.balloon.ArrowOrientation;
+import com.skydoves.balloon.Balloon;
+import com.skydoves.balloon.BalloonAnimation;
+import com.skydoves.balloon.OnBalloonOutsideTouchListener;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -19,6 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -255,7 +260,21 @@ public class TypeRecviewAdapter extends RecyclerView.Adapter<TypeRecviewAdapter.
 
                         String name = nameedittxt.getText().toString();
                         if (name.isEmpty()) {
-                            Snackbar.make(form.findViewById(R.id.linearLayout), R.string.nameemptyalert, Snackbar.LENGTH_SHORT).show();
+                            final Balloon balloon = new Balloon.Builder(context)
+                                    .setText(context.getString(R.string.nameemptyalert))
+                                    .setBackgroundColorResource(R.color.colorAccent)
+                                    .setWidthRatio(0.75f)
+                                    .setBalloonAnimation(BalloonAnimation.FADE)
+                                    .setArrowVisible(true)
+                                    .setArrowOrientation(ArrowOrientation.TOP)
+                                    .build();
+                            balloon.setOnBalloonOutsideTouchListener(new OnBalloonOutsideTouchListener() {
+                                @Override
+                                public void onBalloonOutsideTouch(@NonNull View view, @NonNull MotionEvent motionEvent) {
+                                    balloon.dismiss();
+                                }
+                            });
+                            balloon.showAlignBottom(nameedittxt);
                         } else {
                             mDataset.get(position).setName(nameedittxt.getText().toString());
                             mDataset.get(position).setDesc(descedittxt.getText().toString());

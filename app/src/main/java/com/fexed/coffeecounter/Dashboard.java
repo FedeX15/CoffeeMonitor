@@ -368,7 +368,21 @@ public class Dashboard extends AppCompatActivity {
 
                 String name = nameedittxt.getText().toString();
                 if (name.isEmpty()) {
-                    Snackbar.make(findViewById(R.id.containerdrawer), R.string.nameemptyalert, Snackbar.LENGTH_SHORT).show();
+                    final Balloon balloon = new Balloon.Builder(Dashboard.this)
+                            .setText(Dashboard.this.getString(R.string.nameemptyalert))
+                            .setBackgroundColorResource(R.color.colorAccent)
+                            .setWidthRatio(0.75f)
+                            .setBalloonAnimation(BalloonAnimation.FADE)
+                            .setArrowVisible(true)
+                            .setArrowOrientation(ArrowOrientation.TOP)
+                            .build();
+                    balloon.setOnBalloonOutsideTouchListener(new OnBalloonOutsideTouchListener() {
+                        @Override
+                        public void onBalloonOutsideTouch(@NonNull View view, @NonNull MotionEvent motionEvent) {
+                            balloon.dismiss();
+                        }
+                    });
+                    balloon.showAlignBottom(nameedittxt);
                 } else {
                     int liters = state.getInt("qnt", 0);
                     String desc = descedittxt.getText().toString();
@@ -976,7 +990,21 @@ public class Dashboard extends AppCompatActivity {
 
                             String name = nameedittxt.getText().toString();
                             if (name.isEmpty()) {
-                                Snackbar.make(form.findViewById(R.id.linearLayout), R.string.nameemptyalert, Snackbar.LENGTH_SHORT).show();
+                                final Balloon balloon = new Balloon.Builder(Dashboard.this)
+                                        .setText(Dashboard.this.getString(R.string.nameemptyalert))
+                                        .setBackgroundColorResource(R.color.colorAccent)
+                                        .setWidthRatio(0.75f)
+                                        .setBalloonAnimation(BalloonAnimation.FADE)
+                                        .setArrowVisible(true)
+                                        .setArrowOrientation(ArrowOrientation.TOP)
+                                        .build();
+                                balloon.setOnBalloonOutsideTouchListener(new OnBalloonOutsideTouchListener() {
+                                    @Override
+                                    public void onBalloonOutsideTouch(@NonNull View view, @NonNull MotionEvent motionEvent) {
+                                        balloon.dismiss();
+                                    }
+                                });
+                                balloon.showAlignBottom(nameedittxt);
                             } else {
                                 coffeetype.setName(nameedittxt.getText().toString());
                                 coffeetype.setDesc(descedittxt.getText().toString());
