@@ -115,4 +115,5 @@
     <string name="defaultdbnotavailalert">Database predefinito non disponibile, riprova più tardi.</string>
     <string name="linee">Linee</string>
     <string name="barre">Barre</string>
+    <string name="backup">Backup</string>
 </resources>

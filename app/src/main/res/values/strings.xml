@@ -117,4 +117,5 @@
     <string name="dbupdatefailed">Default database update failed</string>
     <string name="defaultdbtitle">Default database</string>
     <string name="defaultdbnotavailalert">Default database not available, please try again later.</string>
+    <string name="backup">Backup</string>
 </resources>

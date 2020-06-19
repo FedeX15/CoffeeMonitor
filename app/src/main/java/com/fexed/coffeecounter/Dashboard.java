@@ -1,5 +1,6 @@
 package com.fexed.coffeecounter;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlarmManager;
@@ -9,6 +10,8 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
+
+import androidx.core.app.ActivityCompat;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 import androidx.room.Room;
 import androidx.room.migration.Migration;
@@ -17,6 +20,7 @@ import android.content.ContextWrapper;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -103,7 +107,7 @@ import java.util.Locale;
 import java.util.Random;
 import java.util.concurrent.ExecutionException;
 
-public class Dashboard extends AppCompatActivity {
+public class Dashboard extends AppCompatActivity implements View.OnClickListener {
     public SharedPreferences state;
     public SharedPreferences.Editor editor;
     public AppDatabase db;
@@ -1312,56 +1316,10 @@ public class Dashboard extends AppCompatActivity {
         helper.attachToRecyclerView(typesRecview);
 
         Button rstdbbtn = findViewById(R.id.resetdbbtn);
-        rstdbbtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AlertDialog.Builder dialogbuilder = new AlertDialog.Builder(v.getContext());
-                dialogbuilder.setMessage(getString(R.string.resetdb) + "?")
-                        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                db.cupDAO().nuke();
-                                db.coffetypeDao().nuke();
-                                updateDefaultDatabase();
-                                cupsRecview.setAdapter(new CupRecviewAdapter(db, 0));
-                                typesRecview.setAdapter(new TypeRecviewAdapter(db, typesRecview));
-                                Snackbar.make(findViewById(R.id.container), "Database resettato", Snackbar.LENGTH_LONG).show();
-                            }
-                        })
-                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                Snackbar.make(findViewById(R.id.container), "Annullato", Snackbar.LENGTH_SHORT).show();
-                            }
-                        });
-                dialogbuilder.create();
-                dialogbuilder.show();
-            }
-        });
+        rstdbbtn.setOnClickListener(this);
 
         Button showstatbtn = findViewById(R.id.statbtn);
-        showstatbtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int milliliterstotal = 0;
-                int cupstotal = 0;
-                StringBuilder cupsstat = new StringBuilder();
-
-                for (Coffeetype type : db.coffetypeDao().getAll()) {
-                    cupsstat.append(type.getName()).append("\n");
-                    milliliterstotal += (type.getLiters() * type.getQnt());
-                    cupstotal += type.getQnt();
-                    for (Cup cup : db.cupDAO().getAll(type.getKey()))
-                        cupsstat.append("\t[").append(cup.toString()).append("]\n");
-                }
-
-                AlertDialog.Builder dialogbuilder = new AlertDialog.Builder(v.getContext());
-                dialogbuilder.setMessage("Bevuti in totale " + milliliterstotal + " ml in " + cupstotal + " tazzine.\n\n" + cupsstat)
-                        .setNeutralButton("OK", null);
-                dialogbuilder.create();
-                dialogbuilder.show();
-            }
-        });
+        showstatbtn.setOnClickListener(this);
 
         final Switch historyswitch = findViewById(R.id.historybarswitch);
         historyswitch.setChecked(state.getBoolean("historyline", false));
@@ -1374,25 +1332,10 @@ public class Dashboard extends AppCompatActivity {
         });
 
         Button exportdata = findViewById(R.id.exportdatabtn);
-        exportdata.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String currentDBPath = getDatabasePath("typedb").getAbsolutePath();
-                Toast.makeText(getApplicationContext(), currentDBPath, Toast.LENGTH_SHORT).show();
-
-            }
-        });
+        exportdata.setOnClickListener(this);
 
         final Button resettutorialbtn = findViewById(R.id.resettutorialbtn);
-        resettutorialbtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                editor.putBoolean("dashboardtutorial", true);
-                editor.putBoolean("typestutorial", true);
-                editor.putBoolean("cupstutorial", true);
-                editor.commit();
-            }
-        });
+        resettutorialbtn.setOnClickListener(this);
 
         final TextView notiftimetxtv = findViewById(R.id.notiftimetxt);
         if (state.getBoolean("notifonoff", true)) notiftimetxtv.setText(String.format(Locale.getDefault(), "%d:%d", state.getInt("notifhour", 20), state.getInt("notifmin", 30)));
@@ -1444,6 +1387,13 @@ public class Dashboard extends AppCompatActivity {
                 }
             }
         });
+
+        Button backupbtn = findViewById(R.id.backupbtn);
+        backupbtn.setOnClickListener(this);
+    }
+
+    public void backup() {
+
     }
 
     @Override
@@ -1465,6 +1415,68 @@ public class Dashboard extends AppCompatActivity {
             // or other notification behaviors after this
             NotificationManager notificationManager = getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel);
+        }
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.backupbtn: //TODO
+                Toast.makeText(Dashboard.this, R.string.placeholder, Toast.LENGTH_LONG).show();
+                break;
+            case R.id.resettutorialbtn:
+                editor.putBoolean("dashboardtutorial", true);
+                editor.putBoolean("typestutorial", true);
+                editor.putBoolean("cupstutorial", true);
+                editor.commit();
+                break;
+            case R.id.exportdatabtn:
+                String currentDBPath = getDatabasePath("typedb").getAbsolutePath();
+                Toast.makeText(getApplicationContext(), currentDBPath, Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.statbtn:
+                int milliliterstotal = 0;
+                int cupstotal = 0;
+                StringBuilder cupsstat = new StringBuilder();
+
+                for (Coffeetype type : db.coffetypeDao().getAll()) {
+                    cupsstat.append(type.getName()).append("\n");
+                    milliliterstotal += (type.getLiters() * type.getQnt());
+                    cupstotal += type.getQnt();
+                    for (Cup cup : db.cupDAO().getAll(type.getKey()))
+                        cupsstat.append("\t[").append(cup.toString()).append("]\n");
+                }
+
+                AlertDialog.Builder dialogbuilder = new AlertDialog.Builder(Dashboard.this);
+                dialogbuilder.setMessage("Bevuti in totale " + milliliterstotal + " ml in " + cupstotal + " tazzine.\n\n" + cupsstat)
+                        .setNeutralButton("OK", null);
+                dialogbuilder.create();
+                dialogbuilder.show();
+                break;
+            case R.id.resetdbbtn:
+                dialogbuilder = new AlertDialog.Builder(Dashboard.this);
+                dialogbuilder.setMessage(getString(R.string.resetdb) + "?")
+                        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                db.cupDAO().nuke();
+                                db.coffetypeDao().nuke();
+                                updateDefaultDatabase();
+                                cupsRecview.setAdapter(new CupRecviewAdapter(db, 0));
+                                typesRecview.setAdapter(new TypeRecviewAdapter(db, typesRecview));
+                                Snackbar.make(findViewById(R.id.container), "Database resettato", Snackbar.LENGTH_LONG).show();
+                            }
+                        })
+                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Snackbar.make(findViewById(R.id.container), "Annullato", Snackbar.LENGTH_SHORT).show();
+                            }
+                        });
+                dialogbuilder.create();
+                dialogbuilder.show();
+                break;
+
         }
     }
 }
