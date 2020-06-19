@@ -15,7 +15,7 @@
     <string name="addtype">タイプを追加</string>
     <string name="placeholder">プレースホルダー</string>
     <string name="Tazzebevutepertipo">タイプごとの飲酒カップ</string>
-    <string name="sources">Sources\nJjoe64: GraphView\nAndroidplot\nSkydoves: Balloon\ngizzeta.it\ncafestival.it\nmomondo.co.uk\nessentialwonders.com\nhealthline.com</string>
+    <string name="sources">Jjoe64\nAndroidplot\nSkydoves\n\nSources\n\ngizzeta.it\ncafestival.it\nmomondo.co.uk\nessentialwonders.com\nhealthline.com</string>
     <string name="notif">通知</string>
     <string name="favs">お気に入り</string>
     <string name="title_cups">登録</string>
