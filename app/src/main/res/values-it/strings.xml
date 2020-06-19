@@ -116,4 +116,7 @@
     <string name="linee">Linee</string>
     <string name="barre">Barre</string>
     <string name="backup">Backup</string>
+    <string name="fillfields">Riempi i campi per inserire un tipo personalizzato</string>
+    <string name="choosedefault">Scegli un tipo predefinito</string>
+    <string name="scanqr">Scansiona un codice QR</string>
 </resources>

@@ -362,7 +362,7 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
 
         if (state.getBoolean("addtypetutorial", true)) {
             final Balloon qrballoon = new Balloon.Builder(Dashboard.this)
-                    .setText("Scansiona un codie QR")
+                    .setText(getString(R.string.scanqr))
                     .setWidthRatio(0.25f)
                     .setBackgroundColorResource(R.color.colorAccent)
                     .setBalloonAnimation(BalloonAnimation.FADE)
@@ -378,7 +378,7 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
             });
             qrballoon.showAlignBottom(form.findViewById(R.id.scanqrbtn));
             final Balloon defballoon = new Balloon.Builder(Dashboard.this)
-                    .setText("Scegli un tipo predefinito")
+                    .setText(getString(R.string.choosedefault))
                     .setWidthRatio(0.25f)
                     .setBackgroundColorResource(R.color.colorAccent)
                     .setBalloonAnimation(BalloonAnimation.FADE)
@@ -394,7 +394,7 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
             });
             defballoon.showAlignBottom(form.findViewById(R.id.defaultbtn));
             final Balloon databalloon = new Balloon.Builder(Dashboard.this)
-                    .setText("Oppure riempi i campi per un tipo personalizzato")
+                    .setText(getString(R.string.fillfields))
                     .setWidthRatio(0.65f)
                     .setBackgroundColorResource(R.color.colorAccent)
                     .setBalloonAnimation(BalloonAnimation.FADE)
@@ -513,7 +513,7 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
             public void onClick(View view) {
                 IntentIntegrator integrator = new IntentIntegrator(Dashboard.this);
                 integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE);
-                integrator.setPrompt("Scansiona un codice QR");
+                integrator.setPrompt(getString(R.string.scanqr));
                 integrator.setOrientationLocked(true);
                 integrator.setCaptureActivity(CaptureActivityPortrait.class);
                 integrator.initiateScan();

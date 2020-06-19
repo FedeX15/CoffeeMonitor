@@ -118,4 +118,7 @@
     <string name="defaultdbtitle">Default database</string>
     <string name="defaultdbnotavailalert">Default database not available, please try again later.</string>
     <string name="backup">Backup</string>
+    <string name="fillfields">Fill in the data for a custom type</string>
+    <string name="choosedefault">Choose a default type</string>
+    <string name="scanqr">Scan a QR code</string>
 </resources>

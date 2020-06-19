@@ -116,4 +116,7 @@
     <string name="linee">ライン</string>
     <string name="barre">バー</string>
     <string name="backup">バックアップ</string>
+    <string name="fillfields">カスタムタイプのデータを入力します</string>
+    <string name="choosedefault">デフォルトのタイプを選択</string>
+    <string name="scanqr">QRコードをスキャン</string>
 </resources>
