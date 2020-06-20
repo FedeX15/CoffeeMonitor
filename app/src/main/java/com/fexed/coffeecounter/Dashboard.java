@@ -241,7 +241,7 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
                         db.coffetypeDao().update(elem);
                         db.cupDAO().insert(new Cup(elem.getKey()));
                         graphUpdater();
-                        typesRecview.setAdapter(new TypeRecviewAdapter(db, typesRecview));
+                        typesRecview.setAdapter(new TypeRecviewAdapter(db, typesRecview, state));
                         cupsRecview.setAdapter(new CupRecviewAdapter(db, 0));
                         return true;
                     }
@@ -447,7 +447,7 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
                     db.coffetypeDao().insert(newtype);
 
                     cupsRecview.setAdapter(new CupRecviewAdapter(db, 0));
-                    typesRecview.setAdapter(new TypeRecviewAdapter(db, typesRecview));
+                    typesRecview.setAdapter(new TypeRecviewAdapter(db, typesRecview, state));
 
                     dialog.dismiss();
                 }
@@ -489,7 +489,7 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
                         public void onClick(DialogInterface dialogInterface, int i) {
                             db.coffetypeDao().insert(defaultlist.get(i));
                             cupsRecview.setAdapter(new CupRecviewAdapter(db, 0));
-                            typesRecview.setAdapter(new TypeRecviewAdapter(db, typesRecview));
+                            typesRecview.setAdapter(new TypeRecviewAdapter(db, typesRecview, state));
                             dialog.dismiss();
                         }
                     });
@@ -932,7 +932,7 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
                         list.get(pos).setQnt(list.get(pos).getQnt() + 1);
                         db.coffetypeDao().update(list.get(pos));
                         cupsRecview.setAdapter(new CupRecviewAdapter(db, 0));
-                        typesRecview.setAdapter(new TypeRecviewAdapter(db, typesRecview));
+                        typesRecview.setAdapter(new TypeRecviewAdapter(db, typesRecview, state));
                         db.cupDAO().insert(new Cup(list.get(pos).getKey(), date, day));
                         graphUpdater();
                     }
@@ -1072,7 +1072,7 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
 
                                 db.coffetypeDao().insert(coffeetype);
                                 cupsRecview.setAdapter(new CupRecviewAdapter(db, 0));
-                                typesRecview.setAdapter(new TypeRecviewAdapter(db, typesRecview));
+                                typesRecview.setAdapter(new TypeRecviewAdapter(db, typesRecview, state));
                                 dialog.dismiss();
                             }
                         }
@@ -1243,7 +1243,7 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
 
                             TextView funfactstxtv = findViewById(R.id.funfacttxt);
                             funfactstxtv.setText(funfacts[i]);
-                            typesRecview.setAdapter(new TypeRecviewAdapter(db, typesRecview));
+                            typesRecview.setAdapter(new TypeRecviewAdapter(db, typesRecview, state));
 
                             vf.setDisplayedChild(1);
 
@@ -1343,7 +1343,7 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
 
         typesRecview = findViewById(R.id.recview);
         typesRecview.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        typesRecview.setAdapter(new TypeRecviewAdapter(db, typesRecview));
+        typesRecview.setAdapter(new TypeRecviewAdapter(db, typesRecview, state));
         SnapHelper helper = new LinearSnapHelper() {
             @Override
             public int findTargetSnapPosition(RecyclerView.LayoutManager layoutManager, int velocityX, int velocityY) {
@@ -1535,7 +1535,7 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
                                 db.coffetypeDao().nuke();
                                 updateDefaultDatabase();
                                 cupsRecview.setAdapter(new CupRecviewAdapter(db, 0));
-                                typesRecview.setAdapter(new TypeRecviewAdapter(db, typesRecview));
+                                typesRecview.setAdapter(new TypeRecviewAdapter(db, typesRecview, state));
                                 Snackbar.make(findViewById(R.id.container), "Database resettato", Snackbar.LENGTH_LONG).show();
                             }
                         })

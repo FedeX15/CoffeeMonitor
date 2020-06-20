@@ -3,24 +3,9 @@ package com.fexed.coffeecounter;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import com.google.android.material.snackbar.Snackbar;
-import com.google.zxing.BarcodeFormat;
-import com.google.zxing.MultiFormatWriter;
-import com.google.zxing.WriterException;
-import com.google.zxing.common.BitMatrix;
-import com.skydoves.balloon.ArrowOrientation;
-import com.skydoves.balloon.Balloon;
-import com.skydoves.balloon.BalloonAnimation;
-import com.skydoves.balloon.OnBalloonOutsideTouchListener;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.cardview.widget.CardView;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -35,6 +20,21 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.snackbar.Snackbar;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.MultiFormatWriter;
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitMatrix;
+import com.skydoves.balloon.ArrowOrientation;
+import com.skydoves.balloon.Balloon;
+import com.skydoves.balloon.BalloonAnimation;
+import com.skydoves.balloon.OnBalloonOutsideTouchListener;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -46,7 +46,6 @@ import java.util.List;
  */
 
 public class TypeRecviewAdapter extends RecyclerView.Adapter<TypeRecviewAdapter.ViewHolder> {
-
     public static int WHITE = 0xFFFFFFFF;
     public static int BLACK = 0xFF000000;
     public final static int WIDTH = 500;
@@ -54,11 +53,13 @@ public class TypeRecviewAdapter extends RecyclerView.Adapter<TypeRecviewAdapter.
     private List<Coffeetype> mDataset;
     Context context;
     RecyclerView recv;
+    SharedPreferences state;
 
-    public TypeRecviewAdapter(AppDatabase db, RecyclerView recv) {
+    public TypeRecviewAdapter(AppDatabase db, RecyclerView recv, SharedPreferences state) {
         this.mDataset = db.coffetypeDao().getAll();
         this.db = db;
         this.recv = recv;
+        this.state = state;
     }
 
     @Override
@@ -282,7 +283,7 @@ public class TypeRecviewAdapter extends RecyclerView.Adapter<TypeRecviewAdapter.
                             }*/
 
                             db.coffetypeDao().update(mDataset.get(position));
-                            TypeRecviewAdapter.this.recv.setAdapter(new TypeRecviewAdapter(db, TypeRecviewAdapter.this.recv));
+                            TypeRecviewAdapter.this.recv.setAdapter(new TypeRecviewAdapter(db, TypeRecviewAdapter.this.recv, state));
                             dialog.dismiss();
                         }
                     }
@@ -321,15 +322,34 @@ public class TypeRecviewAdapter extends RecyclerView.Adapter<TypeRecviewAdapter.
                     if (bmp != null) {
                         image.setImageBitmap(bmp);
                         titletxtv.setText(mDataset.get(position).getName());
-                    }
-                    else dialog.dismiss();
-                } catch (Exception ignored) {}
+                    } else dialog.dismiss();
+                } catch (Exception ignored) {
+                }
             }
         });
 
         if (mDataset.get(position).getImg() != null) {
             Bitmap bmp = loadImageFromStorage(mDataset.get(position).getImg());
             if (bmp != null) holder.typeimage.setImageBitmap(bmp);
+        }
+
+        if (state.getBoolean("qrtutorial", true)) {
+            final Balloon balloon = new Balloon.Builder(context)
+                    .setText("Share the type with a friend!")
+                    .setBackgroundColorResource(R.color.colorAccent)
+                    .setBalloonAnimation(BalloonAnimation.FADE)
+                    .setArrowVisible(true)
+                    .setWidthRatio(0.5f)
+                    .setArrowOrientation(ArrowOrientation.LEFT)
+                    .build();
+            balloon.setOnBalloonOutsideTouchListener(new OnBalloonOutsideTouchListener() {
+                @Override
+                public void onBalloonOutsideTouch(@NonNull View view, @NonNull MotionEvent motionEvent) {
+                    balloon.dismiss();
+                }
+            });
+            balloon.showAlignRight(holder.qrbtn);
+            state.edit().putBoolean("qrtutorial", false).apply();
         }
     }
 
