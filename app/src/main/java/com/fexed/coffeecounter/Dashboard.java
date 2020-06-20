@@ -1143,20 +1143,22 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
     }
 
     public File saveDbToExternalStorage() throws IOException {
-        String currentDBPath = getDatabasePath("typedb.db").getPath();
+        String currentDBPath = getDatabasePath("typedb").getPath();
         Log.e("DB", currentDBPath);
         File src = new File(currentDBPath);
-        File dst = new File(getExternalFilesDir(null) + File.separator + "backupdb_" + new SimpleDateFormat("yyyMMddHHmmss").format(new Date()) + ".db");
-
-        if (!dst.exists()) if (!dst.mkdir()) return null; //Create dst if doesn't exists
-
-        try (FileChannel inch = new FileInputStream(src).getChannel(); FileChannel outch = new FileOutputStream(dst).getChannel()) {
+        File savepathfile = new File(getExternalFilesDir(null) + File.separator + "coffeemonitor");
+        if (!savepathfile.exists()) savepathfile.mkdir();
+        String dstpath = savepathfile.getPath() + File.separator + "backupdb_" + new SimpleDateFormat("yyyMMddHHmmss").format(new Date()) + ".db";
+        File savefile = new File(dstpath);
+        savefile.createNewFile();
+        try (FileChannel inch = new FileInputStream(src).getChannel(); FileChannel outch = new FileOutputStream(dstpath).getChannel()) {
             inch.transferTo(0, inch.size(), outch);
         } catch (FileNotFoundException ex) {
             ex.printStackTrace();
+            return null;
         }
 
-        return dst;
+        return savefile;
     }
 
     private void scheduleNotification(Notification notification, int delay) {
