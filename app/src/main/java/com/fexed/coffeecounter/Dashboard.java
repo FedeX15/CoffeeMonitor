@@ -1,6 +1,5 @@
 package com.fexed.coffeecounter;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlarmManager;
@@ -10,17 +9,11 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
-
-import androidx.core.app.ActivityCompat;
-import androidx.sqlite.db.SupportSQLiteDatabase;
-import androidx.room.Room;
-import androidx.room.migration.Migration;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -30,24 +23,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.SystemClock;
-import android.provider.MediaStore;
-import androidx.annotation.NonNull;
-
-import com.androidplot.pie.PieRenderer;
-import com.google.android.gms.ads.initialization.InitializationStatus;
-import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
-import com.google.android.material.navigation.NavigationView;
-import com.google.android.material.snackbar.Snackbar;
-import androidx.core.app.NotificationCompat;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.LinearSnapHelper;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.SnapHelper;
-import androidx.appcompat.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -67,12 +43,32 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.NotificationCompat;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.LinearSnapHelper;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.SnapHelper;
+import androidx.room.Room;
+import androidx.room.migration.Migration;
+import androidx.sqlite.db.SupportSQLiteDatabase;
+
 import com.androidplot.pie.PieChart;
+import com.androidplot.pie.PieRenderer;
 import com.androidplot.pie.Segment;
 import com.androidplot.pie.SegmentFormatter;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
+import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.jjoe64.graphview.GraphView;
@@ -89,13 +85,13 @@ import com.skydoves.balloon.Balloon;
 import com.skydoves.balloon.BalloonAnimation;
 import com.skydoves.balloon.OnBalloonOutsideTouchListener;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.channels.FileChannel;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -1115,9 +1111,7 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
 
     public String saveToInternalStorage(Bitmap bitmapImage) {
         ContextWrapper cw = new ContextWrapper(getApplicationContext());
-        // path to /data/data/yourapp/app_data/imageDir
         File directory = cw.getDir("images", Context.MODE_PRIVATE);
-        // Create imageDir
         File mypath = new File(directory, bitmapImage.hashCode() + ".png");
 
         FileOutputStream fos = null;
@@ -1146,6 +1140,23 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
             e.printStackTrace();
         }
         return null;
+    }
+
+    public File saveDbToExternalStorage() throws IOException {
+        String currentDBPath = getDatabasePath("typedb.db").getPath();
+        Log.e("DB", currentDBPath);
+        File src = new File(currentDBPath);
+        File dst = new File(getExternalFilesDir(null) + File.separator + "backupdb_" + new SimpleDateFormat("yyyMMddHHmmss").format(new Date()) + ".db");
+
+        if (!dst.exists()) if (!dst.mkdir()) return null; //Create dst if doesn't exists
+
+        try (FileChannel inch = new FileInputStream(src).getChannel(); FileChannel outch = new FileOutputStream(dst).getChannel()) {
+            inch.transferTo(0, inch.size(), outch);
+        } catch (FileNotFoundException ex) {
+            ex.printStackTrace();
+        }
+
+        return dst;
     }
 
     private void scheduleNotification(Notification notification, int delay) {
@@ -1310,7 +1321,7 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
         });
 
         db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "typedb")
-                .allowMainThreadQueries() //TODO fix
+                .allowMainThreadQueries() //FIXME
                 .addMigrations(MIGRATION_19_20, MIGRATION_20_21, MIGRATION_21_22, MIGRATION_22_23, MIGRATION_23_24)
                 .build();
         //Log.d("ROOMDB", "path: " + getDatabasePath("typedb").getAbsolutePath());
@@ -1478,9 +1489,26 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
                 editor.putBoolean("cupstutorial", true);
                 editor.commit();
                 break;
-            case R.id.exportdatabtn:
-                String currentDBPath = getDatabasePath("typedb").getAbsolutePath();
-                Toast.makeText(getApplicationContext(), currentDBPath, Toast.LENGTH_SHORT).show();
+            case R.id.exportdatabtn: //FIXME
+                Intent sharefile = new Intent(Intent.ACTION_SEND);
+
+                try {
+                    File file = saveDbToExternalStorage();
+                    if (file != null && file.exists()) { //Should always exists
+                        String type = "application/octet-stream"; //generic file
+                        /*Uri uri = Uri.fromFile(file);
+                        ContentResolver cr = this.getContentResolver();
+                        String type = cr.getType(uri);*/
+
+                        sharefile.setType(type);
+                        sharefile.putExtra(Intent.EXTRA_STREAM, FileProvider.getUriForFile(this, "com.fexed.coffeecounter.fileprovider", file));
+                        startActivity(Intent.createChooser(sharefile, "Share File"));
+                    } else {
+                        Toast.makeText(this, "database not found", Toast.LENGTH_SHORT).show();
+                    }
+                } catch (IOException ex) {
+                    Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show();
+                }
                 break;
             case R.id.statbtn:
                 int milliliterstotal = 0;
