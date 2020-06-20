@@ -218,11 +218,8 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
         MobileAds.initialize(this, new OnInitializationCompleteListener() {
             @Override
             public void onInitializationComplete(InitializationStatus initializationStatus) {
-                AdView mAdView = findViewById(R.id.banner1);
-                AdRequest adRequest = new AdRequest.Builder().build();
-                mAdView.loadAd(adRequest);
                 AdView mAdView2 = findViewById(R.id.banner2);
-                adRequest = new AdRequest.Builder().build();
+                AdRequest adRequest = new AdRequest.Builder().build();
                 mAdView2.loadAd(adRequest);
                 AdView mAdView3 = findViewById(R.id.banner3);
                 adRequest = new AdRequest.Builder().build();
