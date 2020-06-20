@@ -1148,7 +1148,7 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
         File src = new File(currentDBPath);
         File savepathfile = new File(getExternalFilesDir(null) + File.separator + "coffeemonitor");
         if (!savepathfile.exists()) savepathfile.mkdir();
-        String dstpath = savepathfile.getPath() + File.separator + "backupdb_" + new SimpleDateFormat("yyyMMddHHmmss").format(new Date()) + ".db";
+        String dstpath = savepathfile.getPath() + File.separator + "coffeemonitordb_" + new SimpleDateFormat("yyyMMddHHmmss").format(new Date()) + ".db";
         File savefile = new File(dstpath);
         savefile.createNewFile();
         try (FileChannel inch = new FileInputStream(src).getChannel(); FileChannel outch = new FileOutputStream(dstpath).getChannel()) {
@@ -1482,31 +1482,25 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.backupbtn: //TODO
-                Toast.makeText(Dashboard.this, R.string.placeholder, Toast.LENGTH_LONG).show();
-                break;
             case R.id.resettutorialbtn:
                 editor.putBoolean("dashboardtutorial", true);
                 editor.putBoolean("typestutorial", true);
                 editor.putBoolean("cupstutorial", true);
                 editor.commit();
                 break;
-            case R.id.exportdatabtn: //FIXME
+            case R.id.backupbtn:
+            case R.id.exportdatabtn:
                 Intent sharefile = new Intent(Intent.ACTION_SEND);
-
                 try {
                     File file = saveDbToExternalStorage();
-                    if (file != null && file.exists()) { //Should always exists
+                    if (file != null && file.exists()) { //If not null should always exists
                         String type = "application/octet-stream"; //generic file
-                        /*Uri uri = Uri.fromFile(file);
-                        ContentResolver cr = this.getContentResolver();
-                        String type = cr.getType(uri);*/
 
                         sharefile.setType(type);
                         sharefile.putExtra(Intent.EXTRA_STREAM, FileProvider.getUriForFile(this, "com.fexed.coffeecounter.fileprovider", file));
                         startActivity(Intent.createChooser(sharefile, "Share File"));
                     } else {
-                        Toast.makeText(this, "database not found", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "Database not found", Toast.LENGTH_SHORT).show();
                     }
                 } catch (IOException ex) {
                     Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show();
