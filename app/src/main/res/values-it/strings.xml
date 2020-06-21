@@ -119,4 +119,5 @@
     <string name="fillfields">Riempi i campi per inserire un tipo personalizzato</string>
     <string name="choosedefault">Scegli un tipo predefinito</string>
     <string name="scanqr">Scansiona un codice QR</string>
+    <string name="restore">Ripristina</string>
 </resources>

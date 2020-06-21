@@ -121,4 +121,5 @@
     <string name="fillfields">Fill in the data for a custom type</string>
     <string name="choosedefault">Choose a default type</string>
     <string name="scanqr">Scan a QR code</string>
+    <string name="restore">Restore</string>
 </resources>

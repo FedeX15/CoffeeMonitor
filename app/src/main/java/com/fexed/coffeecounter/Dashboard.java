@@ -1105,6 +1105,22 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
                         Toast.makeText(this, R.string.placeholder, Toast.LENGTH_LONG).show(); //TODO error message
                     }
                 }
+            } else if (requestCode == 10) { //database
+                if (resultCode == Activity.RESULT_OK) {
+                    final Uri uri = data.getData();
+                    /*InputStream in;
+                    try {
+                        ContentResolver cr = this.getContentResolver();
+                        String mime = cr.getType(uri);
+                        if ("application/octet-stream".equals(mime)) {
+
+                        }
+
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                        Toast.makeText(this, R.string.placeholder, Toast.LENGTH_LONG).show(); //TODO error message
+                    }*/
+                }
             }
         }
     }
@@ -1441,8 +1457,7 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
                 if (isChecked) {
                     startAlarmBroadcastReceiver(getApplicationContext());
                     notiftimetxtv.setText(String.format(Locale.getDefault(), "%d:%d", state.getInt("notifhour", 20), state.getInt("notifmin", 30)));
-                }
-                else {
+                } else {
                     stopAlarmBroadcastReceiver(getApplicationContext());
                     notiftimetxtv.setText("--:--");
                 }
@@ -1451,6 +1466,8 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
 
         Button backupbtn = findViewById(R.id.backupbtn);
         backupbtn.setOnClickListener(this);
+        Button restorebtn = findViewById(R.id.restorebtn);
+        restorebtn.setOnClickListener(this);
     }
 
     public void backup() {
@@ -1507,6 +1524,11 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
                 } catch (IOException ex) {
                     Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show();
                 }
+                break;
+            case R.id.restorebtn:
+                Intent i = new Intent(Intent.ACTION_GET_CONTENT);
+                i.setType("file/*");
+                startActivityForResult(i, 10);
                 break;
             case R.id.statbtn:
                 int milliliterstotal = 0;

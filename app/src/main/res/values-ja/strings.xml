@@ -119,4 +119,5 @@
     <string name="fillfields">カスタムタイプのデータを入力します</string>
     <string name="choosedefault">デフォルトのタイプを選択</string>
     <string name="scanqr">QRコードをスキャン</string>
+    <string name="restore">戻す</string>
 </resources>

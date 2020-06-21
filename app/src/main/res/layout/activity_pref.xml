@@ -121,18 +121,33 @@
         app:layout_constraintEnd_toStartOf="@id/barstxtv"
         app:layout_constraintTop_toTopOf="@+id/textView7" />
 
-    <Button
-        android:id="@+id/backupbtn"
-        style="@style/Widget.AppCompat.Button.Colored"
+    <LinearLayout
+        android:id="@+id/bkprprcontainer"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="32dp"
-        android:text="@string/backup"
+        android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView7" />
+        app:layout_constraintTop_toBottomOf="@+id/textView7">
+
+        <Button
+            android:id="@+id/backupbtn"
+            style="@style/Widget.AppCompat.Button.Colored"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:text="@string/backup" />
+
+        <Button
+            android:id="@+id/restorebtn"
+            style="@style/Widget.AppCompat.Button.Colored"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:text="@string/restore" />
+    </LinearLayout>
 
     <TextView
         android:id="@+id/creditstitletextv"
@@ -146,7 +161,7 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Display1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/backupbtn" />
+        app:layout_constraintTop_toBottomOf="@+id/bkprprcontainer" />
 
     <TextView
         android:id="@+id/textView3"
