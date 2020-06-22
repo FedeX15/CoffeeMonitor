@@ -42,7 +42,7 @@ import java.util.List;
 
 
 /**
- * Created by fexed on 01/12/2017.
+ * Created by Federico Matteoni on 01/12/2017.
  */
 
 public class TypeRecviewAdapter extends RecyclerView.Adapter<TypeRecviewAdapter.ViewHolder> {
@@ -333,7 +333,7 @@ public class TypeRecviewAdapter extends RecyclerView.Adapter<TypeRecviewAdapter.
             if (bmp != null) holder.typeimage.setImageBitmap(bmp);
         }
 
-        if (state.getBoolean("qrtutorial", true)) {
+        /*if (state.getBoolean("qrtutorial", true)) {
             final Balloon balloon = new Balloon.Builder(context)
                     .setText("Share the type with a friend!")
                     .setBackgroundColorResource(R.color.colorAccent)
@@ -350,7 +350,7 @@ public class TypeRecviewAdapter extends RecyclerView.Adapter<TypeRecviewAdapter.
             });
             balloon.showAlignRight(holder.qrbtn);
             state.edit().putBoolean("qrtutorial", false).apply();
-        }
+        }*/
     }
 
     Bitmap encodeAsBitmap(String str) throws WriterException {

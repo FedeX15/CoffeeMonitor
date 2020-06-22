@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+
 import androidx.core.app.NotificationCompat;
 
 public class AlarmBroadcastReceiver extends BroadcastReceiver {
@@ -21,7 +22,7 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver {
         String CHANNEL_ID = NotifReceiver.NOTIFICATION_ID;// The id of the channel.
         CharSequence name = context.getResources().getString(R.string.app_name);// The user-visible name of the channel.
         NotificationCompat.Builder mBuilder;
-        Intent notificationIntent = new Intent(context, Dashboard.class);
+        Intent notificationIntent = new Intent(context, MainActivity.class);
         Bundle bundle = new Bundle();
         notificationIntent.putExtras(bundle);
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
