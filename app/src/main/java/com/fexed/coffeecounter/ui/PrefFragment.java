@@ -263,7 +263,7 @@ public class PrefFragment extends Fragment implements View.OnClickListener {
                         File file = new File(getContext().getCacheDir(), "backupdb");
                         try {
                             OutputStream output = new FileOutputStream(file);
-                            byte[] buffer = new byte[4 * 1024]; // or other buffer size
+                            byte[] buffer = new byte[1024];
                             int read;
 
                             while ((read = in.read(buffer)) != -1) {
@@ -281,19 +281,33 @@ public class PrefFragment extends Fragment implements View.OnClickListener {
                             if (testdb.isOpen()) {
                                 testdb.close();
                                 MainActivity.db.close();
-                                String currentDBPath = MainActivity.dbpath;
-                                Log.d("DBC", currentDBPath);
-                                File savepathfile = new File(currentDBPath);
-                                File src = file;
-                                if (!savepathfile.exists()) savepathfile.mkdir();
-                                String dstpath = savepathfile.getPath() + File.separator + "typedb.db";
-                                try (FileChannel inch = new FileInputStream(src).getChannel(); FileChannel outch = new FileOutputStream(dstpath).getChannel()) {
-                                    inch.transferTo(0, inch.size(), outch);
-                                } catch (FileNotFoundException ex) {
-                                    ex.printStackTrace();
-                                }
+                                String dstpath = MainActivity.dbpath + File.separator + "typedb.db";
 
+                                File src = file;
                                 Log.d("DBC", dstpath);
+                                Log.d("DBC", src.getAbsolutePath());
+
+                                in = new FileInputStream(src);
+                                try {
+                                    output = new FileOutputStream(MainActivity.dbpath);
+                                    try {
+                                        buffer = new byte[1024];
+                                        while ((read = in.read(buffer)) != -1) {
+                                            output.write(buffer, 0, read);
+                                        }
+                                    } catch (Exception ex) {
+                                        ex.printStackTrace();
+                                    } finally {
+                                        output.close();
+                                    }
+                                } catch (Exception ex) {
+                                    ex.printStackTrace();
+                                } finally {
+                                    in.close();
+                                }
+                                File dest = new File(MainActivity.dbpath, "backupdb");
+                                if (dest.exists()) dest.renameTo(new File(MainActivity.dbpath, "typedb.db"));
+
                                 MainActivity.db = Room.databaseBuilder(getContext(), AppDatabase.class, "typedb")
                                         .allowMainThreadQueries() //FIXME
                                         .setJournalMode(RoomDatabase.JournalMode.TRUNCATE)
