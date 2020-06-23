@@ -49,4 +49,9 @@ public class DBMigrations {
             database.execSQL("COMMIT");
         }
     };
+    public static final Migration MIGRATION_24_25 = new Migration(24, 25) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+        }
+    };
 }

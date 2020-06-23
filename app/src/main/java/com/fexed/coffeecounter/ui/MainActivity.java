@@ -34,6 +34,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
+import androidx.room.RoomDatabase;
 import androidx.viewpager.widget.ViewPager;
 
 import com.fexed.coffeecounter.R;
@@ -88,11 +89,13 @@ public class MainActivity extends AppCompatActivity {
         state.edit().putBoolean("isintypes", false).apply();
         db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "typedb")
                 .allowMainThreadQueries() //FIXME
+                .setJournalMode(RoomDatabase.JournalMode.TRUNCATE)
                 .addMigrations(DBMigrations.MIGRATION_19_20,
                         DBMigrations.MIGRATION_20_21,
                         DBMigrations.MIGRATION_21_22,
                         DBMigrations.MIGRATION_22_23,
-                        DBMigrations.MIGRATION_23_24)
+                        DBMigrations.MIGRATION_23_24,
+                        DBMigrations.MIGRATION_24_25)
                 .build();
         dbpath = getDatabasePath("typedb").getPath();
         updateDefaultDatabase();
@@ -407,24 +410,6 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(this, R.string.placeholder, Toast.LENGTH_LONG).show(); //TODO error message
                     }
                 }
-            } else if (requestCode == 10) { //database
-                if (resultCode == Activity.RESULT_OK) {
-                    //TODO check if the file is a correct database
-                    //TODO then load it
-                    final Uri uri = data.getData();
-                    /*InputStream in;
-                    try {
-                        ContentResolver cr = this.getContentResolver();
-                        String mime = cr.getType(uri);
-                        if ("application/octet-stream".equals(mime)) {
-
-                        }
-
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
-                        Toast.makeText(this, R.string.placeholder, Toast.LENGTH_LONG).show(); //TODO error message
-                    }*/
-                }
             }
         }
     }
@@ -647,8 +632,8 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
                             db.coffetypeDao().insert(defaultlist.get(i));
-                            //cupsRecview.setAdapter(new CupRecviewAdapter(db, 0));
-                            //typesRecview.setAdapter(new TypeRecviewAdapter(db, typesRecview, state));
+                            RecyclerView typesRecView = viewPager.findViewById(R.id.recview);
+                            if (typesRecView != null) typesRecView.setAdapter(new TypeRecviewAdapter(db, typesRecView, state));
                             dialog.dismiss();
                         }
                     });

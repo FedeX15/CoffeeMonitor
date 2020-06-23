@@ -335,25 +335,6 @@ public class TypeRecviewAdapter extends RecyclerView.Adapter<TypeRecviewAdapter.
             Bitmap bmp = loadImageFromStorage(mDataset.get(position).getImg());
             if (bmp != null) holder.typeimage.setImageBitmap(bmp);
         }
-
-        /*if (state.getBoolean("qrtutorial", true)) {
-            final Balloon balloon = new Balloon.Builder(context)
-                    .setText("Share the type with a friend!")
-                    .setBackgroundColorResource(R.color.colorAccent)
-                    .setBalloonAnimation(BalloonAnimation.FADE)
-                    .setArrowVisible(true)
-                    .setWidthRatio(0.5f)
-                    .setArrowOrientation(ArrowOrientation.LEFT)
-                    .build();
-            balloon.setOnBalloonOutsideTouchListener(new OnBalloonOutsideTouchListener() {
-                @Override
-                public void onBalloonOutsideTouch(@NonNull View view, @NonNull MotionEvent motionEvent) {
-                    balloon.dismiss();
-                }
-            });
-            balloon.showAlignRight(holder.qrbtn);
-            state.edit().putBoolean("qrtutorial", false).apply();
-        }*/
     }
 
     Bitmap encodeAsBitmap(String str) throws WriterException {

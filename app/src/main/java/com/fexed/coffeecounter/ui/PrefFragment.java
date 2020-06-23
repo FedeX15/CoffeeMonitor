@@ -1,8 +1,11 @@
 package com.fexed.coffeecounter.ui;
 
+import android.app.Activity;
 import android.app.TimePickerDialog;
+import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,12 +19,18 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
+import androidx.room.Room;
+import androidx.room.RoomDatabase;
+import androidx.sqlite.db.SimpleSQLiteQuery;
 
 import com.fexed.coffeecounter.R;
 import com.fexed.coffeecounter.data.Coffeetype;
 import com.fexed.coffeecounter.data.Cup;
+import com.fexed.coffeecounter.db.AppDatabase;
+import com.fexed.coffeecounter.db.DBMigrations;
 import com.fexed.coffeecounter.sys.FileProvider;
 
 import java.io.File;
@@ -29,6 +38,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.channels.FileChannel;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -142,6 +153,16 @@ public class PrefFragment extends Fragment implements View.OnClickListener {
                 Intent sharefile = new Intent(Intent.ACTION_SEND);
                 try {
                     File file = saveDbToExternalStorage();
+                    MainActivity.db = Room.databaseBuilder(getContext(), AppDatabase.class, "typedb")
+                            .allowMainThreadQueries() //FIXME
+                            .setJournalMode(RoomDatabase.JournalMode.TRUNCATE)
+                            .addMigrations(DBMigrations.MIGRATION_19_20,
+                                    DBMigrations.MIGRATION_20_21,
+                                    DBMigrations.MIGRATION_21_22,
+                                    DBMigrations.MIGRATION_22_23,
+                                    DBMigrations.MIGRATION_23_24,
+                                    DBMigrations.MIGRATION_24_25)
+                            .build();
                     if (file != null && file.exists()) { //If not null should always exists
                         String type = "application/octet-stream"; //generic file
 
@@ -207,8 +228,10 @@ public class PrefFragment extends Fragment implements View.OnClickListener {
     }
 
     public File saveDbToExternalStorage() throws IOException {
+        MainActivity.db.cupDAO().checkpoint(new SimpleSQLiteQuery("pragma wal_checkpoint(full)"));
+        MainActivity.db.coffetypeDao().checkpoint(new SimpleSQLiteQuery("pragma wal_checkpoint(full)"));
+        MainActivity.db.close();
         String currentDBPath = MainActivity.dbpath;
-        Log.e("DB", currentDBPath);
         File src = new File(currentDBPath);
         File savepathfile = new File(getContext().getExternalFilesDir(null) + File.separator + "coffeemonitor");
         if (!savepathfile.exists()) savepathfile.mkdir();
@@ -223,5 +246,79 @@ public class PrefFragment extends Fragment implements View.OnClickListener {
         }
 
         return savefile;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 10) { //database
+            if (resultCode == Activity.RESULT_OK) {
+                final Uri uri = data.getData();
+                try {
+                    ContentResolver cr = getContext().getContentResolver();
+                    String mime = cr.getType(uri);
+                    if ("application/octet-stream".equals(mime)) {
+
+                        InputStream in = getContext().getContentResolver().openInputStream(uri);
+                        File file = new File(getContext().getCacheDir(), "backupdb");
+                        try {
+                            OutputStream output = new FileOutputStream(file);
+                            byte[] buffer = new byte[4 * 1024]; // or other buffer size
+                            int read;
+
+                            while ((read = in.read(buffer)) != -1) {
+                                output.write(buffer, 0, read);
+                            }
+
+                            output.flush();
+                            in.close();
+                            AppDatabase testdb = Room.databaseBuilder(getContext(), AppDatabase.class, "testdbfrombackup")
+                                    .allowMainThreadQueries()
+                                    .createFromFile(file)
+                                    .setJournalMode(RoomDatabase.JournalMode.TRUNCATE)
+                                    .build();
+                            testdb.coffetypeDao().getAll();
+                            if (testdb.isOpen()) {
+                                testdb.close();
+                                MainActivity.db.close();
+                                String currentDBPath = MainActivity.dbpath;
+                                Log.d("DBC", currentDBPath);
+                                File savepathfile = new File(currentDBPath);
+                                File src = file;
+                                if (!savepathfile.exists()) savepathfile.mkdir();
+                                String dstpath = savepathfile.getPath() + File.separator + "typedb.db";
+                                try (FileChannel inch = new FileInputStream(src).getChannel(); FileChannel outch = new FileOutputStream(dstpath).getChannel()) {
+                                    inch.transferTo(0, inch.size(), outch);
+                                } catch (FileNotFoundException ex) {
+                                    ex.printStackTrace();
+                                }
+
+                                Log.d("DBC", dstpath);
+                                MainActivity.db = Room.databaseBuilder(getContext(), AppDatabase.class, "typedb")
+                                        .allowMainThreadQueries() //FIXME
+                                        .setJournalMode(RoomDatabase.JournalMode.TRUNCATE)
+                                        .addMigrations(DBMigrations.MIGRATION_19_20,
+                                                DBMigrations.MIGRATION_20_21,
+                                                DBMigrations.MIGRATION_21_22,
+                                                DBMigrations.MIGRATION_22_23,
+                                                DBMigrations.MIGRATION_23_24,
+                                                DBMigrations.MIGRATION_24_25)
+                                        .build();
+                            } else {
+                                Toast.makeText(getContext(), "Impossibile aprire database", Toast.LENGTH_LONG).show(); //TODO error message file non corretto
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            Toast.makeText(getContext(), "Errore durante creazione database", Toast.LENGTH_LONG).show(); //TODO error message file non corretto
+                        }
+                    } else {
+                        Toast.makeText(getContext(), "File non valido", Toast.LENGTH_LONG).show(); //TODO error message file non corretto
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Toast.makeText(getContext(), "Errore", Toast.LENGTH_LONG).show(); //TODO error message
+                }
+            }
+        }
     }
 }

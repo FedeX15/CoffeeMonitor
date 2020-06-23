@@ -4,7 +4,9 @@ import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
+import androidx.room.RawQuery;
 import androidx.room.Update;
+import androidx.sqlite.db.SupportSQLiteQuery;
 
 import com.fexed.coffeecounter.data.Coffeetype;
 
@@ -39,4 +41,7 @@ public interface CoffeetypeDAO {
 
     @Query("DELETE FROM coffeetype")
     void nuke();
+
+    @RawQuery
+    int checkpoint(SupportSQLiteQuery supportSQLiteQuery);
 }
