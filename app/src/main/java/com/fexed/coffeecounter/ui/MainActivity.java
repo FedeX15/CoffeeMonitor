@@ -31,6 +31,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
 import androidx.viewpager.widget.ViewPager;
 
@@ -40,6 +41,8 @@ import com.fexed.coffeecounter.data.Cup;
 import com.fexed.coffeecounter.db.AppDatabase;
 import com.fexed.coffeecounter.db.DBDownloader;
 import com.fexed.coffeecounter.db.DBMigrations;
+import com.fexed.coffeecounter.ui.adapters.CupRecviewAdapter;
+import com.fexed.coffeecounter.ui.adapters.TypeRecviewAdapter;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 import com.google.zxing.integration.android.IntentIntegrator;
@@ -71,6 +74,8 @@ public class MainActivity extends AppCompatActivity {
     public static AppDatabase db;
     public static String dbpath;
 
+    private ViewPager viewPager;
+
     public ImageView currentimageview;
     public Bitmap currentbitmap;
 
@@ -94,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         SectionsPagerAdapter sectionsPagerAdapter =
                 new SectionsPagerAdapter(this, getSupportFragmentManager());
-        ViewPager viewPager = findViewById(R.id.view_pager);
+        viewPager = findViewById(R.id.view_pager);
         viewPager.setAdapter(sectionsPagerAdapter);
 
         //Tutorial balloons
@@ -594,8 +599,8 @@ public class MainActivity extends AppCompatActivity {
 
                     db.coffetypeDao().insert(newtype);
 
-                    //cupsRecview.setAdapter(new CupRecviewAdapter(db, 0));
-                    //typesRecview.setAdapter(new TypeRecviewAdapter(db, typesRecview, state));
+                    RecyclerView typesRecView = viewPager.findViewById(R.id.recview);
+                    if (typesRecView != null) typesRecView.setAdapter(new TypeRecviewAdapter(db, typesRecView, state));
 
                     dialog.dismiss();
                 }
@@ -685,9 +690,8 @@ public class MainActivity extends AppCompatActivity {
                         db.coffetypeDao().update(list.get(pos));
                         db.cupDAO().insert(new Cup(list.get(pos).getKey(), date, day));
                         //TODO update graphs
-                        /*cupsRecview.setAdapter(new CupRecviewAdapter(db, 0));
-                        typesRecview.setAdapter(new TypeRecviewAdapter(db, typesRecview, state));
-                        graphUpdater();*/
+                        RecyclerView cupsRecView = viewPager.findViewById(R.id.cupsrecview);
+                        if (cupsRecView != null) cupsRecView.setAdapter(new CupRecviewAdapter(db, 0));
                     }
                 });
                 builder.show();
