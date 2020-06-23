@@ -15,7 +15,7 @@ import com.fexed.coffeecounter.db.AppDatabase;
 /**
  * A FragmentPagerAdapter that returns a fragment corresponding to
  * one of the tabs.
- * <p>
+ *
  * Created by Federico Matteoni on 22/06/2020
  */
 public class SectionsPagerAdapter extends FragmentPagerAdapter {
