@@ -1,4 +1,4 @@
-package com.fexed.coffeecounter;
+package com.fexed.coffeecounter.sys.notif;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -6,6 +6,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
+/**
+ * Created by Federico Matteoni on 10/06/2019
+ */
 public class NotifReceiver extends BroadcastReceiver {
 
     public static String NOTIFICATION_ID = "notif";

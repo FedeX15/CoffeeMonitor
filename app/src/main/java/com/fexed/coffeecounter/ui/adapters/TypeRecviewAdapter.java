@@ -1,4 +1,4 @@
-package com.fexed.coffeecounter;
+package com.fexed.coffeecounter.ui.adapters;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -25,6 +25,10 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.fexed.coffeecounter.R;
+import com.fexed.coffeecounter.data.Coffeetype;
+import com.fexed.coffeecounter.data.Cup;
+import com.fexed.coffeecounter.db.AppDatabase;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
@@ -44,7 +48,6 @@ import java.util.List;
 /**
  * Created by Federico Matteoni on 01/12/2017.
  */
-
 public class TypeRecviewAdapter extends RecyclerView.Adapter<TypeRecviewAdapter.ViewHolder> {
     public static int WHITE = 0xFFFFFFFF;
     public static int BLACK = 0xFF000000;

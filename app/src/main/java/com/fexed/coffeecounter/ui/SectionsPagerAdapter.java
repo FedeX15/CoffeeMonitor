@@ -1,4 +1,4 @@
-package com.fexed.coffeecounter.ui.main;
+package com.fexed.coffeecounter.ui;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -9,13 +9,14 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
-import com.fexed.coffeecounter.AppDatabase;
-import com.fexed.coffeecounter.MainActivity;
 import com.fexed.coffeecounter.R;
+import com.fexed.coffeecounter.db.AppDatabase;
 
 /**
- * A [FragmentPagerAdapter] that returns a fragment corresponding to
- * one of the sections/tabs/pages.
+ * A FragmentPagerAdapter that returns a fragment corresponding to
+ * one of the tabs.
+ * <p>
+ * Created by Federico Matteoni on 22/06/2020
  */
 public class SectionsPagerAdapter extends FragmentPagerAdapter {
     @StringRes

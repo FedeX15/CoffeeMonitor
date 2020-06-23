@@ -1,4 +1,4 @@
-package com.fexed.coffeecounter;
+package com.fexed.coffeecounter.db;
 
 import androidx.room.Dao;
 import androidx.room.Delete;
@@ -6,12 +6,13 @@ import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
 
+import com.fexed.coffeecounter.data.Coffeetype;
+
 import java.util.List;
 
 /**
- * Created by fedex on 04/12/2017.
+ * Created by Federico Matteoni on 04/12/2017.
  */
-
 @Dao
 public interface CoffeetypeDAO {
     @Query("SELECT * FROM coffeetype")

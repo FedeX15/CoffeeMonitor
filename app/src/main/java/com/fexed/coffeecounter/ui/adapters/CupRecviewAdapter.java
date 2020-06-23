@@ -1,14 +1,9 @@
-package com.fexed.coffeecounter;
+package com.fexed.coffeecounter.ui.adapters;
 
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +14,15 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.fexed.coffeecounter.R;
+import com.fexed.coffeecounter.data.Coffeetype;
+import com.fexed.coffeecounter.data.Cup;
+import com.fexed.coffeecounter.db.AppDatabase;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -27,9 +31,8 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- * Created by fexed on 19/01/2018.
+ * Created by Federico Matteoni on 19/01/2018.
  */
-
 public class CupRecviewAdapter extends RecyclerView.Adapter<CupRecviewAdapter.ViewHolder> {
     AppDatabase db;
     private List<Cup> mDataset;

@@ -1,17 +1,24 @@
-package com.fexed.coffeecounter;
+package com.fexed.coffeecounter.sys.widget;
 
 import android.app.Activity;
 import android.appwidget.AppWidgetManager;
-import androidx.room.Room;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.appcompat.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.RemoteViews;
 import android.widget.Spinner;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.room.Room;
+
+import com.fexed.coffeecounter.R;
+import com.fexed.coffeecounter.db.AppDatabase;
+
+/**
+ * Created by Federico Matteoni on 11/06/2019
+ */
 public class AddWidgetCnfg extends Activity {
 
     @Override

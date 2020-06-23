@@ -1,4 +1,4 @@
-package com.fexed.coffeecounter;
+package com.fexed.coffeecounter.db;
 
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -11,6 +11,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 
+/**
+ * Created by Federico Matteoni on 17/06/2020
+ */
 public class DBDownloader extends AsyncTask<String, Void, String> {
     private SharedPreferences state;
 

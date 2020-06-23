@@ -1,4 +1,4 @@
-package com.fexed.coffeecounter.ui.main;
+package com.fexed.coffeecounter.ui;
 
 import android.annotation.SuppressLint;
 import android.graphics.Paint;
@@ -17,10 +17,9 @@ import com.androidplot.pie.PieChart;
 import com.androidplot.pie.PieRenderer;
 import com.androidplot.pie.Segment;
 import com.androidplot.pie.SegmentFormatter;
-import com.fexed.coffeecounter.Coffeetype;
-import com.fexed.coffeecounter.Cup;
-import com.fexed.coffeecounter.MainActivity;
 import com.fexed.coffeecounter.R;
+import com.fexed.coffeecounter.data.Coffeetype;
+import com.fexed.coffeecounter.data.Cup;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.helper.DateAsXAxisLabelFormatter;
 import com.jjoe64.graphview.helper.StaticLabelsFormatter;

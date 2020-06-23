@@ -1,4 +1,4 @@
-package com.fexed.coffeecounter.ui.main;
+package com.fexed.coffeecounter.ui;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -11,12 +11,14 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.fexed.coffeecounter.CupRecviewAdapter;
-import com.fexed.coffeecounter.MainActivity;
 import com.fexed.coffeecounter.R;
+import com.fexed.coffeecounter.ui.adapters.CupRecviewAdapter;
 
 import java.util.Random;
 
+/**
+ * Created by Federico Matteoni on 22/06/2020
+ */
 public class CupsFragment extends Fragment {
     private RecyclerView cupsRecview;
 

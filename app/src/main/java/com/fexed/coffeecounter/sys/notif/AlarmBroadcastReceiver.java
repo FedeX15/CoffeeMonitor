@@ -1,4 +1,4 @@
-package com.fexed.coffeecounter;
+package com.fexed.coffeecounter.sys.notif;
 
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -12,6 +12,12 @@ import android.os.Bundle;
 
 import androidx.core.app.NotificationCompat;
 
+import com.fexed.coffeecounter.R;
+import com.fexed.coffeecounter.ui.MainActivity;
+
+/**
+ * Created by Federico Matteoni on 10/06/2019
+ */
 public class AlarmBroadcastReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {

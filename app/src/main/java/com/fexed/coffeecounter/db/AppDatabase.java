@@ -1,14 +1,17 @@
-package com.fexed.coffeecounter;
+package com.fexed.coffeecounter.db;
 
 import androidx.room.Database;
 import androidx.room.RoomDatabase;
 
-/**
- * Created by fexed on 04/12/2017.
- */
+import com.fexed.coffeecounter.data.Coffeetype;
+import com.fexed.coffeecounter.data.Cup;
 
+/**
+ * Created by Federico Matteoni on 04/12/2017.
+ */
 @Database(entities = {Coffeetype.class, Cup.class}, version = 24)
 public abstract class AppDatabase extends RoomDatabase {
     public abstract CoffeetypeDAO coffetypeDao();
+
     public abstract CupDAO cupDAO();
 }

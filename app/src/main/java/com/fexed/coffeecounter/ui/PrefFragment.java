@@ -1,4 +1,4 @@
-package com.fexed.coffeecounter.ui.main;
+package com.fexed.coffeecounter.ui;
 
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
@@ -19,11 +19,10 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
-import com.fexed.coffeecounter.Coffeetype;
-import com.fexed.coffeecounter.Cup;
-import com.fexed.coffeecounter.FileProvider;
-import com.fexed.coffeecounter.MainActivity;
 import com.fexed.coffeecounter.R;
+import com.fexed.coffeecounter.data.Coffeetype;
+import com.fexed.coffeecounter.data.Cup;
+import com.fexed.coffeecounter.sys.FileProvider;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -36,6 +35,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
+/**
+ * Created by Federico Matteoni on 22/06/2020
+ */
 public class PrefFragment extends Fragment implements View.OnClickListener {
     public static PrefFragment newInstance(int index) {
         PrefFragment fragment = new PrefFragment();

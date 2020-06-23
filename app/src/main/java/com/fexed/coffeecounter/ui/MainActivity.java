@@ -1,4 +1,4 @@
-package com.fexed.coffeecounter;
+package com.fexed.coffeecounter.ui;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
@@ -34,7 +34,12 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.room.Room;
 import androidx.viewpager.widget.ViewPager;
 
-import com.fexed.coffeecounter.ui.main.SectionsPagerAdapter;
+import com.fexed.coffeecounter.R;
+import com.fexed.coffeecounter.data.Coffeetype;
+import com.fexed.coffeecounter.data.Cup;
+import com.fexed.coffeecounter.db.AppDatabase;
+import com.fexed.coffeecounter.db.DBDownloader;
+import com.fexed.coffeecounter.db.DBMigrations;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 import com.google.zxing.integration.android.IntentIntegrator;

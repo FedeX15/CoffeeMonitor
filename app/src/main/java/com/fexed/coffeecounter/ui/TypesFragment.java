@@ -1,4 +1,4 @@
-package com.fexed.coffeecounter.ui.main;
+package com.fexed.coffeecounter.ui;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -13,12 +13,14 @@ import androidx.recyclerview.widget.LinearSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SnapHelper;
 
-import com.fexed.coffeecounter.MainActivity;
 import com.fexed.coffeecounter.R;
-import com.fexed.coffeecounter.TypeRecviewAdapter;
+import com.fexed.coffeecounter.ui.adapters.TypeRecviewAdapter;
 
 import java.util.Random;
 
+/**
+ * Created by Federico Matteoni on 22/06/2020
+ */
 public class TypesFragment extends Fragment {
     private RecyclerView typesRecview;
 
