@@ -24,7 +24,7 @@ import java.util.Random;
 public class TypesFragment extends Fragment {
     private RecyclerView typesRecview;
 
-    public static TypesFragment newInstance(int index) {
+    public static TypesFragment newInstance() {
         TypesFragment fragment = new TypesFragment();
         return fragment;
     }

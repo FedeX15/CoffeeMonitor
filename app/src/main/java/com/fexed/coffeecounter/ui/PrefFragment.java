@@ -39,7 +39,7 @@ import java.util.Locale;
  * Created by Federico Matteoni on 22/06/2020
  */
 public class PrefFragment extends Fragment implements View.OnClickListener {
-    public static PrefFragment newInstance(int index) {
+    public static PrefFragment newInstance() {
         PrefFragment fragment = new PrefFragment();
         return fragment;
     }
@@ -121,7 +121,6 @@ public class PrefFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 MainActivity.state.edit().putBoolean("historyline", b).apply();
-                //graphUpdater();
             }
         });
 

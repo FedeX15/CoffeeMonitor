@@ -31,6 +31,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
 import androidx.viewpager.widget.ViewPager;
@@ -204,9 +205,12 @@ public class MainActivity extends AppCompatActivity {
                         elem.setQnt(elem.getQnt() + 1);
                         db.coffetypeDao().update(elem);
                         db.cupDAO().insert(new Cup(elem.getKey()));
-                        /*graphUpdater();
-                        typesRecview.setAdapter(new TypeRecviewAdapter(db, typesRecview, state));
-                        cupsRecview.setAdapter(new CupRecviewAdapter(db, 0));*/
+                        graphUpdater();
+                        RecyclerView cupsRecView = viewPager.findViewById(R.id.cupsrecview);
+                        if (cupsRecView != null) cupsRecView.setAdapter(new CupRecviewAdapter(db, 0));
+                        RecyclerView typesRecView = viewPager.findViewById(R.id.recview);
+                        if (typesRecView != null) typesRecView.setAdapter(new TypeRecviewAdapter(db, typesRecView, state));
+
                         return true;
                     }
                 });
@@ -689,7 +693,7 @@ public class MainActivity extends AppCompatActivity {
                         list.get(pos).setQnt(list.get(pos).getQnt() + 1);
                         db.coffetypeDao().update(list.get(pos));
                         db.cupDAO().insert(new Cup(list.get(pos).getKey(), date, day));
-                        //TODO update graphs
+                        graphUpdater();
                         RecyclerView cupsRecView = viewPager.findViewById(R.id.cupsrecview);
                         if (cupsRecView != null) cupsRecView.setAdapter(new CupRecviewAdapter(db, 0));
                     }
@@ -698,6 +702,11 @@ public class MainActivity extends AppCompatActivity {
             }
         }, cld.get(Calendar.YEAR), cld.get(Calendar.MONTH), cld.get(Calendar.DAY_OF_MONTH));
         StartTime.show();
+    }
+
+    public void graphUpdater() {
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag("android:switcher:" + viewPager.getId() + ":" + 0);
+        if (fragment instanceof StatFragment) ((StatFragment) fragment).graphUpdater();
     }
 
     public String generateTip() {

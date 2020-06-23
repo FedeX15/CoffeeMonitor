@@ -38,18 +38,17 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-
         switch (position) {
             case 0:
-                return StatFragment.newInstance(position + 1);
+                return StatFragment.newInstance();
             case 1:
-                return TypesFragment.newInstance(position + 1);
+                return TypesFragment.newInstance();
             case 2:
-                return CupsFragment.newInstance(position + 1);
+                return CupsFragment.newInstance();
             case 3:
-                return PrefFragment.newInstance(position + 1);
+                return PrefFragment.newInstance();
             default:
-                return StatFragment.newInstance(-1);
+                return StatFragment.newInstance();
         }
     }
 

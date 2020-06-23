@@ -22,7 +22,7 @@ import java.util.Random;
 public class CupsFragment extends Fragment {
     private RecyclerView cupsRecview;
 
-    public static CupsFragment newInstance(int index) {
+    public static CupsFragment newInstance() {
         CupsFragment fragment = new CupsFragment();
         return fragment;
     }

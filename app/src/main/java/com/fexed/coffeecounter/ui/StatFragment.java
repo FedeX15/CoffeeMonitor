@@ -9,6 +9,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -53,7 +54,7 @@ public class StatFragment extends Fragment {
     private TextView totalcupslastmonthtxtv;
     private TextView totalliterstxtv;
 
-    public static StatFragment newInstance(int index) {
+    public static StatFragment newInstance() {
         StatFragment fragment = new StatFragment();
         return fragment;
     }
@@ -415,6 +416,7 @@ public class StatFragment extends Fragment {
     }
 
     public void graphUpdater() {
+        Toast.makeText(getContext(), "Grafici aggiornati", Toast.LENGTH_SHORT).show();
         Calendar c = Calendar.getInstance();
         int curmonth = c.get(Calendar.MONTH);
         int curyear = c.get(Calendar.YEAR);
