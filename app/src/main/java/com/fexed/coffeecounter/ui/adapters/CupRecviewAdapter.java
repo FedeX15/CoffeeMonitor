@@ -1,6 +1,5 @@
 package com.fexed.coffeecounter.ui.adapters;
 
-import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -77,109 +76,111 @@ public class CupRecviewAdapter extends RecyclerView.Adapter<CupRecviewAdapter.Vi
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
         final String str = getTypeFromKey(mDataset.get(position).getTypekey()).getName() + " @ " + mDataset.get(position).toString();
+        View.OnLongClickListener onLongClickListener = new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                switch (v.getId()) {
+                    case R.id.remove:
+                        AlertDialog.Builder dialogbuilder = new AlertDialog.Builder(context);
+                        dialogbuilder.setMessage(context.getString(R.string.eliminarecup, str))
+                                .setPositiveButton(R.string.si, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        removeAt(holder.getAdapterPosition());
+                                    }
+                                })
+                                .setNegativeButton(R.string.no, null);
+                        dialogbuilder.create();
+                        dialogbuilder.show();
+
+                        return true;
+                    case R.id.cuptextparent:
+                        Toast.makeText(context, context.getString(R.string.tienipremutoedittipologia), Toast.LENGTH_SHORT).show();
+                        final Cup thiscup = mDataset.get(holder.getAdapterPosition());
+                        dialogbuilder = new AlertDialog.Builder(context);
+                        View form = LayoutInflater.from(context).inflate(R.layout.editcupdialog, null, false);
+                        final TextView nametxt = form.findViewById(R.id.editcuptype);
+                        final TextView datetxt = form.findViewById(R.id.editcupdate);
+                        Button confirmbtn = form.findViewById(R.id.editcupconfirmbtn);
+                        Button cancelbtn = form.findViewById(R.id.editcupcancelbtn);
+
+                        nametxt.setText(getTypeFromKey(thiscup.getTypekey()).getName());
+                        nametxt.setOnLongClickListener(new View.OnLongClickListener() {
+                            @Override
+                            public boolean onLongClick(View view) {
+                                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                                builder.setTitle(R.string.selecttype);
+                                builder.setAdapter(new ArrayAdapter<>(context, R.layout.type_element, types), new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int pos) {
+                                        thiscup.setTypekey(types.get(pos).getKey());
+                                        nametxt.setText(types.get(pos).getName());
+                                    }
+                                });
+                                builder.show();
+                                return true;
+                            }
+                        });
+
+                        datetxt.setText(thiscup.toString());
+                        datetxt.setOnLongClickListener(new View.OnLongClickListener() {
+                            @Override
+                            public boolean onLongClick(View view) {
+                                Calendar cld = Calendar.getInstance();
+                                DatePickerDialog StartTime = new DatePickerDialog(context, new DatePickerDialog.OnDateSetListener() {
+                                    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                                        Calendar newDate = Calendar.getInstance();
+                                        newDate.set(year, monthOfYear, dayOfMonth);
+                                        SimpleDateFormat sdf = new SimpleDateFormat("dd/MMM/yyy HH:mm:ss:SSS", Locale.getDefault());
+                                        final String date = sdf.format(newDate.getTime());
+                                        sdf = new SimpleDateFormat("yyy/MM/dd", Locale.getDefault());
+                                        final String day = sdf.format(newDate.getTime());
+                                        thiscup.setDate(date);
+                                        thiscup.setDay(day);
+                                        datetxt.setText(thiscup.toString());
+
+                                    }
+                                }, cld.get(Calendar.YEAR), cld.get(Calendar.MONTH), cld.get(Calendar.DAY_OF_MONTH));
+                                StartTime.show();
+                                return true;
+                            }
+                        });
+
+                        dialogbuilder.setView(form);
+                        dialogbuilder.create();
+                        final AlertDialog dialog = dialogbuilder.show();
+
+                        confirmbtn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                mDataset.set(holder.getAdapterPosition(), thiscup);
+                                db.cupDAO().update(thiscup);
+                                notifyDataSetChanged();
+                                dialog.dismiss();
+                            }
+                        });
+
+                        cancelbtn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                dialog.dismiss();
+                            }
+                        });
+
+                        return false;
+                    default:
+                        return false;
+                }
+            }
+        };
 
         holder.typetxtv.setText(getTypeFromKey(mDataset.get(position).getTypekey()).getName());
         holder.timestamptxtv.setText(mDataset.get(position).toString());
         String locString = "";
         if(mDataset.get(position).getLatitude() != 0.0) locString = mDataset.get(position).getLatitude() + " " + mDataset.get(position).getLongitude();
         holder.loctxtv.setText(locString);
-        holder.removebtn.setOnLongClickListener(new View.OnLongClickListener() {
-            @SuppressLint("StringFormatInvalid")
-            @Override
-            public boolean onLongClick(View view) {
-                AlertDialog.Builder dialogbuilder = new AlertDialog.Builder(view.getContext());
-                dialogbuilder.setMessage(context.getString(R.string.eliminarecup, str))
-                        .setPositiveButton(R.string.si, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                removeAt(holder.getAdapterPosition());
-                            }
-                        })
-                        .setNegativeButton(R.string.no, null);
-                dialogbuilder.create();
-                dialogbuilder.show();
-
-                return true;
-            }
-        });
-        holder.cuptextparent.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                Toast.makeText(context, context.getString(R.string.tienipremutoedittipologia), Toast.LENGTH_SHORT).show();
-                final Cup thiscup = mDataset.get(holder.getAdapterPosition());
-                AlertDialog.Builder dialogbuilder = new AlertDialog.Builder(context);
-                View form = LayoutInflater.from(context).inflate(R.layout.editcupdialog, null, false);
-                final TextView nametxt = form.findViewById(R.id.editcuptype);
-                final TextView datetxt = form.findViewById(R.id.editcupdate);
-                Button confirmbtn = form.findViewById(R.id.editcupconfirmbtn);
-                Button cancelbtn = form.findViewById(R.id.editcupcancelbtn);
-
-                nametxt.setText(getTypeFromKey(thiscup.getTypekey()).getName());
-                nametxt.setOnLongClickListener(new View.OnLongClickListener() {
-                    @Override
-                    public boolean onLongClick(View view) {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                        builder.setTitle(R.string.selecttype);
-                        builder.setAdapter(new ArrayAdapter<>(context, R.layout.type_element, types), new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int pos) {
-                                thiscup.setTypekey(types.get(pos).getKey());
-                                nametxt.setText(types.get(pos).getName());
-                            }
-                        });
-                        builder.show();
-                        return true;
-                    }
-                });
-
-                datetxt.setText(thiscup.toString());
-                datetxt.setOnLongClickListener(new View.OnLongClickListener() {
-                    @Override
-                    public boolean onLongClick(View view) {
-                        Calendar cld = Calendar.getInstance();
-                        DatePickerDialog StartTime = new DatePickerDialog(context, new DatePickerDialog.OnDateSetListener() {
-                            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                                Calendar newDate = Calendar.getInstance();
-                                newDate.set(year, monthOfYear, dayOfMonth);
-                                SimpleDateFormat sdf = new SimpleDateFormat("dd/MMM/yyy HH:mm:ss:SSS", Locale.getDefault());
-                                final String date = sdf.format(newDate.getTime());
-                                sdf = new SimpleDateFormat("yyy/MM/dd", Locale.getDefault());
-                                final String day = sdf.format(newDate.getTime());
-                                thiscup.setDate(date);
-                                thiscup.setDay(day);
-                                datetxt.setText(thiscup.toString());
-
-                            }
-                        }, cld.get(Calendar.YEAR), cld.get(Calendar.MONTH), cld.get(Calendar.DAY_OF_MONTH));
-                        StartTime.show();
-                        return true;
-                    }
-                });
-
-                dialogbuilder.setView(form);
-                dialogbuilder.create();
-                final AlertDialog dialog = dialogbuilder.show();
-
-                confirmbtn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        mDataset.set(holder.getAdapterPosition(), thiscup);
-                        db.cupDAO().update(thiscup);
-                        notifyDataSetChanged();
-                        dialog.dismiss();
-                    }
-                });
-
-                cancelbtn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        dialog.dismiss();
-                    }
-                });
-
-                return false;
-            }
-        });
+        holder.removebtn.setOnLongClickListener(onLongClickListener);
+        holder.cuptextparent.setOnLongClickListener(onLongClickListener);
     }
 
     @Override

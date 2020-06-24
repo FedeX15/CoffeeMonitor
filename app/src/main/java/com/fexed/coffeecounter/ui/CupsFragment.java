@@ -21,7 +21,7 @@ import java.util.Random;
 /**
  * Created by Federico Matteoni on 22/06/2020
  */
-public class CupsFragment extends Fragment {
+public class CupsFragment extends Fragment implements View.OnClickListener {
     private RecyclerView cupsRecview;
 
     public static CupsFragment newInstance() {
@@ -44,14 +44,11 @@ public class CupsFragment extends Fragment {
                 LinearLayoutManager.VERTICAL,
                 false));
 
-        FloatingActionButton mapfab = root.findViewById(R.id.gotomapfab);
-        mapfab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent mapiintent = new Intent(getContext(), MapActivity.class);
-                startActivity(mapiintent);
-            }
-        });
+        final FloatingActionButton mapfab = root.findViewById(R.id.gotomapfab);
+        mapfab.setOnClickListener(this);
+
+        TextView funfactstxtv = root.findViewById(R.id.cupsfunfacttxt);
+        funfactstxtv.setOnClickListener(this);
 
         return root;
     }
@@ -64,5 +61,20 @@ public class CupsFragment extends Fragment {
         TextView funfactstxtv = getView().findViewById(R.id.cupsfunfacttxt);
         funfactstxtv.setText(funfacts[new Random().nextInt(funfacts.length)]);
         cupsRecview.setAdapter(new CupRecviewAdapter(MainActivity.db, 0));
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.cupsfunfacttxt:
+                FloatingActionButton mapfab = getView().findViewById(R.id.gotomapfab);
+                if (mapfab.getVisibility() == View.VISIBLE) mapfab.hide();
+                else mapfab.show();
+                break;
+            case R.id.gotomapfab:
+                Intent mapiintent = new Intent(getContext(), MapActivity.class);
+                startActivity(mapiintent);
+                break;
+        }
     }
 }
