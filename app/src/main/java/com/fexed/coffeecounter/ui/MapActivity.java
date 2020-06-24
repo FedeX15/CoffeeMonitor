@@ -40,7 +40,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
             List<Cup> typecups = MainActivity.db.cupDAO().getAll(type.getKey());
             for (Cup cup : typecups) {
                 if (cup.getLongitude() != 0.0) {
-                    mMap.addMarker(new MarkerOptions().position(new LatLng(cup.getLatitude(), cup.getLongitude())).title(type.getName()));
+                    mMap.addMarker(new MarkerOptions().position(new LatLng(cup.getLatitude(), cup.getLongitude())).title(type.getName() + " " + cup.toString()));
                 }
             }
         }
