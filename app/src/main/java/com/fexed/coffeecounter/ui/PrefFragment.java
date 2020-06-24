@@ -277,7 +277,9 @@ public class PrefFragment extends Fragment implements View.OnClickListener {
                                     .createFromFile(file)
                                     .setJournalMode(RoomDatabase.JournalMode.TRUNCATE)
                                     .build();
+                            //TODO handle wrong file
                             testdb.coffetypeDao().getAll();
+                            testdb.cupDAO().getDays();
                             if (testdb.isOpen()) {
                                 testdb.close();
                                 MainActivity.db.close();

@@ -1,7 +1,6 @@
 package com.fexed.coffeecounter.ui;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
@@ -10,7 +9,6 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
 import com.fexed.coffeecounter.R;
-import com.fexed.coffeecounter.db.AppDatabase;
 
 /**
  * A FragmentPagerAdapter that returns a fragment corresponding to
@@ -25,15 +23,10 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
             R.string.title_cups,
             R.string.title_preferences};
     private final Context context;
-    private final SharedPreferences state;
-    private final AppDatabase db;
 
     public SectionsPagerAdapter(Context context, FragmentManager fm) {
-        super(fm);
+        super(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
         this.context = context;
-        this.state = MainActivity.state;
-        this.db = MainActivity.db;
-
     }
 
     @Override
@@ -45,10 +38,8 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
                 return TypesFragment.newInstance();
             case 2:
                 return CupsFragment.newInstance();
-            case 3:
-                return PrefFragment.newInstance();
             default:
-                return StatFragment.newInstance();
+                return PrefFragment.newInstance();
         }
     }
 

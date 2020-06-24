@@ -718,7 +718,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateDefaultDatabase() {
-        Toast.makeText(getApplicationContext(), R.string.dbupdated, Toast.LENGTH_SHORT).show();
         try {
             Locale locale = Locale.getDefault();
             String dbtxt;
@@ -733,7 +732,7 @@ public class MainActivity extends AppCompatActivity {
                         String[] strtype = str.split("::");
                         db.coffetypeDao().insert(new Coffeetype(strtype[0], Integer.parseInt(strtype[2]), strtype[1], Boolean.parseBoolean(strtype[3]), strtype[4], Float.parseFloat(strtype[5]), null, true));
                     }
-                    Snackbar.make(findViewById(R.id.view_pager), R.string.dbupdated, Snackbar.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), R.string.dbupdated, Toast.LENGTH_SHORT).show();
                 } else {
                     List<Coffeetype> coffeelist = db.coffetypeDao().getAll();
                     for (String str : dbtxt.split("\n")) {
@@ -754,12 +753,12 @@ public class MainActivity extends AppCompatActivity {
                             db.coffetypeDao().update(type);
                         }
                     }
-                    Snackbar.make(findViewById(R.id.view_pager), R.string.dbupdated, Snackbar.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), R.string.dbupdated, Toast.LENGTH_SHORT).show();
                 }
             }
         } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
-            Snackbar.make(findViewById(R.id.view_pager), R.string.dbupdatefailed, Snackbar.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), R.string.dbupdatefailed, Toast.LENGTH_SHORT).show();
         }
     }
 }
