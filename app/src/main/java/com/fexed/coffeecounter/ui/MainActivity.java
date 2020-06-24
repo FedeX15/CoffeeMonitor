@@ -1,5 +1,6 @@
 package com.fexed.coffeecounter.ui;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Context;
@@ -7,8 +8,12 @@ import android.content.ContextWrapper;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
@@ -184,6 +189,10 @@ public class MainActivity extends AppCompatActivity {
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+        }
     }
 
     @Override
@@ -207,7 +216,9 @@ public class MainActivity extends AppCompatActivity {
                         Coffeetype elem = list.get(pos);
                         elem.setQnt(elem.getQnt() + 1);
                         db.coffetypeDao().update(elem);
-                        db.cupDAO().insert(new Cup(elem.getKey()));
+                        Cup cup = new Cup(elem.getKey());
+                        cup = geoTag(cup);
+                        db.cupDAO().insert(cup);
                         graphUpdater();
                         RecyclerView cupsRecView = viewPager.findViewById(R.id.cupsrecview);
                         if (cupsRecView != null) cupsRecView.setAdapter(new CupRecviewAdapter(db, 0));
@@ -677,7 +688,9 @@ public class MainActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int pos) {
                         list.get(pos).setQnt(list.get(pos).getQnt() + 1);
                         db.coffetypeDao().update(list.get(pos));
-                        db.cupDAO().insert(new Cup(list.get(pos).getKey(), date, day));
+                        Cup cup = new Cup(list.get(pos).getKey(), date, day);
+                        cup = geoTag(cup);
+                        db.cupDAO().insert(cup);
                         graphUpdater();
                         RecyclerView cupsRecView = viewPager.findViewById(R.id.cupsrecview);
                         if (cupsRecView != null) cupsRecView.setAdapter(new CupRecviewAdapter(db, 0));
@@ -687,6 +700,26 @@ public class MainActivity extends AppCompatActivity {
             }
         }, cld.get(Calendar.YEAR), cld.get(Calendar.MONTH), cld.get(Calendar.DAY_OF_MONTH));
         StartTime.show();
+    }
+
+    public Cup geoTag(Cup cup) {
+        if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            Criteria criteria = new Criteria();
+            criteria.setPowerRequirement(Criteria.POWER_LOW);
+            criteria.setCostAllowed(false);
+            String provider = locationManager.getBestProvider(criteria, true);
+            try {
+                Location location = locationManager.getLastKnownLocation(provider);
+                cup.setLongitude(location.getLongitude());
+                cup.setLatitude(location.getLatitude());
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                Toast.makeText(this, "Errore location", Toast.LENGTH_SHORT).show(); //TODO error message
+            }
+            return cup;
+        }
+        return cup;
     }
 
     public void graphUpdater() {

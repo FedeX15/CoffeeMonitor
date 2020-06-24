@@ -80,6 +80,8 @@ public class CupRecviewAdapter extends RecyclerView.Adapter<CupRecviewAdapter.Vi
 
         holder.typetxtv.setText(getTypeFromKey(mDataset.get(position).getTypekey()).getName());
         holder.timestamptxtv.setText(mDataset.get(position).toString());
+        String locString = mDataset.get(position).getLatitude() + " " + mDataset.get(position).getLongitude();
+        holder.loctxtv.setText(locString);
         holder.removebtn.setOnLongClickListener(new View.OnLongClickListener() {
             @SuppressLint("StringFormatInvalid")
             @Override
@@ -194,6 +196,7 @@ public class CupRecviewAdapter extends RecyclerView.Adapter<CupRecviewAdapter.Vi
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public TextView typetxtv;
         public TextView timestamptxtv;
+        public TextView loctxtv;
         public LinearLayout cuptextparent;
         public Button removebtn;
 
@@ -201,6 +204,7 @@ public class CupRecviewAdapter extends RecyclerView.Adapter<CupRecviewAdapter.Vi
             super(v);
             typetxtv = v.findViewById(R.id.typename);
             timestamptxtv = v.findViewById(R.id.timestamp);
+            loctxtv = v.findViewById(R.id.locationtxtv);
             cuptextparent = v.findViewById(R.id.cuptextparent);
             removebtn = v.findViewById(R.id.remove);
         }
