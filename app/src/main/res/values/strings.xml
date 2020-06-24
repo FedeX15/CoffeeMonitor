@@ -122,4 +122,5 @@
     <string name="choosedefault">Choose a default type</string>
     <string name="scanqr">Scan a QR code</string>
     <string name="restore">Restore</string>
+    <string name="title_activity_map">Map</string>
 </resources>

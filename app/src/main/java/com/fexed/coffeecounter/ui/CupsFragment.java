@@ -1,5 +1,6 @@
 package com.fexed.coffeecounter.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.fexed.coffeecounter.R;
 import com.fexed.coffeecounter.ui.adapters.CupRecviewAdapter;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.Random;
 
@@ -41,6 +43,15 @@ public class CupsFragment extends Fragment {
         cupsRecview.setLayoutManager(new LinearLayoutManager(getContext(),
                 LinearLayoutManager.VERTICAL,
                 false));
+
+        FloatingActionButton mapfab = root.findViewById(R.id.gotomapfab);
+        mapfab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent mapiintent = new Intent(getContext(), MapActivity.class);
+                startActivity(mapiintent);
+            }
+        });
 
         return root;
     }
