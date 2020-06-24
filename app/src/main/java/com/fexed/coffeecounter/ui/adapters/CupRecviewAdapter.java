@@ -80,7 +80,8 @@ public class CupRecviewAdapter extends RecyclerView.Adapter<CupRecviewAdapter.Vi
 
         holder.typetxtv.setText(getTypeFromKey(mDataset.get(position).getTypekey()).getName());
         holder.timestamptxtv.setText(mDataset.get(position).toString());
-        String locString = mDataset.get(position).getLatitude() + " " + mDataset.get(position).getLongitude();
+        String locString = "";
+        if(mDataset.get(position).getLatitude() != 0.0) locString = mDataset.get(position).getLatitude() + " " + mDataset.get(position).getLongitude();
         holder.loctxtv.setText(locString);
         holder.removebtn.setOnLongClickListener(new View.OnLongClickListener() {
             @SuppressLint("StringFormatInvalid")
