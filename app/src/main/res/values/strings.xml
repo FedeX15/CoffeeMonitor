@@ -131,4 +131,10 @@
     </string-array>
     <string name="libsources">Libraries and icons</string>
     <string name="funsources">Fun facts</string>
+    <string name="locationerror">Error in retrieving the location</string>
+    <string name="fileopenerror">Error during file opening</string>
+    <string name="dbnotfounderror">Database not found</string>
+    <string name="dbopenerror">Error during opening database file</string>
+    <string name="dbcreateerror">Error during database creation</string>
+    <string name="fileinvaliderror">Invalid file</string>
 </resources>

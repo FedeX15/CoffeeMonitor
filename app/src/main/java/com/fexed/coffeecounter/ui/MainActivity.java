@@ -418,7 +418,7 @@ public class MainActivity extends AppCompatActivity {
                         currentbitmap = selected_img;
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
-                        Toast.makeText(this, R.string.placeholder, Toast.LENGTH_LONG).show(); //TODO error message
+                        Toast.makeText(this, R.string.fileopenerror, Toast.LENGTH_LONG).show();
                     }
                 }
             }
@@ -715,7 +715,7 @@ public class MainActivity extends AppCompatActivity {
                 cup.setLatitude(location.getLatitude());
             } catch (Exception ex) {
                 ex.printStackTrace();
-                Toast.makeText(this, "Errore location", Toast.LENGTH_SHORT).show(); //TODO error message
+                Toast.makeText(this, R.string.locationerror, Toast.LENGTH_SHORT).show();
             }
             return cup;
         }

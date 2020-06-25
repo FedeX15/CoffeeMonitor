@@ -83,7 +83,7 @@ public class TypeRecviewAdapter extends RecyclerView.Adapter<TypeRecviewAdapter.
                 cup.setLatitude(location.getLatitude());
             } catch (Exception ex) {
                 ex.printStackTrace();
-                Toast.makeText(context, "Errore location", Toast.LENGTH_SHORT).show(); //TODO error message
+                Toast.makeText(context, R.string.locationerror, Toast.LENGTH_SHORT).show();
             }
             return cup;
         }

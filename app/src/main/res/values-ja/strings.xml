@@ -127,4 +127,10 @@
     </string-array>
     <string name="libsources">ライブラリとアイコン</string>
     <string name="funsources">面白情報</string>
+    <string name="locationerror">場所の取得中にエラーが発生しました</string>
+    <string name="fileopenerror">Error during file opening</string>
+    <string name="dbnotfounderror">ファイルを開く際のエラー</string>
+    <string name="dbopenerror">データベースファイルを開く際のエラー</string>
+    <string name="dbcreateerror">データベース作成中のエラー</string>
+    <string name="fileinvaliderror">無効なファイル</string>
 </resources>

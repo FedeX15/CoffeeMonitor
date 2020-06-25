@@ -170,10 +170,10 @@ public class PrefFragment extends Fragment implements View.OnClickListener {
                         sharefile.putExtra(Intent.EXTRA_STREAM, FileProvider.getUriForFile(getContext(), "com.fexed.coffeecounter.fileprovider", file));
                         startActivity(Intent.createChooser(sharefile, "Share File"));
                     } else {
-                        Toast.makeText(getContext(), "Database not found", Toast.LENGTH_SHORT).show(); //TODO error message
+                        Toast.makeText(getContext(), R.string.dbnotfounderror, Toast.LENGTH_SHORT).show();
                     }
                 } catch (IOException ex) {
-                    Toast.makeText(getContext(), "Error", Toast.LENGTH_SHORT).show(); //TODO error message
+                    Toast.makeText(getContext(), R.string.dbopenerror, Toast.LENGTH_SHORT).show();
                 }
                 break;
             case R.id.restorebtn:
@@ -321,18 +321,18 @@ public class PrefFragment extends Fragment implements View.OnClickListener {
                                                 DBMigrations.MIGRATION_24_25)
                                         .build();
                             } else {
-                                Toast.makeText(getContext(), "Impossibile aprire database", Toast.LENGTH_LONG).show(); //TODO error message file non corretto
+                                Toast.makeText(getContext(), R.string.dbopenerror, Toast.LENGTH_LONG).show();
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
-                            Toast.makeText(getContext(), "Errore durante creazione database", Toast.LENGTH_LONG).show(); //TODO error message file non corretto
+                            Toast.makeText(getContext(), R.string.dbcreateerror, Toast.LENGTH_LONG).show();
                         }
                     } else {
-                        Toast.makeText(getContext(), "File non valido", Toast.LENGTH_LONG).show(); //TODO error message file non corretto
+                        Toast.makeText(getContext(), R.string.fileinvaliderror, Toast.LENGTH_LONG).show();
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-                    Toast.makeText(getContext(), "Errore", Toast.LENGTH_LONG).show(); //TODO error message
+                    Toast.makeText(getContext(), R.string.fileopenerror, Toast.LENGTH_LONG).show();
                 }
             }
         }

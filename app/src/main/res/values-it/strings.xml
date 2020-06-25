@@ -127,4 +127,10 @@
     </string-array>
     <string name="libsources">Librerie e icone</string>
     <string name="funsources">Fun facts</string>
+    <string name="locationerror">Errore durante la ricerca della posizione</string>
+    <string name="fileopenerror">Errore durante l\'apertura del file</string>
+    <string name="dbnotfounderror">Database non trovato</string>
+    <string name="dbopenerror">Errore durante l\'apertura del file del database</string>
+    <string name="dbcreateerror">Errore durante la creazione del database</string>
+    <string name="fileinvaliderror">File non valido</string>
 </resources>
