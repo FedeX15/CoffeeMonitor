@@ -120,4 +120,10 @@
     <string name="choosedefault">デフォルトのタイプを選択</string>
     <string name="scanqr">QRコードをスキャン</string>
     <string name="restore">戻す</string>
+    <string name="title_activity_map">地図</string>
+    <string name="filterby">フィルターする</string>
+    <string-array name="filters">
+        <item>"なし"</item>
+        <item>"タイプごとの最後のアイテム"</item>
+    </string-array>
 </resources>

@@ -43,13 +43,25 @@ public class CupRecviewAdapter extends RecyclerView.Adapter<CupRecviewAdapter.Vi
 
     public CupRecviewAdapter(AppDatabase db, int filter) {
         List<Cup> allcups = new ArrayList<>();
-        if (filter == 0) {
+        if (filter == -1) {
             this.types = db.coffetypeDao().getAll();
             for (Coffeetype type : this.types) {
                 List<Cup> typecups = db.cupDAO().getAll(type.getKey());
                 Collections.reverse(typecups);
                 allcups.addAll(typecups);
             }
+        } else if (filter == -2) {
+            this.types = db.coffetypeDao().getAll();
+            for (Coffeetype type : this.types) {
+                List<Cup> typecups = db.cupDAO().getAll(type.getKey());
+                Collections.reverse(typecups);
+                if (typecups.size() > 0) allcups.add(typecups.get(0));
+            }
+        } else {
+            this.types = db.coffetypeDao().getAll();
+            List<Cup> typecups = db.cupDAO().getAll(types.get(filter).getKey());
+            Collections.reverse(typecups);
+            allcups.addAll(typecups);
         }
         this.mDataset = allcups;
         this.db = db;

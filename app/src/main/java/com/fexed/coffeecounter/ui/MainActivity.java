@@ -221,7 +221,7 @@ public class MainActivity extends AppCompatActivity {
                         db.cupDAO().insert(cup);
                         graphUpdater();
                         RecyclerView cupsRecView = viewPager.findViewById(R.id.cupsrecview);
-                        if (cupsRecView != null) cupsRecView.setAdapter(new CupRecviewAdapter(db, 0));
+                        if (cupsRecView != null) cupsRecView.setAdapter(new CupRecviewAdapter(db, -1));
                         RecyclerView typesRecView = viewPager.findViewById(R.id.recview);
                         if (typesRecView != null) typesRecView.setAdapter(new TypeRecviewAdapter(db, typesRecView, state));
 
@@ -693,7 +693,7 @@ public class MainActivity extends AppCompatActivity {
                         db.cupDAO().insert(cup);
                         graphUpdater();
                         RecyclerView cupsRecView = viewPager.findViewById(R.id.cupsrecview);
-                        if (cupsRecView != null) cupsRecView.setAdapter(new CupRecviewAdapter(db, 0));
+                        if (cupsRecView != null) cupsRecView.setAdapter(new CupRecviewAdapter(db, -1));
                     }
                 });
                 builder.show();

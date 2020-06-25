@@ -123,4 +123,9 @@
     <string name="scanqr">Scan a QR code</string>
     <string name="restore">Restore</string>
     <string name="title_activity_map">Map</string>
+    <string name="filterby">Filter by</string>
+    <string-array name="filters">
+        <item>"None"</item>
+        <item>"Last item per type"</item>
+    </string-array>
 </resources>

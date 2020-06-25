@@ -120,4 +120,10 @@
     <string name="choosedefault">Scegli un tipo predefinito</string>
     <string name="scanqr">Scansiona un codice QR</string>
     <string name="restore">Ripristina</string>
+    <string name="title_activity_map">Mappa</string>
+    <string name="filterby">Filtra per</string>
+    <string-array name="filters">
+        <item>"Niente"</item>
+        <item>"Ultimo elemento per tipo"</item>
+    </string-array>
 </resources>
