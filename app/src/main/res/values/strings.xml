@@ -72,7 +72,7 @@
         <item> "The inventor of tea bags is a New Yorker named Thomas Sullivan, who invented them in the early 20th century." </item>
     </string-array>
 
-    <string name="sources">Jjoe64\nAndroidplot\nSkydoves\n\nSources\n\ngizzeta.it\ncafestival.it\nmomondo.co.uk\nessentialwonders.com\nhealthline.com</string>
+    <string name="sources">Jjoe64\nAndroidplot\nSkydoves\nFreepik\n\nSources\n\ngizzeta.it\ncafestival.it\nmomondo.co.uk\nessentialwonders.com\nhealthline.com</string>
     <string name="notif">Notifications</string>
     <string name="tips">Tips</string>
     <string name="favs">Favourites</string>

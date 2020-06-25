@@ -28,9 +28,10 @@
                         </option>
                         <option name="values">
                           <map>
+                            <entry key="assetSourceType" value="FILE" />
                             <entry key="color" value="ffffff" />
-                            <entry key="outputName" value="ic_filter_w" />
-                            <entry key="sourceFile" value="C:\Users\fedex\Downloads\disegno.svg" />
+                            <entry key="outputName" value="ic_cup_b" />
+                            <entry key="sourceFile" value="C:\Users\fedex\Downloads\coffee-breaks.svg" />
                           </map>
                         </option>
                       </PersistentState>
