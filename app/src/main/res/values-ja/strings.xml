@@ -15,7 +15,6 @@
     <string name="addtype">タイプを追加</string>
     <string name="placeholder">プレースホルダー</string>
     <string name="Tazzebevutepertipo">タイプごとの飲酒カップ</string>
-    <string name="sources">Jjoe64\nAndroidplot\nSkydoves\nFreepik\n\nSources\n\ngizzeta.it\ncafestival.it\nmomondo.co.uk\nessentialwonders.com\nhealthline.com</string>
     <string name="notif">通知</string>
     <string name="favs">お気に入り</string>
     <string name="title_cups">登録</string>
@@ -96,8 +95,8 @@
     <string name="totalcups_lastmonth">先月の総カップ</string>
     <string name="notifica_giornaliera">毎日の通知</string>
     <string name="orario_notifica_giornaliera">毎日の通知の時間</string>
-    <string name="design_nmadalin_necula">設計\n\nMadalin Necula\nFederico Matteoni</string>
-    <string name="codice_e_idea_nfederico_matteoni">コードとアイデア\n\nFederico Matteoni\nfedericomatteoni@live.it</string>
+    <string name="design_nmadalin_necula">設計: Madalin Necula, Federico Matteoni</string>
+    <string name="codice_e_idea_nfederico_matteoni">コードとアイデア Federico Matteoni</string>
     <string name="settings">設定</string>
     <string name="storico_a_linee_barre">歴史</string>
     <string name="credits">ありがとう</string>
@@ -126,4 +125,6 @@
         <item>"なし"</item>
         <item>"タイプごとの最後のアイテム"</item>
     </string-array>
+    <string name="libsources">ライブラリとアイコン</string>
+    <string name="funsources">面白情報</string>
 </resources>

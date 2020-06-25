@@ -72,7 +72,6 @@
         <item>"L\'inventore delle bustine per il tè è un newyorkese di nome Thomas Sullivan, che le inventò agli inizi del 20esimo secolo."</item>
     </string-array>
 
-    <string name="sources">Jjoe64\nAndroidplot\nSkydoves\nFreepik\n\nSources\n\ngizzeta.it\ncafestival.it\nmomondo.co.uk\nessentialwonders.com\nhealthline.com</string>
     <string name="notif">Notifiche</string>
     <string name="favs">Preferiti</string>
     <string name="title_cups">Registro</string>
@@ -97,8 +96,8 @@
     <string name="totalcups_lastmonth">Ultimo mese</string>
     <string name="notifica_giornaliera">Notifica giornaliera</string>
     <string name="orario_notifica_giornaliera">Orario notifica giornaliera</string>
-    <string name="codice_e_idea_nfederico_matteoni">Codice e idea\n\nFederico Matteoni\nfedericomatteoni@live.it</string>
-    <string name="design_nmadalin_necula">Design\n\nMadalin Necula\nFederico Matteoni</string>
+    <string name="codice_e_idea_nfederico_matteoni">Codice e idea: Federico Matteoni</string>
+    <string name="design_nmadalin_necula">Design: Madalin Necula, Federico Matteoni</string>
     <string name="settings">Impostazioni</string>
     <string name="storico_a_linee_barre">Storico</string>
     <string name="credits">Crediti</string>
@@ -126,4 +125,6 @@
         <item>"Niente"</item>
         <item>"Ultimo elemento per tipo"</item>
     </string-array>
+    <string name="libsources">Librerie e icone</string>
+    <string name="funsources">Fun facts</string>
 </resources>

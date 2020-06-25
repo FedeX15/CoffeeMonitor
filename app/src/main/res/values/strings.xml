@@ -72,7 +72,8 @@
         <item> "The inventor of tea bags is a New Yorker named Thomas Sullivan, who invented them in the early 20th century." </item>
     </string-array>
 
-    <string name="sources">Jjoe64\nAndroidplot\nSkydoves\nFreepik\n\nSources\n\ngizzeta.it\ncafestival.it\nmomondo.co.uk\nessentialwonders.com\nhealthline.com</string>
+    <string translatable="false" name="funfactssources">gizzeta.it, cafestival.it, momondo.co.uk, essentialwonders.com, healthline.com</string>
+    <string translatable="false" name="sources">Jjoe64, Androidplot, Skydoves, Freepik</string>
     <string name="notif">Notifications</string>
     <string name="tips">Tips</string>
     <string name="favs">Favourites</string>
@@ -105,8 +106,8 @@
     <string name="storico_a_linee_barre">History</string>
     <string name="linee">Lines</string>
     <string name="barre">Bars</string>
-    <string name="codice_e_idea_nfederico_matteoni">Code and idea\n\nFederico Matteoni\nfedericomatteoni@live.it</string>
-    <string name="design_nmadalin_necula">Design\n\nMadalin Necula\nFederico Matteoni</string>
+    <string name="codice_e_idea_nfederico_matteoni">Code and idea: Federico Matteoni</string>
+    <string name="design_nmadalin_necula">Design: Madalin Necula, Federico Matteoni</string>
     <string name="credits">Credits</string>
     <string name="generalstats">General stats</string>
     <string name="toomuchcupstip">You have already drunk more than 5 cups today, which is the maximum recommended dose by the FDA (Food and Drug Administration). Be careful!</string>
@@ -128,4 +129,6 @@
         <item>"None"</item>
         <item>"Last item per type"</item>
     </string-array>
+    <string name="libsources">Libraries and icons</string>
+    <string name="funsources">Fun facts</string>
 </resources>
