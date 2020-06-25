@@ -76,14 +76,15 @@ public class CupRecviewAdapter extends RecyclerView.Adapter<CupRecviewAdapter.Vi
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
-        final String str = getTypeFromKey(mDataset.get(position).getTypekey()).getName() + " @ " + mDataset.get(position).toString();
+    public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
+        String str;
         View.OnLongClickListener onLongClickListener = new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
                 switch (v.getId()) {
                     case R.id.remove:
                         AlertDialog.Builder dialogbuilder = new AlertDialog.Builder(context);
+                        String str = getTypeFromKey(mDataset.get(position).getTypekey()).getName() + " @ " + mDataset.get(position).toString();
                         dialogbuilder.setMessage(context.getString(R.string.eliminarecup, str))
                                 .setPositiveButton(R.string.si, new DialogInterface.OnClickListener() {
                                     @Override
@@ -153,12 +154,14 @@ public class CupRecviewAdapter extends RecyclerView.Adapter<CupRecviewAdapter.Vi
                             }
                         };
 
-
-
                         nametxt.setText(getTypeFromKey(thiscup.getTypekey()).getName());
                         nametxt.setOnLongClickListener(editCupLongClick);
                         datetxt.setText(thiscup.toString());
                         datetxt.setOnLongClickListener(editCupLongClick);
+                        if (thiscup.getLongitude() != 0.0) {
+                            str = thiscup.getLatitude() + " " + thiscup.getLongitude();
+                            geotxt.setText(str);
+                        }
 
                         dialogbuilder.setView(form);
                         dialogbuilder.create();
