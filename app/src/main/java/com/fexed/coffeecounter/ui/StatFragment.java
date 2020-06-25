@@ -20,6 +20,11 @@ import com.androidplot.pie.SegmentFormatter;
 import com.fexed.coffeecounter.R;
 import com.fexed.coffeecounter.data.Coffeetype;
 import com.fexed.coffeecounter.data.Cup;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.helper.DateAsXAxisLabelFormatter;
 import com.jjoe64.graphview.helper.StaticLabelsFormatter;
@@ -75,7 +80,22 @@ public class StatFragment extends Fragment {
         totalliterstxtv = root.findViewById(R.id.totalliters);
         graphInitializer();
         graphUpdater();
+        adInitializer();
         return root;
+    }
+
+    public void adInitializer() {
+        MobileAds.initialize(getContext(), new OnInitializationCompleteListener() {
+            @Override
+            public void onInitializationComplete(InitializationStatus initializationStatus) {
+                AdView mAdView2 = getView().findViewById(R.id.banner2);
+                AdRequest adRequest = new AdRequest.Builder().build();
+                mAdView2.loadAd(adRequest);
+                AdView mAdView3 = getView().findViewById(R.id.banner3);
+                adRequest = new AdRequest.Builder().build();
+                mAdView3.loadAd(adRequest);
+            }
+        });
     }
 
     public void historyGraphInitializer(GraphView graph) {

@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -101,7 +102,7 @@ public class CupRecviewAdapter extends RecyclerView.Adapter<CupRecviewAdapter.Vi
                         Toast.makeText(context, context.getString(R.string.tienipremutoedittipologia), Toast.LENGTH_SHORT).show();
                         final Cup thiscup = mDataset.get(holder.getAdapterPosition());
                         dialogbuilder = new AlertDialog.Builder(context);
-                        View form = LayoutInflater.from(context).inflate(R.layout.editcupdialog, null, false);
+                        View form = LayoutInflater.from(context).inflate(R.layout.dialog_editcup, null, false);
                         final TextView nametxt = form.findViewById(R.id.editcuptype);
                         final TextView datetxt = form.findViewById(R.id.editcupdate);
                         final TextView geotxt = form.findViewById(R.id.editcupgeotag);
@@ -217,7 +218,7 @@ public class CupRecviewAdapter extends RecyclerView.Adapter<CupRecviewAdapter.Vi
         public TextView timestamptxtv;
         public TextView loctxtv;
         public LinearLayout cuptextparent;
-        public Button removebtn;
+        public ImageButton removebtn;
 
         public ViewHolder(LinearLayout v) {
             super(v);

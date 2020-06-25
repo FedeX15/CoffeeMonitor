@@ -25,7 +25,7 @@ public class AddWidgetCnfg extends Activity {
     public void onCreate(Bundle icile) {
         super.onCreate(icile);
 
-        View form = LayoutInflater.from(getBaseContext()).inflate(R.layout.addwdgtcnfglayout, null, false);
+        View form = LayoutInflater.from(getBaseContext()).inflate(R.layout.widget_addconfig, null, false);
         AlertDialog.Builder dialogbuilder = new AlertDialog.Builder(getBaseContext());
         Spinner coffetypespinner = form.findViewById(R.id.coffeetypespinner);
         AppDatabase db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "typedb").allowMainThreadQueries().build();
@@ -40,6 +40,6 @@ public class AddWidgetCnfg extends Activity {
         if (extras != null)
             appWidgetId = extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
         if (appWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID) finish();
-        RemoteViews views = new RemoteViews(getApplicationContext().getPackageName(), R.layout.addwidgetlayout);
+        RemoteViews views = new RemoteViews(getApplicationContext().getPackageName(), R.layout.widget_addlayout);
     }
 }

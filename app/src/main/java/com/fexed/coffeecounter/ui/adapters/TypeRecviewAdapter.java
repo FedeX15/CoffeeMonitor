@@ -135,7 +135,7 @@ public class TypeRecviewAdapter extends RecyclerView.Adapter<TypeRecviewAdapter.
                         break;
                     case R.id.editbtn:
                         final AlertDialog.Builder dialogbuilder = new AlertDialog.Builder(context);
-                        final View form = View.inflate(context, R.layout.addtypedialog, null);
+                        final View form = View.inflate(context, R.layout.dialog_addtype, null);
                         final TextView literstxt = form.findViewById(R.id.ltrsmgtext);
                         final CheckBox liquidckbx = form.findViewById(R.id.liquidcheck);
                         final boolean liquido = mDataset.get(position).isLiquido();
@@ -272,7 +272,7 @@ public class TypeRecviewAdapter extends RecyclerView.Adapter<TypeRecviewAdapter.
                         AlertDialog.Builder builder = new AlertDialog.Builder(context);
                         builder.setNeutralButton(R.string.annulla, null);
                         final AlertDialog dialog2 = builder.create();
-                        View dialogLayout = View.inflate(context, R.layout.qrpopup, null);
+                        View dialogLayout = View.inflate(context, R.layout.dialog_qrpopup, null);
 
                         dialog2.setView(dialogLayout);
                         dialog2.requestWindowFeature(Window.FEATURE_NO_TITLE);

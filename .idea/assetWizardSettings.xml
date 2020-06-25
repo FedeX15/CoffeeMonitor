@@ -18,7 +18,7 @@
                                 <PersistentState>
                                   <option name="values">
                                     <map>
-                                      <entry key="url" value="jar:file:/C:/Program%20Files/Android/Android%20Studio/plugins/android/lib/android.jar!/images/material/icons/materialicons/cloud_download/baseline_cloud_download_24.xml" />
+                                      <entry key="url" value="jar:file:/C:/Program%20Files/Android/Android%20Studio/plugins/android/lib/android.jar!/images/material/icons/materialicons/delete_outline/baseline_delete_outline_24.xml" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -28,9 +28,8 @@
                         </option>
                         <option name="values">
                           <map>
-                            <entry key="assetSourceType" value="FILE" />
                             <entry key="color" value="ffffff" />
-                            <entry key="outputName" value="ic_cup_b" />
+                            <entry key="outputName" value="ic_delete_w" />
                             <entry key="sourceFile" value="C:\Users\fedex\Downloads\disegno.svg" />
                           </map>
                         </option>

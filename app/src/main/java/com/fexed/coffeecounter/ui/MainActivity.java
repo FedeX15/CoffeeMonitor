@@ -270,7 +270,7 @@ public class MainActivity extends AppCompatActivity {
                     String[] strtype = str.split("::");
                     final Coffeetype coffeetype = new Coffeetype(strtype[0], Integer.parseInt(strtype[2]), strtype[1], Boolean.parseBoolean(strtype[3]), strtype[4], Float.parseFloat(strtype[5]), null, false);
                     final AlertDialog.Builder dialogbuilder = new AlertDialog.Builder(this);
-                    final View form = View.inflate(this, R.layout.addtypedialog, null);
+                    final View form = View.inflate(this, R.layout.dialog_addtype, null);
                     final TextView literstxt = form.findViewById(R.id.ltrsmgtext);
                     final CheckBox liquidckbx = form.findViewById(R.id.liquidcheck);
                     final ImageView typeimage = form.findViewById(R.id.typeimage);
@@ -449,7 +449,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void addNewType() {
         final AlertDialog.Builder dialogbuilder = new AlertDialog.Builder(findViewById(R.id.action_favs).getContext());
-        final View form = getLayoutInflater().inflate(R.layout.addtypedialog, null);
+        final View form = getLayoutInflater().inflate(R.layout.dialog_addtype, null);
         final TextView literstxt = form.findViewById(R.id.ltrsmgtext);
         CheckBox liquidckbx = form.findViewById(R.id.liquidcheck);
         final ImageView typeimage = form.findViewById(R.id.typeimage);
