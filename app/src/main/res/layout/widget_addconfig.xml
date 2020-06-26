@@ -5,7 +5,8 @@
     android:layout_height="wrap_content"
     android:alpha="100"
     android:background="@color/colorBg"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:padding="5dp">
 
 
     <ImageView
@@ -22,7 +23,9 @@
     <Spinner
         android:id="@+id/coffeetypespinner"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -36,6 +39,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:padding="5dp"
             android:text="@string/annulla"
             android:textAppearance="@style/TextAppearance.AppCompat" />
 
@@ -45,6 +49,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:padding="5dp"
             android:text="@string/conferma"
             android:textAppearance="@style/TextAppearance.AppCompat"
             android:textSize="14sp" />
