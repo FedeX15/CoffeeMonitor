@@ -40,7 +40,7 @@ public class TypesFragment extends Fragment {
         View root = inflater.inflate(R.layout.activity_types, container, false);
 
         typesRecview = root.findViewById(R.id.recview);
-        typesRecview.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        typesRecview.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         SnapHelper helper = new LinearSnapHelper() {
             @Override
             public int findTargetSnapPosition(RecyclerView.LayoutManager layoutManager, int velocityX, int velocityY) {
