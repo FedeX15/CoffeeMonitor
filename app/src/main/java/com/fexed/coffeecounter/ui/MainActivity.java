@@ -103,6 +103,22 @@ public class MainActivity extends AppCompatActivity {
                         DBMigrations.MIGRATION_24_25)
                 .build();
         dbpath = getDatabasePath("typedb").getPath();
+
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null && bundle.getString("TYPENAME", null) != null ) {
+            String typename = bundle.getString("TYPENAME", null);
+            for (Coffeetype type : db.coffetypeDao().getAll()) {
+                if (type.getName().equals(typename)) {
+                    Cup cup = new Cup(type.getKey());
+                    cup = geoTag(cup);
+                    db.cupDAO().insert(cup);
+                    setResult(RESULT_OK);
+                    finish();
+                }
+            }
+            setResult(RESULT_CANCELED);
+            finish();
+        }
         updateDefaultDatabase();
 
         setContentView(R.layout.activity_main);
