@@ -7,7 +7,7 @@
     android:layout_gravity="center"
     android:layout_margin="15dp"
     app:cardBackgroundColor="#646BBCD5"
-    app:cardCornerRadius="5dp"
+    app:cardCornerRadius="15dp"
     app:cardElevation="0dp"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
@@ -24,10 +24,10 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_gravity="start|top"
+            android:contentDescription="QR Code"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_qr"
-            android:contentDescription="QR Code" />
+            app:srcCompat="@drawable/ic_qr" />
 
         <ImageButton
             android:id="@+id/favbtn"
@@ -58,11 +58,13 @@
         <ImageView
             android:id="@+id/cardtypeimageview"
             android:layout_width="200dp"
-            android:layout_height="200dp"
+            android:layout_height="0dp"
             android:layout_gravity="center"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
             app:layout_constraintBottom_toTopOf="@+id/editbtn"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/qrbtn"
+            app:layout_constraintTop_toBottomOf="@+id/defaulttxtv"
             app:srcCompat="@mipmap/coffeeicon_w" />
 
         <TextView
@@ -77,7 +79,7 @@
             android:textColor="@color/colorText"
             android:textSize="25sp"
             app:layout_constraintBottom_toBottomOf="@+id/removebtn"
-            app:layout_constraintEnd_toStartOf="@+id/favbtn"
+            app:layout_constraintEnd_toEndOf="@+id/nameTxtV"
             app:layout_constraintStart_toEndOf="@+id/cardtypeimageview"
             app:layout_constraintTop_toTopOf="@+id/removebtn"
             tools:text="0" />
@@ -90,8 +92,9 @@
             android:text="-"
             android:textColor="@color/cardview_light_background"
             android:textSize="35sp"
+            app:layout_constraintBottom_toTopOf="@+id/editbtn"
             app:layout_constraintEnd_toStartOf="@+id/cups_textv"
-            app:layout_constraintTop_toTopOf="@+id/cardtypeimageview" />
+            app:layout_constraintTop_toBottomOf="@+id/desctxtv" />
 
         <Button
             android:id="@+id/addbtn"
@@ -111,13 +114,13 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
             android:layout_weight="0"
             android:textAlignment="center"
-            app:layout_constraintEnd_toStartOf="@+id/favbtn"
+            app:layout_constraintEnd_toEndOf="@+id/nameTxtV"
             app:layout_constraintStart_toEndOf="@+id/cardtypeimageview"
-            app:layout_constraintTop_toBottomOf="@+id/removebtn"
+            app:layout_constraintTop_toTopOf="@+id/cardtypeimageview"
             tools:text="TextView" />
 
         <TextView
@@ -125,14 +128,13 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:layout_weight="0"
             android:textAlignment="center"
             android:textSize="12sp"
-            app:layout_constraintEnd_toEndOf="@+id/desctxtv"
-            app:layout_constraintStart_toStartOf="@+id/desctxtv"
-            app:layout_constraintTop_toBottomOf="@+id/desctxtv"
+            app:layout_constraintEnd_toEndOf="@+id/nameTxtV"
+            app:layout_constraintStart_toStartOf="@+id/nameTxtV"
+            app:layout_constraintTop_toBottomOf="@+id/nameTxtV"
             tools:text="TextView" />
 
         <Button

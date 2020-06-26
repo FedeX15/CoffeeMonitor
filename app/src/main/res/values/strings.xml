@@ -139,4 +139,5 @@
     <string name="dbopenerror">Error during opening database file</string>
     <string name="dbcreateerror">Error during database creation</string>
     <string name="fileinvaliderror">Invalid file</string>
+    <string name="allisgood">Everything\'s good!</string>
 </resources>

@@ -7,7 +7,7 @@
     android:layout_gravity="center"
     android:layout_margin="15dp"
     app:cardBackgroundColor="#646BBCD5"
-    app:cardCornerRadius="5dp"
+    app:cardCornerRadius="15dp"
     app:cardElevation="0dp"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
@@ -24,10 +24,10 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_gravity="start|top"
+            android:contentDescription="QR Code"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_qr"
-            android:contentDescription="QR Code" />
+            app:srcCompat="@drawable/ic_qr" />
 
         <ImageButton
             android:id="@+id/favbtn"
@@ -43,7 +43,6 @@
             android:id="@+id/nameTxtV"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            tools:text="Coffee"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Display1"
             android:textColor="@color/colorText"
@@ -52,7 +51,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.25" />
+            app:layout_constraintVertical_bias="0.25"
+            tools:text="Coffee" />
 
         <ImageView
             android:id="@+id/cardtypeimageview"

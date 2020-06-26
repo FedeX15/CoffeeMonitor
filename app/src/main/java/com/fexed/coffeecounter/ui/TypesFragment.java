@@ -77,12 +77,18 @@ public class TypesFragment extends Fragment {
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
+    public void onStart() {
+        super.onStart();
         typesRecview.setAdapter(new TypeRecviewAdapter(MainActivity.db, typesRecview, MainActivity.state));
 
         String[] funfacts = getResources().getStringArray(R.array.funfacts);
         TextView funfactstxtv = getView().findViewById(R.id.funfacttxt);
         funfactstxtv.setText(funfacts[new Random().nextInt(funfacts.length)]);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        typesRecview.setAdapter(null);
     }
 }

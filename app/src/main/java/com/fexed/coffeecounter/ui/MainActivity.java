@@ -766,7 +766,7 @@ public class MainActivity extends AppCompatActivity {
             String[] funfacts = getResources().getStringArray(R.array.funfacts);
             Random rnd = new Random();
             int i = rnd.nextInt(funfacts.length);
-            tip = funfacts[i];
+            tip = getString(R.string.allisgood) + "\n" + funfacts[i];
         }
 
         return tip;

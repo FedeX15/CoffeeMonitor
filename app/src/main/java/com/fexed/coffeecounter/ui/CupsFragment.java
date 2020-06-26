@@ -59,9 +59,11 @@ public class CupsFragment extends Fragment implements View.OnClickListener {
         return root;
     }
 
+
+
     @Override
-    public void onResume() {
-        super.onResume();
+    public void onStart() {
+        super.onStart();
 
         String[] funfacts = getResources().getStringArray(R.array.funfacts);
         TextView funfactstxtv = getView().findViewById(R.id.cupsfunfacttxt);
@@ -90,6 +92,14 @@ public class CupsFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onNothingSelected(AdapterView<?> parent) {}
         });
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        Spinner filterspinner = getView().findViewById(R.id.filtersspinner);
+        filterspinner.setOnItemSelectedListener(null);
+        cupsRecview.setAdapter(null);
     }
 
     @Override
