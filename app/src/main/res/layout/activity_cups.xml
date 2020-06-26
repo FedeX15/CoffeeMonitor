@@ -24,8 +24,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="32dp"
-        app:layout_constraintEnd_toStartOf="@+id/imageView"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintEnd_toStartOf="@+id/gotomapbtn"
         app:layout_constraintStart_toEndOf="@+id/filtertxtv"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -34,6 +34,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
         android:layout_weight="1"
         android:clipChildren="false"
         android:clipToPadding="false"
@@ -51,6 +52,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
         android:gravity="center"
         android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Caption"
@@ -59,26 +61,15 @@
         app:layout_constraintStart_toStartOf="parent"
         tools:text="funfact placeholder" />
 
-    <ImageView
-        android:id="@+id/imageView"
+    <Button
+        android:id="@+id/gotomapbtn"
+        style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_marginEnd="8dp"
+        android:text="@string/title_activity_map"
         app:layout_constraintBottom_toBottomOf="@+id/filtersspinner"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/filtersspinner"
-        app:srcCompat="@drawable/ic_filter_w" />
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/gotomapfab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:clickable="true"
-        android:focusable="auto"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@android:drawable/ic_dialog_map" />
+        app:layout_constraintTop_toTopOf="@+id/filtersspinner" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

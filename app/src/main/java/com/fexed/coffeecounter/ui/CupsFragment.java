@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -18,7 +19,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.fexed.coffeecounter.R;
 import com.fexed.coffeecounter.data.Coffeetype;
 import com.fexed.coffeecounter.ui.adapters.CupRecviewAdapter;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -50,8 +50,8 @@ public class CupsFragment extends Fragment implements View.OnClickListener {
                 LinearLayoutManager.VERTICAL,
                 false));
 
-        final FloatingActionButton mapfab = root.findViewById(R.id.gotomapfab);
-        mapfab.setOnClickListener(this);
+        final Button mapbtn = root.findViewById(R.id.gotomapbtn);
+        mapbtn.setOnClickListener(this);
 
         TextView funfactstxtv = root.findViewById(R.id.cupsfunfacttxt);
         funfactstxtv.setOnClickListener(this);
@@ -96,11 +96,8 @@ public class CupsFragment extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.cupsfunfacttxt:
-                FloatingActionButton mapfab = getView().findViewById(R.id.gotomapfab);
-                if (mapfab.getVisibility() == View.VISIBLE) mapfab.hide();
-                else mapfab.show();
                 break;
-            case R.id.gotomapfab:
+            case R.id.gotomapbtn:
                 Intent mapiintent = new Intent(getContext(), MapActivity.class);
                 startActivity(mapiintent);
                 break;
