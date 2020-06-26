@@ -39,7 +39,6 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
-import androidx.room.RoomDatabase;
 import androidx.viewpager.widget.ViewPager;
 
 import com.fexed.coffeecounter.R;
@@ -94,7 +93,6 @@ public class MainActivity extends AppCompatActivity {
         state.edit().putBoolean("isintypes", false).apply();
         db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "typedb")
                 .allowMainThreadQueries() //FIXME
-                .setJournalMode(RoomDatabase.JournalMode.TRUNCATE)
                 .addMigrations(DBMigrations.MIGRATION_19_20,
                         DBMigrations.MIGRATION_20_21,
                         DBMigrations.MIGRATION_21_22,
