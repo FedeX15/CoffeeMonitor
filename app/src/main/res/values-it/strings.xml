@@ -133,4 +133,6 @@
     <string name="dbopenerror">Errore durante l\'apertura del file del database</string>
     <string name="dbcreateerror">Errore durante la creazione del database</string>
     <string name="fileinvaliderror">File non valido</string>
+    <string name="geoasktitle">Geolocalizzazione</string>
+    <string name="geoask">Ti verrà chiesto di consentire a Coffee Monitor di accedere alla geolocalizzazione. Questo sarà usato solo per tenere traccia di dove aggiungi le tazze e per visualizzare i dati su una mappa. I dati non verranno archiviati altrove al di fuori del telefono.</string>
 </resources>

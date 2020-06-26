@@ -133,4 +133,6 @@
     <string name="dbopenerror">データベースファイルを開く際のエラー</string>
     <string name="dbcreateerror">データベース作成中のエラー</string>
     <string name="fileinvaliderror">無効なファイル</string>
+    <string name="geoasktitle">ジオロケーション</string>
+    <string name="geoask">コーヒーモニターにジオロケーションへのアクセスを許可するよう求められます。これは、カップを追加した場所を追跡し、データをマップに視覚化するためにのみ使用されます。データはお使いの携帯電話にのみ保存されます。</string>
 </resources>

@@ -205,7 +205,20 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+            final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle(getString(R.string.geoasktitle));
+            builder.setIcon(R.drawable.ic_info);
+
+            builder.setMessage(R.string.geoask);
+            builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    dialogInterface.dismiss();
+                    requestPermissions(new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+                }
+            });
+            builder.create();
+            builder.show();
         }
     }
 

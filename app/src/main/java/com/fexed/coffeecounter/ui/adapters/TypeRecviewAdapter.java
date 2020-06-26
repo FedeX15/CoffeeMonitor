@@ -7,15 +7,19 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.graphics.Point;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
 import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -28,6 +32,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.cardview.widget.CardView;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.fexed.coffeecounter.R;
@@ -278,16 +283,32 @@ public class TypeRecviewAdapter extends RecyclerView.Adapter<TypeRecviewAdapter.
                         dialog2.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
                         dialog2.show();
+                        Display display =((WindowManager)context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+                        Point screen = new Point();
+                        display.getSize(screen);
+                        int maxwidth = (6*screen.x)/7;
+                        int maxheight = (4*screen.y)/5;
+
                         TextView titletxtv = dialog2.findViewById(R.id.popuptitletxtv);
                         ImageView image =  dialog2.findViewById(R.id.qrimage);
                         try {
                             Bitmap bmp = encodeAsBitmap(codedstring);
                             if (bmp != null) {
                                 image.setImageBitmap(bmp);
+                                ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) image.getLayoutParams();
+                                Log.e("NBMP", bmp.getWidth() + " " + bmp.getHeight());
+                                float x = ((float) maxwidth) / bmp.getWidth();
+                                float y = ((float) maxheight) / bmp.getHeight();
+                                float scala = Math.min(x, y);
+                                Matrix matrix = new Matrix();
+                                matrix.postScale(scala, scala);
+                                Bitmap bmpScalata = Bitmap.createBitmap(bmp, 0, 0, bmp.getWidth(), bmp.getHeight(), matrix, true);
+                                params.width = bmpScalata.getWidth();
+                                params.height = bmpScalata.getHeight();
+                                image.setLayoutParams(params);
                                 titletxtv.setText(mDataset.get(position).getName());
                             } else dialog2.dismiss();
-                        } catch (Exception ignored) {
-                        }
+                        } catch (Exception ignored) {}
                         break;
                 }
             }
@@ -340,6 +361,11 @@ public class TypeRecviewAdapter extends RecyclerView.Adapter<TypeRecviewAdapter.
             Bitmap bmp = loadImageFromStorage(mDataset.get(position).getImg());
             if (bmp != null) holder.typeimage.setImageBitmap(bmp);
         }
+    }
+
+    private int dpToPx(int dp) {
+        float density = context.getResources().getDisplayMetrics().density;
+        return Math.round((float)dp * density);
     }
 
     Bitmap encodeAsBitmap(String str) throws WriterException {

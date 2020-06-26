@@ -76,6 +76,8 @@
     <string translatable="false" name="sources">Jjoe64, Androidplot, Skydoves, Freepik</string>
     <string name="notif">Notifications</string>
     <string name="tips">Tips</string>
+    <string name="geoasktitle">Geolocation</string>
+    <string name="geoask">You will be asked to give Coffee Monitor access to the geolocation. This will be used only to keep track of where you add the cups, and to visualize the data onto a map. The data will not be stored elsewhere outside your phone.</string>
     <string name="favs">Favourites</string>
     <string name="title_cups">Register</string>
     <string name="selecttype">Select type</string>
