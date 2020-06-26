@@ -1,6 +1,7 @@
 package com.fexed.coffeecounter.sys.widget;
 
 import android.app.Activity;
+import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,6 +17,7 @@ import androidx.room.Room;
 import com.fexed.coffeecounter.R;
 import com.fexed.coffeecounter.data.Coffeetype;
 import com.fexed.coffeecounter.db.AppDatabase;
+import com.fexed.coffeecounter.ui.MainActivity;
 
 /**
  * Created by Federico Matteoni on 11/06/2019
@@ -52,8 +54,16 @@ public class AddWidgetCnfg extends Activity {
                 if (extras != null)
                     appWidgetId = extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
                 if (appWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID) finish();
+                AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(getApplicationContext());
                 RemoteViews views = new RemoteViews(getApplicationContext().getPackageName(), R.layout.widget_addlayout);
                 views.setString(R.id.wdgttxtv, "setText", coffeetype.getName());
+                intent = new Intent(getApplicationContext(), MainActivity.class);
+                PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, 0);
+                views.setOnClickPendingIntent(R.id.wdgtaddbtn, pendingIntent);
+                appWidgetManager.updateAppWidget(appWidgetId, views);
+                Intent resultValue = new Intent();
+                resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+                setResult(RESULT_OK, resultValue);
                 finish();
             }
         });
