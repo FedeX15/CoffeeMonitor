@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -36,7 +37,7 @@ public class AddWidgetCnfg extends Activity {
 
         Spinner coffetypespinner = findViewById(R.id.coffeetypespinner);
         final AppDatabase db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "typedb").allowMainThreadQueries().build();
-        coffetypespinner.setAdapter(new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_dropdown_item_1line, db.coffetypeDao().getAll().toArray()));
+        coffetypespinner.setAdapter(new ArrayAdapter<>(getApplicationContext(), layout.widget_dialogspinneritem, db.coffetypeDao().getAll().toArray()));
 
         coffetypespinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -52,6 +53,7 @@ public class AddWidgetCnfg extends Activity {
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.d("WDGT", "Create: " +  coffeetype.getName());
                 int appWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
                 Bundle extras = getIntent().getExtras();
                 if (extras != null) {
@@ -61,18 +63,17 @@ public class AddWidgetCnfg extends Activity {
                         finish();
                     }
                     AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(AddWidgetCnfg.this);
-                    RemoteViews views = new RemoteViews(getPackageName(), R.layout.widget_addlayout);
-                    views.setTextViewText(R.id.wdgttxtv, coffeetype.getName());
-                    Intent clickIntent = new Intent(getApplicationContext(), MainActivity.class);
-                    clickIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    clickIntent.putExtra("TYPENAME", coffeetype.getName());
-                    PendingIntent clickPendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, clickIntent, PendingIntent.FLAG_ONE_SHOT);
-                    views.setOnClickPendingIntent(id.wdgtaddbtn, clickPendingIntent);
-                    appWidgetManager.updateAppWidget(appWidgetId, views);
-
                     Bundle cfg = new Bundle();
                     cfg.putString("TYPENAME", coffeetype.getName());
                     appWidgetManager.updateAppWidgetOptions(appWidgetId, cfg);
+                    RemoteViews views = new RemoteViews(getPackageName(), R.layout.widget_addlayout);
+                    views.setTextViewText(R.id.wdgttxtv, coffeetype.getName());
+                    Intent clickIntent = new Intent(getApplicationContext(), MainActivity.class);
+                    clickIntent.setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+                    clickIntent.putExtra("TYPENAME", coffeetype.getName());
+                    PendingIntent clickPendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, clickIntent, 0);
+                    views.setOnClickPendingIntent(id.wdgtaddbtn, clickPendingIntent);
+                    appWidgetManager.updateAppWidget(appWidgetId, views);
 
                     Intent result = new Intent();
                     result.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);

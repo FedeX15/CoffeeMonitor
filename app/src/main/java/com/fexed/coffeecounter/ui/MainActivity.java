@@ -16,6 +16,7 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -103,6 +104,7 @@ public class MainActivity extends AppCompatActivity {
         Bundle bundle = getIntent().getExtras();
         if (bundle != null && bundle.getString("TYPENAME", null) != null ) {
             String typename = bundle.getString("TYPENAME", null);
+            Log.d("WDGT", typename);
             for (Coffeetype type : db.coffetypeDao().getAll()) {
                 if (type.getName().equals(typename)) {
                     Cup cup = new Cup(type.getKey());

@@ -140,4 +140,5 @@
     <string name="dbcreateerror">Error during database creation</string>
     <string name="fileinvaliderror">Invalid file</string>
     <string name="allisgood">Everything\'s good!</string>
+    <string name="wdgtxfgprompt">Select which type should be handled by the widget</string>
 </resources>

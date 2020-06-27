@@ -6,6 +6,7 @@ import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.RemoteViews;
 
 import com.fexed.coffeecounter.R;
@@ -19,13 +20,17 @@ public class AddWidgetPrvdr extends AppWidgetProvider {
         for (int id : appWidgetIds) {
             RemoteViews view = new RemoteViews(context.getPackageName(), R.layout.widget_addlayout);
             Bundle cfg = appWidgetManager.getAppWidgetOptions(id);
-            view.setTextViewText(R.id.wdgttxtv, cfg.getString("TYPENAME", "Err"));
-            Intent clickIntent = new Intent(context, MainActivity.class);
-            clickIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            clickIntent.putExtra("TYPENAME", cfg.getString("TYPENAME", "Err"));
-            PendingIntent clickPendingIntent = PendingIntent.getActivity(context, 0, clickIntent, 0);
-            view.setOnClickPendingIntent(R.id.wdgtaddbtn, clickPendingIntent);
-            appWidgetManager.updateAppWidget(id, view);
+            String str = cfg.getString("TYPENAME", "Err");
+            Log.d("WDGT", "Update: " + str);
+            if (!str.equals("Err")) {
+                view.setTextViewText(R.id.wdgttxtv, str);
+                Intent clickIntent = new Intent(context, MainActivity.class);
+                clickIntent.setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+                clickIntent.putExtra("TYPENAME", str);
+                PendingIntent clickPendingIntent = PendingIntent.getActivity(context, 0, clickIntent, 0);
+                view.setOnClickPendingIntent(R.id.wdgtaddbtn, clickPendingIntent);
+                appWidgetManager.updateAppWidget(id, view);
+            }
         }
         super.onUpdate(context, appWidgetManager, appWidgetIds);
     }
