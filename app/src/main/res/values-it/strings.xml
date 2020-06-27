@@ -137,4 +137,5 @@
     <string name="geoask">Ti verrà chiesto di consentire a Coffee Monitor di accedere alla geolocalizzazione. Questo sarà usato solo per tenere traccia di dove aggiungi le tazze e per visualizzare i dati su una mappa. I dati non verranno archiviati altrove al di fuori del telefono.</string>
     <string name="allisgood">Tutto apposto!</string>
     <string name="wdgtxfgprompt">Seleziona la tipologia gestita dal widget</string>
+    <string name="loading">Caricamento</string>
 </resources>
