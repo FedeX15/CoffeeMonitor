@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -75,6 +76,8 @@ public class CupsFragment extends Fragment implements View.OnClickListener {
         TextView funfactstxtv = getView().findViewById(R.id.cupsfunfacttxt);
         funfactstxtv.setText(funfacts[new Random().nextInt(funfacts.length)]);
         cupsRecview.setAdapter(new CupRecviewAdapter(MainActivity.db, -1));
+        ProgressBar bar = getView().findViewById(R.id.cupsbar);
+        bar.setVisibility(View.GONE);
 
         Spinner filterspinner = getView().findViewById(R.id.filtersspinner);
         ArrayList<String> filters = new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.filters)));
