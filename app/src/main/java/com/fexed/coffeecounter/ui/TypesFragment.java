@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -76,11 +77,19 @@ public class TypesFragment extends Fragment {
         return root;
     }
 
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+    }
+
     @Override
     public void onResume() {
         super.onResume();
         typesRecview.setAdapter(new TypeRecviewAdapter(getActivity(), MainActivity.db, typesRecview, MainActivity.state));
-
+        ProgressBar bar = getView().findViewById(R.id.typesbar);
+        bar.setVisibility(View.GONE);
         String[] funfacts = getResources().getStringArray(R.array.funfacts);
         TextView funfactstxtv = getView().findViewById(R.id.funfacttxt);
         funfactstxtv.setText(funfacts[new Random().nextInt(funfacts.length)]);
