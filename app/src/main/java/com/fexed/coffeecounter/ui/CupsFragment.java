@@ -59,7 +59,13 @@ public class CupsFragment extends Fragment implements View.OnClickListener {
         return root;
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
 
+        Spinner filterspinner = getView().findViewById(R.id.filtersspinner);
+        filterspinner.setAdapter(new ArrayAdapter<>(getContext(), android.R.layout.simple_dropdown_item_1line, new String[] {getString(R.string.loading)}));
+    }
 
     @Override
     public void onResume() {
