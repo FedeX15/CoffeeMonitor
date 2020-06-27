@@ -47,6 +47,7 @@ import com.fexed.coffeecounter.data.Cup;
 import com.fexed.coffeecounter.db.AppDatabase;
 import com.fexed.coffeecounter.db.DBDownloader;
 import com.fexed.coffeecounter.db.DBMigrations;
+import com.fexed.coffeecounter.sys.SaveImageToInternalTask;
 import com.fexed.coffeecounter.ui.adapters.CupRecviewAdapter;
 import com.fexed.coffeecounter.ui.adapters.TypeRecviewAdapter;
 import com.google.android.material.snackbar.Snackbar;
@@ -58,10 +59,7 @@ import com.skydoves.balloon.Balloon;
 import com.skydoves.balloon.BalloonAnimation;
 import com.skydoves.balloon.OnBalloonOutsideTouchListener;
 
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -250,7 +248,7 @@ public class MainActivity extends AppCompatActivity {
                         RecyclerView cupsRecView = viewPager.findViewById(R.id.cupsrecview);
                         if (cupsRecView != null) cupsRecView.setAdapter(new CupRecviewAdapter(db, -1));
                         RecyclerView typesRecView = viewPager.findViewById(R.id.recview);
-                        if (typesRecView != null) typesRecView.setAdapter(new TypeRecviewAdapter(db, typesRecView, state));
+                        if (typesRecView != null) typesRecView.setAdapter(new TypeRecviewAdapter(MainActivity.this, db, typesRecView, state));
 
                         return true;
                     }
@@ -405,15 +403,14 @@ public class MainActivity extends AppCompatActivity {
                                 coffeetype.setSostanza(sostedittxt.getText().toString());
                                 coffeetype.setPrice(Float.parseFloat(pricetedittxt.getText().toString()));
                                 if (currentbitmap != null) {
-                                    String uri = saveToInternalStorage(currentbitmap);
+                                    SaveImageToInternalTask saveTask = (SaveImageToInternalTask) new SaveImageToInternalTask(getApplicationContext()).execute(currentbitmap);
+                                    String uri = new ContextWrapper(getApplicationContext()).getDir("images", Context.MODE_PRIVATE).getAbsolutePath() + "/" + currentbitmap.hashCode() + ".png";
                                     coffeetype.setImg(uri);
                                     currentbitmap = null;
                                 }
                                 coffeetype.setDefaulttype(false);
 
                                 db.coffetypeDao().insert(coffeetype);
-                                //cupsRecview.setAdapter(new CupRecviewAdapter(db, 0));
-                                //typesRecview.setAdapter(new TypeRecviewAdapter(db, typesRecview, state));
                                 dialog.dismiss();
                             }
                         }
@@ -452,27 +449,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public String saveToInternalStorage(Bitmap bitmapImage) {
-        ContextWrapper cw = new ContextWrapper(getApplicationContext());
-        File directory = cw.getDir("images", Context.MODE_PRIVATE);
-        File mypath = new File(directory, bitmapImage.hashCode() + ".png");
 
-        FileOutputStream fos = null;
-        try {
-            fos = new FileOutputStream(mypath);
-            // Use the compress method on the BitMap object to write image to the OutputStream
-            bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, fos);
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                fos.close();
-            } catch (IOException | NullPointerException e) {
-                e.printStackTrace();
-            }
-        }
-        return directory.getAbsolutePath() + "/" + bitmapImage.hashCode() + ".png";
-    }
 
     public void addNewType() {
         final AlertDialog.Builder dialogbuilder = new AlertDialog.Builder(findViewById(R.id.action_favs).getContext());
@@ -619,7 +596,8 @@ public class MainActivity extends AppCompatActivity {
                     boolean liquid = liquidckbx.isChecked();
                     String bmpuri = "";
                     if (currentbitmap != null) {
-                        bmpuri = saveToInternalStorage(currentbitmap);
+                        SaveImageToInternalTask saveTask = (SaveImageToInternalTask) new SaveImageToInternalTask(getApplicationContext()).execute(currentbitmap);
+                        bmpuri = new ContextWrapper(getApplicationContext()).getDir("images", Context.MODE_PRIVATE).getAbsolutePath() + "/" + currentbitmap.hashCode() + ".png";
                         currentbitmap = null;
                     }
                     Coffeetype newtype = new Coffeetype(name, liters, desc, liquid, sostanza, price, bmpuri);
@@ -627,7 +605,7 @@ public class MainActivity extends AppCompatActivity {
                     db.coffetypeDao().insert(newtype);
 
                     RecyclerView typesRecView = viewPager.findViewById(R.id.recview);
-                    if (typesRecView != null) typesRecView.setAdapter(new TypeRecviewAdapter(db, typesRecView, state));
+                    if (typesRecView != null) typesRecView.setAdapter(new TypeRecviewAdapter(MainActivity.this, db, typesRecView, state));
 
                     dialog.dismiss();
                 }
@@ -671,7 +649,7 @@ public class MainActivity extends AppCompatActivity {
                         public void onClick(DialogInterface dialogInterface, int i) {
                             db.coffetypeDao().insert(defaultlist.get(i));
                             RecyclerView typesRecView = viewPager.findViewById(R.id.recview);
-                            if (typesRecView != null) typesRecView.setAdapter(new TypeRecviewAdapter(db, typesRecView, state));
+                            if (typesRecView != null) typesRecView.setAdapter(new TypeRecviewAdapter(MainActivity.this, db, typesRecView, state));
                             dialog.dismiss();
                         }
                     });

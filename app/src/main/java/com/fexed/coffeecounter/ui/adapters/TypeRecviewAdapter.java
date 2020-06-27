@@ -1,8 +1,11 @@
 package com.fexed.coffeecounter.ui.adapters;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -39,6 +42,8 @@ import com.fexed.coffeecounter.R;
 import com.fexed.coffeecounter.data.Coffeetype;
 import com.fexed.coffeecounter.data.Cup;
 import com.fexed.coffeecounter.db.AppDatabase;
+import com.fexed.coffeecounter.sys.SaveImageToInternalTask;
+import com.fexed.coffeecounter.ui.MainActivity;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
@@ -65,14 +70,17 @@ public class TypeRecviewAdapter extends RecyclerView.Adapter<TypeRecviewAdapter.
     AppDatabase db;
     private List<Coffeetype> mDataset;
     Context context;
+    Activity parent;
     RecyclerView recv;
     SharedPreferences state;
 
-    public TypeRecviewAdapter(AppDatabase db, RecyclerView recv, SharedPreferences state) {
+    public TypeRecviewAdapter(Activity parentActivity, AppDatabase db, RecyclerView recv, SharedPreferences state) {
         this.mDataset = db.coffetypeDao().getAll();
         this.db = db;
         this.recv = recv;
         this.state = state;
+        this.parent = parentActivity;
+        this.context = parentActivity;
     }
 
     public Cup geoTag(Cup cup) {
@@ -100,7 +108,6 @@ public class TypeRecviewAdapter extends RecyclerView.Adapter<TypeRecviewAdapter.
     public TypeRecviewAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         CardView v = (CardView) LayoutInflater.from(parent.getContext()).inflate(R.layout.coffee_card, parent, false);
         ViewHolder vh = new ViewHolder(v);
-        this.context = parent.getContext();
         return vh;
     }
 
@@ -149,6 +156,7 @@ public class TypeRecviewAdapter extends RecyclerView.Adapter<TypeRecviewAdapter.
                         EditText descedittxt = form.findViewById(R.id.desctxt);
                         EditText sostedittxt = form.findViewById(R.id.sosttxt);
                         EditText pricetedittxt = form.findViewById(R.id.pricetxt);
+                        final ImageView typeimage = form.findViewById(R.id.typeimage);
                         ImageButton defaultdbbtn = form.findViewById(R.id.defaultbtn);
                         ImageButton qrbtn = form.findViewById(R.id.scanqrbtn);
                         defaultdbbtn.setVisibility(View.INVISIBLE);
@@ -195,17 +203,20 @@ public class TypeRecviewAdapter extends RecyclerView.Adapter<TypeRecviewAdapter.
                             }
                         });
 
-                        //TODO immagine in modifica
-                        /*typeimage.setOnLongClickListener(new View.OnLongClickListener() {
+                        String imgurl = mDataset.get(position).getImg();
+                        if (imgurl != null && !imgurl.equals("")) {
+                            typeimage.setImageBitmap(loadImageFromStorage(imgurl));
+                        }
+                        typeimage.setOnLongClickListener(new View.OnLongClickListener() {
                             @Override
                             public boolean onLongClick(View view) {
                                 Intent i = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                                currentbitmap = null;
-                                currentimageview = typeimage;
-                                startActivityForResult(i, 9);
+                                ((MainActivity) parent).currentbitmap = null;
+                                ((MainActivity) parent).currentimageview = typeimage;
+                                parent.startActivityForResult(i, 9);
                                 return true;
                             }
-                        });*/
+                        });
 
                         dialogbuilder.setView(form);
                         dialogbuilder.create();
@@ -248,14 +259,15 @@ public class TypeRecviewAdapter extends RecyclerView.Adapter<TypeRecviewAdapter.
                                     mDataset.get(position).setSostanza(sostedittxt.getText().toString());
                                     mDataset.get(position).setPrice(Float.parseFloat(pricetedittxt.getText().toString()));
                                     mDataset.get(position).setDefaulttype(false);
-                            /*String bmpuri = "";
-                            if (currentbitmap != null) {
-                                bmpuri = saveToInternalStorage(currentbitmap);
-                                currentbitmap = null;
-                            }*/
+                                    if (((MainActivity) parent).currentbitmap != null) {
+                                        SaveImageToInternalTask saveTask = (SaveImageToInternalTask) new SaveImageToInternalTask(context).execute(((MainActivity) parent).currentbitmap);
+                                        String uri = new ContextWrapper(context).getDir("images", Context.MODE_PRIVATE).getAbsolutePath() + "/" + ((MainActivity) parent).currentbitmap.hashCode() + ".png";
+                                        mDataset.get(position).setImg(uri);
+                                        ((MainActivity) parent).currentbitmap = null;
+                                    }
 
                                     db.coffetypeDao().update(mDataset.get(position));
-                                    TypeRecviewAdapter.this.recv.setAdapter(new TypeRecviewAdapter(db, TypeRecviewAdapter.this.recv, state));
+                                    TypeRecviewAdapter.this.recv.setAdapter(new TypeRecviewAdapter(parent, db, TypeRecviewAdapter.this.recv, state));
                                     dialog.dismiss();
                                 }
                             }
@@ -361,11 +373,6 @@ public class TypeRecviewAdapter extends RecyclerView.Adapter<TypeRecviewAdapter.
             Bitmap bmp = loadImageFromStorage(mDataset.get(position).getImg());
             if (bmp != null) holder.typeimage.setImageBitmap(bmp);
         }
-    }
-
-    private int dpToPx(int dp) {
-        float density = context.getResources().getDisplayMetrics().density;
-        return Math.round((float)dp * density);
     }
 
     Bitmap encodeAsBitmap(String str) throws WriterException {
