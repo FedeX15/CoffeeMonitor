@@ -15,16 +15,6 @@ import com.fexed.coffeecounter.ui.MainActivity;
  * Created by Federico Matteoni on 10/06/2019
  */
 public class AddWidgetPrvdr extends AppWidgetProvider {
-    @Override
-    public void onRestored(Context context, int[] oldWidgetIds, int[] newWidgetIds) {
-        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-        for (int i = 0; i < oldWidgetIds.length; i++) {
-            Bundle cfg = appWidgetManager.getAppWidgetOptions(oldWidgetIds[i]);
-            appWidgetManager.updateAppWidgetOptions(newWidgetIds[i], cfg);
-        }
-        super.onRestored(context, oldWidgetIds, newWidgetIds);
-    }
-
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         for (int id : appWidgetIds) {
             RemoteViews view = new RemoteViews(context.getPackageName(), R.layout.widget_addlayout);
@@ -33,7 +23,7 @@ public class AddWidgetPrvdr extends AppWidgetProvider {
             Intent clickIntent = new Intent(context, MainActivity.class);
             clickIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             clickIntent.putExtra("TYPENAME", cfg.getString("TYPENAME", "Err"));
-            PendingIntent clickPendingIntent = PendingIntent.getActivity(context, 0, clickIntent, PendingIntent.FLAG_ONE_SHOT);
+            PendingIntent clickPendingIntent = PendingIntent.getActivity(context, 0, clickIntent, 0);
             view.setOnClickPendingIntent(R.id.wdgtaddbtn, clickPendingIntent);
             appWidgetManager.updateAppWidget(id, view);
         }
