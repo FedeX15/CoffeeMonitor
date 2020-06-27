@@ -36,7 +36,7 @@ public class AddWidgetCnfg extends Activity {
 
         Spinner coffetypespinner = findViewById(R.id.coffeetypespinner);
         final AppDatabase db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "typedb").allowMainThreadQueries().build();
-        coffetypespinner.setAdapter(new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_list_item_1, db.coffetypeDao().getAll().toArray()));
+        coffetypespinner.setAdapter(new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_dropdown_item_1line, db.coffetypeDao().getAll().toArray()));
 
         coffetypespinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
