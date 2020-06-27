@@ -62,8 +62,8 @@ public class CupsFragment extends Fragment implements View.OnClickListener {
 
 
     @Override
-    public void onStart() {
-        super.onStart();
+    public void onResume() {
+        super.onResume();
 
         String[] funfacts = getResources().getStringArray(R.array.funfacts);
         TextView funfactstxtv = getView().findViewById(R.id.cupsfunfacttxt);
