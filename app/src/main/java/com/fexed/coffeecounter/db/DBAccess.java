@@ -16,6 +16,11 @@ import java.util.List;
  */
 public class DBAccess {
     private static AppDatabase database;
+    private getCupsPerDayTask getCupsPerDayTask;
+    private getDaysTask getDaysTask;
+    private getPerDayTask getPerDayTask;
+    private getFavTypesTask getFavTypesTask;
+    private getTypesTask getTypesTask;
 
     public DBAccess(Application application) {
         if (database == null) {
@@ -33,6 +38,9 @@ public class DBAccess {
 
     //Cups access
     public void insertCup(final Cup cup) {
+        getCupsPerDayTask = null;
+        getDaysTask = null;
+        getPerDayTask = null;
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -42,6 +50,9 @@ public class DBAccess {
     }
 
     public void insertCups(final Cup... cups) {
+        getCupsPerDayTask = null;
+        getDaysTask = null;
+        getPerDayTask = null;
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -51,6 +62,9 @@ public class DBAccess {
     }
 
     public void deleteCup(final Cup cup) {
+        getCupsPerDayTask = null;
+        getDaysTask = null;
+        getPerDayTask = null;
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -60,6 +74,9 @@ public class DBAccess {
     }
 
     public void deleteCups(final Cup... cups) {
+        getCupsPerDayTask = null;
+        getDaysTask = null;
+        getPerDayTask = null;
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -69,6 +86,9 @@ public class DBAccess {
     }
 
     public void deleteCups(final int key) {
+        getCupsPerDayTask = null;
+        getDaysTask = null;
+        getPerDayTask = null;
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -78,6 +98,9 @@ public class DBAccess {
     }
 
     public void updateCups(final Cup... cups) {
+        getCupsPerDayTask = null;
+        getDaysTask = null;
+        getPerDayTask = null;
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -87,6 +110,9 @@ public class DBAccess {
     }
 
     public void nukeCups() {
+        getCupsPerDayTask = null;
+        getDaysTask = null;
+        getPerDayTask = null;
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -107,7 +133,11 @@ public class DBAccess {
     }
 
     public AsyncTask<Void, Void, List<String>> getDays() {
-        return new getDaysTask().execute();
+        if (getDaysTask != null) return getDaysTask;
+        else {
+            getDaysTask = new getDaysTask();
+            return getDaysTask.execute();
+        }
     }
 
     static class getDaysTask extends AsyncTask<Void, Void, List<String>> {
@@ -118,7 +148,11 @@ public class DBAccess {
     }
 
     public AsyncTask<Void, Void, List<Integer>> perDay() {
-        return new getPerDayTask().execute();
+        if (getPerDayTask != null) return getPerDayTask;
+        else {
+            getPerDayTask = new getPerDayTask();
+            return getPerDayTask.execute();
+        }
     }
 
     static class getPerDayTask extends AsyncTask<Void, Void, List<Integer>> {
@@ -129,7 +163,11 @@ public class DBAccess {
     }
 
     public AsyncTask<String, Void, List<Cup>> getCups(String day) {
-        return new getCupsPerDayTask().execute(day);
+        if (getCupsPerDayTask != null) return getCupsPerDayTask;
+        else {
+            getCupsPerDayTask = new getCupsPerDayTask();
+            return getCupsPerDayTask.execute(day);
+        }
     }
 
     static class getCupsPerDayTask extends AsyncTask<String, Void, List<Cup>> {
@@ -152,6 +190,8 @@ public class DBAccess {
 
     //Coffeetype access
     public void insertType(final Coffeetype type) {
+        getFavTypesTask = null;
+        getTypesTask = null;
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -161,6 +201,8 @@ public class DBAccess {
     }
 
     public void insertTypes(final Coffeetype... types) {
+        getFavTypesTask = null;
+        getTypesTask = null;
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -170,6 +212,8 @@ public class DBAccess {
     }
 
     public void deleteType(final Coffeetype type) {
+        getFavTypesTask = null;
+        getTypesTask = null;
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -179,6 +223,8 @@ public class DBAccess {
     }
 
     public void deleteTypes(final Coffeetype... types) {
+        getFavTypesTask = null;
+        getTypesTask = null;
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -188,6 +234,8 @@ public class DBAccess {
     }
 
     public void updateTypes(final Coffeetype... types) {
+        getFavTypesTask = null;
+        getTypesTask = null;
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -197,6 +245,8 @@ public class DBAccess {
     }
 
     public void nukeTypes() {
+        getFavTypesTask = null;
+        getTypesTask = null;
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -206,7 +256,11 @@ public class DBAccess {
     }
 
     public AsyncTask<Void, Void, List<Coffeetype>> getTypes() {
-        return new getTypesTask().execute();
+        if (getTypesTask != null) return getTypesTask;
+        else {
+            getTypesTask = new getTypesTask();
+            return getTypesTask.execute();
+        }
     }
 
     static class getTypesTask extends AsyncTask<Void, Void, List<Coffeetype>> {
@@ -217,7 +271,11 @@ public class DBAccess {
     }
 
     public AsyncTask<Void, Void, List<Coffeetype>> getFavs() {
-        return new getFavTypesTask().execute();
+        if (getFavTypesTask != null) return getFavTypesTask;
+        else {
+            getFavTypesTask = new getFavTypesTask();
+            return getFavTypesTask.execute();
+        }
     }
 
     static class getFavTypesTask extends AsyncTask<Void, Void, List<Coffeetype>> {
