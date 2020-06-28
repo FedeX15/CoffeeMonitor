@@ -143,4 +143,5 @@
     <string name="daysinfo">Questo grafico mostra il numero di tazzine registrate per giorno della settimana</string>
     <string name="historyinfo">Questo grafico mostra il numero di tazzine registrate per ogni giorno</string>
     <string name="typesinfo">Questo grafico mostra il numero di tazzine registrate per ogni tipologia</string>
+    <string name="summary">Oggi hai bevuto %d tazzine, per un totale di %d</string>
 </resources>

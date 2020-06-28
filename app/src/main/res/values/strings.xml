@@ -147,4 +147,5 @@
     <string name="daysinfo">These are the number of registered cups per day of the week</string>
     <string name="historyinfo">This is the history graph, with the number of registered cups per day</string>
     <string name="typesinfo">This graph shows the number of registered cups per type</string>
+    <string name="summary">Today you drank %d cups, for a total of %d</string>
 </resources>
