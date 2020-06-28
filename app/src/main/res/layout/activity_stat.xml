@@ -108,6 +108,17 @@
             app:layout_constraintTop_toBottomOf="@+id/totalliters" />
 
 
+        <ImageButton
+            android:id="@+id/historyinfotbn"
+            style="@android:style/Widget.DeviceDefault.Button.Borderless"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintBottom_toBottomOf="@+id/textView19"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/textView19"
+            app:srcCompat="@drawable/ic_info" />
+
         <com.jjoe64.graphview.GraphView
             android:id="@+id/historygraph"
             android:layout_width="wrap_content"
@@ -145,6 +156,17 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/banner2" />
 
+
+        <ImageButton
+            android:id="@+id/typesinfobtn"
+            style="@android:style/Widget.DeviceDefault.Button.Borderless"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintBottom_toBottomOf="@+id/textView20"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/textView20"
+            app:srcCompat="@drawable/ic_info" />
 
         <com.androidplot.pie.PieChart
             android:id="@+id/piegraph"
@@ -185,6 +207,17 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/banner3" />
 
+
+        <ImageButton
+            android:id="@+id/daysinfobtn"
+            style="@android:style/Widget.DeviceDefault.Button.Borderless"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintBottom_toBottomOf="@+id/textView21"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/textView21"
+            app:srcCompat="@drawable/ic_info" />
 
         <com.jjoe64.graphview.GraphView
             android:id="@+id/daygraph"

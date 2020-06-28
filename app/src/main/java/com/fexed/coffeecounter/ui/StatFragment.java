@@ -1,6 +1,7 @@
 package com.fexed.coffeecounter.ui;
 
 import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.graphics.Paint;
 import android.graphics.PointF;
 import android.os.Bundle;
@@ -8,9 +9,11 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import com.androidplot.pie.PieChart;
@@ -50,7 +53,7 @@ import java.util.Locale;
 /**
  * Created by Federico Matteoni on 22/06/2020
  */
-public class StatFragment extends Fragment {
+public class StatFragment extends Fragment implements View.OnClickListener {
     private GraphView graph;
     private GraphView daygraph;
     private PieChart pie;
@@ -82,6 +85,17 @@ public class StatFragment extends Fragment {
         graphUpdater();
         adInitializer();
         return root;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        ImageButton historyinfobtn = getView().findViewById(R.id.historyinfotbn);
+        ImageButton daysinfobtn = getView().findViewById(R.id.daysinfobtn);
+        ImageButton typesinfobtn = getView().findViewById(R.id.typesinfobtn);
+        historyinfobtn.setOnClickListener(this);
+        daysinfobtn.setOnClickListener(this);
+        typesinfobtn.setOnClickListener(this);
     }
 
     public void adInitializer() {
@@ -472,5 +486,32 @@ public class StatFragment extends Fragment {
         historyGraph(graph);
         typePie(pie);
         dayGraph(daygraph);
+    }
+
+    @Override
+    public void onClick(View v) {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle(getString(R.string.info));
+        builder.setIcon(R.drawable.ic_info);
+        switch (v.getId()) {
+            case R.id.daysinfobtn:
+                builder.setMessage(R.string.daysinfo);
+                break;
+            case R.id.historyinfotbn:
+                builder.setMessage(R.string.historyinfo);
+                break;
+            case R.id.typesinfobtn:
+                builder.setMessage(R.string.typesinfo);
+                break;
+        }
+
+        builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
+        builder.create();
+        builder.show();
     }
 }

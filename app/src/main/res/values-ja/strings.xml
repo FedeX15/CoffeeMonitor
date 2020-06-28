@@ -139,4 +139,8 @@
     <string name="wdgtxfgprompt">ウィジェットが処理するタイプを選択します</string>
     <string name="loading">読み込み中</string>
     <string name="dbopened">データベースが正常にロードされました</string>
+    <string name="info">情報</string>
+    <string name="daysinfo">これらは1日あたりに登録されたカップの数です</string>
+    <string name="historyinfo">これは履歴グラフであり、1日に登録されたカップの数が表示されます</string>
+    <string name="typesinfo">このグラフは、タイプごとの登録済みカップの数を示しています</string>
 </resources>
