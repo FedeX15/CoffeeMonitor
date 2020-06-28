@@ -167,7 +167,8 @@ public class PrefFragment extends Fragment implements View.OnClickListener {
                                     DBMigrations.MIGRATION_21_22,
                                     DBMigrations.MIGRATION_22_23,
                                     DBMigrations.MIGRATION_23_24,
-                                    DBMigrations.MIGRATION_24_25)
+                                    DBMigrations.MIGRATION_24_25,
+                                    DBMigrations.MIGRATION_25_26)
                             .build();
                     if (file != null && file.exists()) { //If not null should always exists
                         String type = "application/octet-stream"; //generic file
@@ -369,7 +370,8 @@ public class PrefFragment extends Fragment implements View.OnClickListener {
                                                 DBMigrations.MIGRATION_21_22,
                                                 DBMigrations.MIGRATION_22_23,
                                                 DBMigrations.MIGRATION_23_24,
-                                                DBMigrations.MIGRATION_24_25)
+                                                DBMigrations.MIGRATION_24_25,
+                                                DBMigrations.MIGRATION_25_26)
                                         .build();
                                 Toast.makeText(getContext(), R.string.dbopened, Toast.LENGTH_LONG).show();
                             } else {

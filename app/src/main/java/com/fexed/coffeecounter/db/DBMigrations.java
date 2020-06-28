@@ -21,8 +21,7 @@ public class DBMigrations {
     };
     public static final Migration MIGRATION_20_21 = new Migration(20, 21) {
         @Override
-        public void migrate(@NonNull SupportSQLiteDatabase database) {
-        }
+        public void migrate(@NonNull SupportSQLiteDatabase database) {}
     };
     public static final Migration MIGRATION_21_22 = new Migration(21, 22) {
         @Override
@@ -51,7 +50,10 @@ public class DBMigrations {
     };
     public static final Migration MIGRATION_24_25 = new Migration(24, 25) {
         @Override
-        public void migrate(@NonNull SupportSQLiteDatabase database) {
-        }
+        public void migrate(@NonNull SupportSQLiteDatabase database) {}
+    };
+    public static final Migration MIGRATION_25_26 = new Migration(25, 26) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {}
     };
 }

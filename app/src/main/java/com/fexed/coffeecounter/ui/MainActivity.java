@@ -97,7 +97,8 @@ public class MainActivity extends AppCompatActivity {
                         DBMigrations.MIGRATION_21_22,
                         DBMigrations.MIGRATION_22_23,
                         DBMigrations.MIGRATION_23_24,
-                        DBMigrations.MIGRATION_24_25)
+                        DBMigrations.MIGRATION_24_25,
+                        DBMigrations.MIGRATION_25_26)
                 .build();
         dbpath = getDatabasePath("typedb").getPath();
 

@@ -24,6 +24,9 @@ public interface CoffeetypeDAO {
     @Query("SELECT * FROM coffeetype WHERE fav = 1")
     List<Coffeetype> getFavs();
 
+    @Query("SELECT * FROM coffeetype WHERE coffeetype.`key` IS :key")
+    Coffeetype get(int key);
+
     @Insert
     void insertAll(Coffeetype... types);
 
