@@ -57,6 +57,7 @@ import com.skydoves.balloon.OnBalloonOutsideTouchListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -135,7 +136,13 @@ public class TypeRecviewAdapter extends RecyclerView.Adapter<TypeRecviewAdapter.
                         int n = mDataset.get(position).getQnt();
                         mDataset.get(position).setQnt((n == 0) ? 0 : n-1);
                         db.coffetypeDao().update(mDataset.get(position));
-                        db.cupDAO().deleteMostRecent(mDataset.get(position).getKey());
+                        List<Cup> typecups = db.cupDAO().getAll(mDataset.get(position).getKey());
+                        Collections.reverse(typecups);
+                        Cup todelete = null;
+                        if (typecups.size() > 0) {
+                            todelete = typecups.get(0);
+                            db.cupDAO().delete(todelete);
+                        }
                         str = "" + mDataset.get(position).getQnt();
                         cupstxtv.setText(str);
                         break;
