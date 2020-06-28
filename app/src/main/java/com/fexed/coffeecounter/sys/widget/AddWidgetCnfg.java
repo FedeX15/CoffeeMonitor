@@ -5,7 +5,6 @@ import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -57,7 +56,6 @@ public class AddWidgetCnfg extends Activity {
                 Bundle extras = getIntent().getExtras();
                 if (extras != null) {
                     appWidgetId = extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
-                    Log.d("WDGT", "Create: " +  coffeetype.getName() + "@" + appWidgetId);
                     if (appWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID) {
                         setResult(RESULT_CANCELED);
                         finish();

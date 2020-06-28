@@ -6,7 +6,6 @@ import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.RemoteViews;
 
 import com.fexed.coffeecounter.R;
@@ -21,7 +20,6 @@ public class AddWidgetPrvdr extends AppWidgetProvider {
             RemoteViews view = new RemoteViews(context.getPackageName(), R.layout.widget_addlayout);
             Bundle cfg = appWidgetManager.getAppWidgetOptions(id);
             String str = cfg.getString("TYPENAME", "Err");
-            Log.d("WDGT", "Update: " + str + "@" + id);
             if (!str.equals("Err")) {
                 view.setTextViewText(R.id.wdgttxtv, str);
                 Intent clickIntent = new Intent(context, MainActivity.class);
