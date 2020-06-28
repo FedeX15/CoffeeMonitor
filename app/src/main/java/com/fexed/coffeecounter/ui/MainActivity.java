@@ -452,8 +452,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
-
     public void addNewType() {
         final AlertDialog.Builder dialogbuilder = new AlertDialog.Builder(findViewById(R.id.action_favs).getContext());
         final View form = getLayoutInflater().inflate(R.layout.dialog_addtype, null);
@@ -739,15 +737,19 @@ public class MainActivity extends AppCompatActivity {
         int maxCupsPerDay = 5;
         //int maxCaffeinePerDay = 400;
         int cupsToday = db.cupDAO().getAll(getStringFromLocalDate(Calendar.getInstance().getTime())).size();
+        int mlToday = 0;
+        for (Cup cup : db.cupDAO().getAll(getStringFromLocalDate(Calendar.getInstance().getTime()))) {
+            mlToday += db.coffetypeDao().get(cup.getTypekey()).getLiters();
+        }
         String tip = getString(R.string.tipsplaceholder);
 
         if (cupsToday > maxCupsPerDay)
-            tip = getString(R.string.toomuchcupstip);
+            tip = getString(R.string.summary, cupsToday, mlToday) + " ml\n\n" + getString(R.string.toomuchcupstip);
         else {
             String[] funfacts = getResources().getStringArray(R.array.funfacts);
             Random rnd = new Random();
             int i = rnd.nextInt(funfacts.length);
-            tip = getString(R.string.allisgood) + "\n" + funfacts[i];
+            tip = getString(R.string.allisgood) + "\n" + getString(R.string.summary, cupsToday, mlToday) + " ml\n\n" + funfacts[i];
         }
 
         return tip;
