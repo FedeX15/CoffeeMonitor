@@ -35,14 +35,16 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         mMap = googleMap;
 
         List<Coffeetype> types;
-        types = MainActivity.db.coffetypeDao().getAll();
-        for (Coffeetype type : types) {
-            List<Cup> typecups = MainActivity.db.cupDAO().getAll(type.getKey());
-            for (Cup cup : typecups) {
-                if (cup.getLongitude() != 0.0) {
-                    mMap.addMarker(new MarkerOptions().position(new LatLng(cup.getLatitude(), cup.getLongitude())).title(type.getName() + " " + cup.toString()));
+        try {
+            types = MainActivity.db.getTypes().get();
+            for (Coffeetype type : types) {
+                List<Cup> typecups = MainActivity.db.getCups(type.getKey()).get();
+                for (Cup cup : typecups) {
+                    if (cup.getLongitude() != 0.0) {
+                        mMap.addMarker(new MarkerOptions().position(new LatLng(cup.getLatitude(), cup.getLongitude())).title(type.getName() + " " + cup.toString()));
+                    }
                 }
             }
-        }
+        } catch (Exception ignored) {}
     }
 }

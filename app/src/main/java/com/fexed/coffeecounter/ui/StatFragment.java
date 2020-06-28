@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.graphics.Paint;
 import android.graphics.PointF;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -167,188 +168,192 @@ public class StatFragment extends Fragment implements View.OnClickListener {
     public void historyGraph(final GraphView graph) {
         //days[0] è sempre il primo giorno nel MainActivity.db
         //days.length = cups.length
-        final List<String> days = MainActivity.db.cupDAO().getDays();
-        final List<Integer> cups = MainActivity.db.cupDAO().perDay();
+        AsyncTask<Void, Void, List<String>> daystask = MainActivity.db.getDays();
+        AsyncTask<Void, Void, List<Integer>> cupsTask = MainActivity.db.perDay();
 
-        if (days.size() > 0) {
-            Date fromDate = getLocalDateFromString(days.get(0));
-            Date toDate = Calendar.getInstance().getTime();
-            Date current = fromDate;
-            toDate = plusDays(toDate, 1);
-            List<Date> dates = new ArrayList<>(25);
-            while (current.getTime() < toDate.getTime()) {
-                dates.add(current);
-                current = plusDays(current, 1);
-            }
-
-            graph.getViewport().setScalable(true);
-            //graph.getViewport().setMinY(0);
-            //graph.getViewport().setMaxY(20);
-            graph.getViewport().setMaxX((dates.get(dates.size() - 2)).getTime());
-            if (dates.size() <= 30)
-                graph.getViewport().setMinX((dates.get(0)).getTime());
-            else
-                graph.getViewport().setMinX((dates.get(dates.size() - 29)).getTime());
-            graph.getViewport().setScalable(false);
-
-            List<DataPoint> points = new ArrayList<>();
-            int j = 0;
-            int i, maxc = 0;
-            for (i = 0; i < dates.size(); i++) {
-                String day = getStringFromLocalDate(dates.get(i));
-                Date daydate = dates.get(i);
-                if (j < days.size() && day.equals(days.get(j))) {
-                    points.add(new DataPoint(daydate, cups.get(j)));
-                    if (cups.get(j) > maxc) maxc = cups.get(j);
-                    j++;
-                } else points.add(new DataPoint(daydate, 0));
-            }
-            DataPoint[] pointsv = new DataPoint[points.size()];
-            pointsv = points.toArray(pointsv);
-            graph.removeAllSeries();
-            graph.getViewport().setMaxY(maxc);
-
-            if (MainActivity.state.getBoolean("historyline", false)) {
-                BarGraphSeries<DataPoint> seriesb = new BarGraphSeries<>(pointsv);
-                seriesb.setDrawValuesOnTop(true);
-                seriesb.setColor(getResources().getColor(R.color.colorAccent));
-                seriesb.setSpacing(25);
-                graph.addSeries(seriesb);
-                seriesb.setOnDataPointTapListener(new OnDataPointTapListener() {
-                    @Override
-                    public void onTap(Series series, DataPointInterface dataPoint) {
-                        DateFormat mDateFormat = android.text.format.DateFormat.getDateFormat(getContext());
-                        Calendar mCalendar = Calendar.getInstance();
-                        mCalendar.setTimeInMillis((long) dataPoint.getX());
-                        final Balloon balloon = new Balloon.Builder(getContext())
-                                .setText(mDateFormat.format(mCalendar.getTimeInMillis()) + ": " + (int) dataPoint.getY() + " " + getString(R.string.tazzine_totali).toLowerCase())
-                                .setWidthRatio(0.5f)
-                                .setBackgroundColorResource(R.color.colorAccent)
-                                .setBalloonAnimation(BalloonAnimation.FADE)
-                                .setArrowVisible(false)
-                                .build();
-                        balloon.setOnBalloonOutsideTouchListener(new OnBalloonOutsideTouchListener() {
-                            @Override
-                            public void onBalloonOutsideTouch(@NonNull View view, @NonNull MotionEvent motionEvent) {
-                                balloon.dismiss();
-                            }
-                        });
-                        balloon.showAlignBottom(graph);
-                    }
-                });
-            } else {
-                LineGraphSeries<DataPoint> seriesl = new LineGraphSeries<>(pointsv);
-                seriesl.setColor(getResources().getColor(R.color.colorAccent));
-                graph.addSeries(seriesl);
-                seriesl.setOnDataPointTapListener(new OnDataPointTapListener() {
-                    @Override
-                    public void onTap(Series series, DataPointInterface dataPoint) {
-                        DateFormat mDateFormat = android.text.format.DateFormat.getDateFormat(getContext());
-                        Calendar mCalendar = Calendar.getInstance();
-                        mCalendar.setTimeInMillis((long) dataPoint.getX());
-                        final Balloon balloon = new Balloon.Builder(getContext())
-                                .setText(mDateFormat.format(mCalendar.getTimeInMillis()) + ": " + (int) dataPoint.getY() + " " + getString(R.string.tazzine_totali).toLowerCase())
-                                .setWidthRatio(0.5f)
-                                .setBackgroundColorResource(R.color.colorAccent)
-                                .setBalloonAnimation(BalloonAnimation.FADE)
-                                .setArrowVisible(false)
-                                .build();
-                        balloon.setOnBalloonOutsideTouchListener(new OnBalloonOutsideTouchListener() {
-                            @Override
-                            public void onBalloonOutsideTouch(@NonNull View view, @NonNull MotionEvent motionEvent) {
-                                balloon.dismiss();
-                            }
-                        });
-                        balloon.showAlignBottom(graph);
-                    }
-                });
-                seriesl.setThickness(5);
-                seriesl.setDataPointsRadius(10);
-                seriesl.setDrawDataPoints(true);
-            }
-
-            // set date label formatter
-            graph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(getContext()) {
-                @Override
-                public String formatLabel(double value, boolean isValueX) {
-                    SimpleDateFormat format = new SimpleDateFormat("dd/MM", Locale.getDefault());
-                    if (isValueX) {
-                        // format as date
-                        mCalendar.setTimeInMillis((long) value);
-                        return format.format(mCalendar.getTimeInMillis());
-                    } else {
-                        return super.formatLabel(value, false);
-                    }
+        try {
+            final List<String> days = daystask.get();
+            final List<Integer> cups = cupsTask.get();
+            if (days.size() > 0) {
+                Date fromDate = getLocalDateFromString(days.get(0));
+                Date toDate = Calendar.getInstance().getTime();
+                Date current = fromDate;
+                toDate = plusDays(toDate, 1);
+                List<Date> dates = new ArrayList<>(25);
+                while (current.getTime() < toDate.getTime()) {
+                    dates.add(current);
+                    current = plusDays(current, 1);
                 }
-            });
-            graph.getGridLabelRenderer().setHumanRounding(false);
-            graph.getViewport().setXAxisBoundsManual(true);
-        }
+
+                graph.getViewport().setScalable(true);
+                //graph.getViewport().setMinY(0);
+                //graph.getViewport().setMaxY(20);
+                graph.getViewport().setMaxX((dates.get(dates.size() - 2)).getTime());
+                if (dates.size() <= 30)
+                    graph.getViewport().setMinX((dates.get(0)).getTime());
+                else
+                    graph.getViewport().setMinX((dates.get(dates.size() - 29)).getTime());
+                graph.getViewport().setScalable(false);
+
+                List<DataPoint> points = new ArrayList<>();
+                int j = 0;
+                int i, maxc = 0;
+                for (i = 0; i < dates.size(); i++) {
+                    String day = getStringFromLocalDate(dates.get(i));
+                    Date daydate = dates.get(i);
+                    if (j < days.size() && day.equals(days.get(j))) {
+                        points.add(new DataPoint(daydate, cups.get(j)));
+                        if (cups.get(j) > maxc) maxc = cups.get(j);
+                        j++;
+                    } else points.add(new DataPoint(daydate, 0));
+                }
+                DataPoint[] pointsv = new DataPoint[points.size()];
+                pointsv = points.toArray(pointsv);
+                graph.removeAllSeries();
+                graph.getViewport().setMaxY(maxc);
+
+                if (MainActivity.state.getBoolean("historyline", false)) {
+                    BarGraphSeries<DataPoint> seriesb = new BarGraphSeries<>(pointsv);
+                    seriesb.setDrawValuesOnTop(true);
+                    seriesb.setColor(getResources().getColor(R.color.colorAccent));
+                    seriesb.setSpacing(25);
+                    graph.addSeries(seriesb);
+                    seriesb.setOnDataPointTapListener(new OnDataPointTapListener() {
+                        @Override
+                        public void onTap(Series series, DataPointInterface dataPoint) {
+                            DateFormat mDateFormat = android.text.format.DateFormat.getDateFormat(getContext());
+                            Calendar mCalendar = Calendar.getInstance();
+                            mCalendar.setTimeInMillis((long) dataPoint.getX());
+                            final Balloon balloon = new Balloon.Builder(getContext())
+                                    .setText(mDateFormat.format(mCalendar.getTimeInMillis()) + ": " + (int) dataPoint.getY() + " " + getString(R.string.tazzine_totali).toLowerCase())
+                                    .setWidthRatio(0.5f)
+                                    .setBackgroundColorResource(R.color.colorAccent)
+                                    .setBalloonAnimation(BalloonAnimation.FADE)
+                                    .setArrowVisible(false)
+                                    .build();
+                            balloon.setOnBalloonOutsideTouchListener(new OnBalloonOutsideTouchListener() {
+                                @Override
+                                public void onBalloonOutsideTouch(@NonNull View view, @NonNull MotionEvent motionEvent) {
+                                    balloon.dismiss();
+                                }
+                            });
+                            balloon.showAlignBottom(graph);
+                        }
+                    });
+                } else {
+                    LineGraphSeries<DataPoint> seriesl = new LineGraphSeries<>(pointsv);
+                    seriesl.setColor(getResources().getColor(R.color.colorAccent));
+                    graph.addSeries(seriesl);
+                    seriesl.setOnDataPointTapListener(new OnDataPointTapListener() {
+                        @Override
+                        public void onTap(Series series, DataPointInterface dataPoint) {
+                            DateFormat mDateFormat = android.text.format.DateFormat.getDateFormat(getContext());
+                            Calendar mCalendar = Calendar.getInstance();
+                            mCalendar.setTimeInMillis((long) dataPoint.getX());
+                            final Balloon balloon = new Balloon.Builder(getContext())
+                                    .setText(mDateFormat.format(mCalendar.getTimeInMillis()) + ": " + (int) dataPoint.getY() + " " + getString(R.string.tazzine_totali).toLowerCase())
+                                    .setWidthRatio(0.5f)
+                                    .setBackgroundColorResource(R.color.colorAccent)
+                                    .setBalloonAnimation(BalloonAnimation.FADE)
+                                    .setArrowVisible(false)
+                                    .build();
+                            balloon.setOnBalloonOutsideTouchListener(new OnBalloonOutsideTouchListener() {
+                                @Override
+                                public void onBalloonOutsideTouch(@NonNull View view, @NonNull MotionEvent motionEvent) {
+                                    balloon.dismiss();
+                                }
+                            });
+                            balloon.showAlignBottom(graph);
+                        }
+                    });
+                    seriesl.setThickness(5);
+                    seriesl.setDataPointsRadius(10);
+                    seriesl.setDrawDataPoints(true);
+                }
+
+                // set date label formatter
+                graph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(getContext()) {
+                    @Override
+                    public String formatLabel(double value, boolean isValueX) {
+                        SimpleDateFormat format = new SimpleDateFormat("dd/MM", Locale.getDefault());
+                        if (isValueX) {
+                            // format as date
+                            mCalendar.setTimeInMillis((long) value);
+                            return format.format(mCalendar.getTimeInMillis());
+                        } else {
+                            return super.formatLabel(value, false);
+                        }
+                    }
+                });
+                graph.getGridLabelRenderer().setHumanRounding(false);
+                graph.getViewport().setXAxisBoundsManual(true);
+            }
+        } catch (Exception ignored) {}
     }
 
     @SuppressLint("ClickableViewAccessibility")
     public void typePie(final PieChart pie) {
         pie.clear();
-        List<Coffeetype> types = MainActivity.db.coffetypeDao().getAll();
-        List<Coffeetype> favs = MainActivity.db.coffetypeDao().getFavs();
-        int totalcups = 0;
-        for (Coffeetype type : types) totalcups += type.getQnt();
-        for (Coffeetype type : types) {
-            int clr;
-            boolean isfav = favs.contains(type);
-            if (isfav) {
-                clr = getResources().getColor(R.color.colorAccent);
-            } else clr = getResources().getColor(R.color.colorAccentDark);
+        try {
+            List<Coffeetype> types = MainActivity.db.getTypes().get();
+            int totalcups = 0;
+            for (Coffeetype type : types) totalcups += type.getQnt();
+            for (Coffeetype type : types) {
+                int clr;
+                if (type.isFav()) {
+                    clr = getResources().getColor(R.color.colorAccent);
+                } else clr = getResources().getColor(R.color.colorAccentDark);
 
-            String name = "";
-            int n = MainActivity.db.cupDAO().getAll(type.getKey()).size();
-            double perc;
-            if (totalcups > 0) perc = (double) (n * 100) / totalcups;
-            else perc = 0;
-            if (perc > 2.5) name = type.getName();
-            Segment segment = new Segment(name, n);
-            SegmentFormatter formatter = new SegmentFormatter(clr);
-            formatter.setRadialInset((float) 1);
-            Paint pnt = new Paint(formatter.getLabelPaint());
-            pnt.setTextSize(30);
-            if (MainActivity.db.coffetypeDao().getFavs().contains(type)) {
-                pnt.setFakeBoldText(true);
-            }
-            formatter.setLabelPaint(pnt);
-            pie.addSegment(segment, formatter);
-        }
-
-        pie.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(@NonNull View view, @NonNull MotionEvent motionEvent) {
-                view.performClick();
-                PointF click = new PointF(motionEvent.getX(), motionEvent.getY());
-                if (pie.getPie().containsPoint(click)) {
-                    Segment segment = pie.getRenderer(PieRenderer.class).getContainingSegment(click);
-
-                    if (segment != null) {
-                        int n = segment.getValue().intValue();
-                        String str = segment.getTitle();
-
-                        final Balloon balloon = new Balloon.Builder(getContext())
-                                .setText(str + ": " + n)
-                                .setWidthRatio(0.5f)
-                                .setBackgroundColorResource(R.color.colorAccent)
-                                .setBalloonAnimation(BalloonAnimation.FADE)
-                                .setArrowVisible(false)
-                                .build();
-                        balloon.setOnBalloonOutsideTouchListener(new OnBalloonOutsideTouchListener() {
-                            @Override
-                            public void onBalloonOutsideTouch(@NonNull View view, @NonNull MotionEvent motionEvent) {
-                                balloon.dismiss();
-                            }
-                        });
-                        balloon.showAlignBottom(pie);
-                    }
+                String name = "";
+                int n = type.getQnt();
+                double perc;
+                if (totalcups > 0) perc = (double) (n * 100) / totalcups;
+                else perc = 0;
+                if (perc > 2.5) name = type.getName();
+                Segment segment = new Segment(name, n);
+                SegmentFormatter formatter = new SegmentFormatter(clr);
+                formatter.setRadialInset((float) 1);
+                Paint pnt = new Paint(formatter.getLabelPaint());
+                pnt.setTextSize(30);
+                if (type.isFav()) {
+                    pnt.setFakeBoldText(true);
                 }
-                return true;
+                formatter.setLabelPaint(pnt);
+                pie.addSegment(segment, formatter);
             }
-        });
+
+            pie.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(@NonNull View view, @NonNull MotionEvent motionEvent) {
+                    view.performClick();
+                    PointF click = new PointF(motionEvent.getX(), motionEvent.getY());
+                    if (pie.getPie().containsPoint(click)) {
+                        Segment segment = pie.getRenderer(PieRenderer.class).getContainingSegment(click);
+
+                        if (segment != null) {
+                            int n = segment.getValue().intValue();
+                            String str = segment.getTitle();
+
+                            final Balloon balloon = new Balloon.Builder(getContext())
+                                    .setText(str + ": " + n)
+                                    .setWidthRatio(0.5f)
+                                    .setBackgroundColorResource(R.color.colorAccent)
+                                    .setBalloonAnimation(BalloonAnimation.FADE)
+                                    .setArrowVisible(false)
+                                    .build();
+                            balloon.setOnBalloonOutsideTouchListener(new OnBalloonOutsideTouchListener() {
+                                @Override
+                                public void onBalloonOutsideTouch(@NonNull View view, @NonNull MotionEvent motionEvent) {
+                                    balloon.dismiss();
+                                }
+                            });
+                            balloon.showAlignBottom(pie);
+                        }
+                    }
+                    return true;
+                }
+            });
+        } catch (Exception ignored) {}
 
         pie.redraw();
     }
@@ -391,61 +396,64 @@ public class StatFragment extends Fragment implements View.OnClickListener {
     }
 
     public void dayGraph(final GraphView daygraph) {
-        List<Cup> allcups = new ArrayList<>();
-        for (Coffeetype type : MainActivity.db.coffetypeDao().getAll()) {
-            allcups.addAll(MainActivity.db.cupDAO().getAll(type.getKey()));
-        }
-        int[] cupPerDay = new int[7];
-        SimpleDateFormat sdf = new SimpleDateFormat("E", Locale.getDefault());
-        SimpleDateFormat sdf1 = new SimpleDateFormat("yyy/MM/dd", Locale.getDefault());
-        Calendar clndr = Calendar.getInstance();
-        int day;
-        for (Cup cup : allcups) {
-            try {
-                //Log.d("DAYS", sdf.format(sdf1.parse(cup.getDay())));
-                clndr.setTime(sdf1.parse(cup.getDay()));
-                day = clndr.get(Calendar.DAY_OF_WEEK) - 1;
-                cupPerDay[day]++;
-            } catch (ParseException ignored) {
+        try {
+            List<Cup> allcups = new ArrayList<>();
+            List<Coffeetype> coffeetypes = MainActivity.db.getTypes().get();
+            for (Coffeetype type : coffeetypes) {
+                allcups.addAll(MainActivity.db.getCups(type.getKey()).get());
             }
-        }
-        int max = 0;
-
-        DataPoint[] pointsv = new DataPoint[7];
-        for (int i = 0; i < 7; i++) {
-            pointsv[i] = new DataPoint(i, cupPerDay[i]);
-            if (cupPerDay[i] > max) max = cupPerDay[i];
-        }
-
-        BarGraphSeries<DataPoint> dayseries = new BarGraphSeries<>(pointsv);
-        dayseries.setDrawValuesOnTop(true);
-        dayseries.setColor(getResources().getColor(R.color.colorAccent));
-        dayseries.setSpacing(25);
-
-        dayseries.setOnDataPointTapListener(new OnDataPointTapListener() {
-            @Override
-            public void onTap(Series series, DataPointInterface dataPoint) {
-                String day = dayFromNumber((int) dataPoint.getX());
-                final Balloon balloon = new Balloon.Builder(getContext())
-                        .setText(day + ": " + String.format(Locale.getDefault(), "%d", (int) dataPoint.getY()) + " " + getString(R.string.tazzine_totali).toLowerCase())
-                        .setWidthRatio(0.5f)
-                        .setBackgroundColorResource(R.color.colorAccent)
-                        .setBalloonAnimation(BalloonAnimation.FADE)
-                        .setArrowVisible(false)
-                        .build();
-                balloon.setOnBalloonOutsideTouchListener(new OnBalloonOutsideTouchListener() {
-                    @Override
-                    public void onBalloonOutsideTouch(@NonNull View view, @NonNull MotionEvent motionEvent) {
-                        balloon.dismiss();
-                    }
-                });
-                balloon.showAlignBottom(daygraph);
+            int[] cupPerDay = new int[7];
+            SimpleDateFormat sdf = new SimpleDateFormat("E", Locale.getDefault());
+            SimpleDateFormat sdf1 = new SimpleDateFormat("yyy/MM/dd", Locale.getDefault());
+            Calendar clndr = Calendar.getInstance();
+            int day;
+            for (Cup cup : allcups) {
+                try {
+                    //Log.d("DAYS", sdf.format(sdf1.parse(cup.getDay())));
+                    clndr.setTime(sdf1.parse(cup.getDay()));
+                    day = clndr.get(Calendar.DAY_OF_WEEK) - 1;
+                    cupPerDay[day]++;
+                } catch (ParseException ignored) {
+                }
             }
-        });
+            int max = 0;
 
-        daygraph.removeAllSeries();
-        daygraph.addSeries(dayseries);
-        daygraph.getViewport().setMaxY(max);
+            DataPoint[] pointsv = new DataPoint[7];
+            for (int i = 0; i < 7; i++) {
+                pointsv[i] = new DataPoint(i, cupPerDay[i]);
+                if (cupPerDay[i] > max) max = cupPerDay[i];
+            }
+
+            BarGraphSeries<DataPoint> dayseries = new BarGraphSeries<>(pointsv);
+            dayseries.setDrawValuesOnTop(true);
+            dayseries.setColor(getResources().getColor(R.color.colorAccent));
+            dayseries.setSpacing(25);
+
+            dayseries.setOnDataPointTapListener(new OnDataPointTapListener() {
+                @Override
+                public void onTap(Series series, DataPointInterface dataPoint) {
+                    String day = dayFromNumber((int) dataPoint.getX());
+                    final Balloon balloon = new Balloon.Builder(getContext())
+                            .setText(day + ": " + String.format(Locale.getDefault(), "%d", (int) dataPoint.getY()) + " " + getString(R.string.tazzine_totali).toLowerCase())
+                            .setWidthRatio(0.5f)
+                            .setBackgroundColorResource(R.color.colorAccent)
+                            .setBalloonAnimation(BalloonAnimation.FADE)
+                            .setArrowVisible(false)
+                            .build();
+                    balloon.setOnBalloonOutsideTouchListener(new OnBalloonOutsideTouchListener() {
+                        @Override
+                        public void onBalloonOutsideTouch(@NonNull View view, @NonNull MotionEvent motionEvent) {
+                            balloon.dismiss();
+                        }
+                    });
+                    balloon.showAlignBottom(daygraph);
+                }
+            });
+
+            daygraph.removeAllSeries();
+            daygraph.addSeries(dayseries);
+            daygraph.getViewport().setMaxY(max);
+        } catch (Exception ignored) {}
     }
 
     public void graphUpdater() {
@@ -458,30 +466,32 @@ public class StatFragment extends Fragment implements View.OnClickListener {
         int cupstotal_lastmonth = 0;
         int milliliterstotal = 0;
 
-        for (Coffeetype type : MainActivity.db.coffetypeDao().getAll()) {
-            if (type.isLiquido()) milliliterstotal += (type.getLiters() * type.getQnt());
-            cupstotal += type.getQnt();
-        }
-        for (String day : MainActivity.db.cupDAO().getDays()) {
-            Date date = getLocalDateFromString(day);
-            c.setTime(date);
-            month = c.get(Calendar.MONTH);
-            year = c.get(Calendar.YEAR);
-            if (month == curmonth && year == curyear) {
-                cupstotal_lastmonth += MainActivity.db.cupDAO().getAll(day).size();
+        try {
+            for (Coffeetype type : MainActivity.db.getTypes().get()) {
+                if (type.isLiquido()) milliliterstotal += (type.getLiters() * type.getQnt());
+                cupstotal += type.getQnt();
             }
-        }
-        String str = "" + cupstotal;
-        totalcupstxtv.setText(str);
-        str = "" + cupstotal_lastmonth;
-        totalcupslastmonthtxtv.setText(str);
-        if (milliliterstotal < 1000) {
-            str = milliliterstotal + " ml";
-            totalliterstxtv.setText(str);
-        } else {
-            str = milliliterstotal / 1000 + " l";
-            totalliterstxtv.setText(str);
-        }
+            for (String day : MainActivity.db.getDays().get()) {
+                Date date = getLocalDateFromString(day);
+                c.setTime(date);
+                month = c.get(Calendar.MONTH);
+                year = c.get(Calendar.YEAR);
+                if (month == curmonth && year == curyear) {
+                    cupstotal_lastmonth += MainActivity.db.getCups(day).get().size();
+                }
+            }
+            String str = "" + cupstotal;
+            totalcupstxtv.setText(str);
+            str = "" + cupstotal_lastmonth;
+            totalcupslastmonthtxtv.setText(str);
+            if (milliliterstotal < 1000) {
+                str = milliliterstotal + " ml";
+                totalliterstxtv.setText(str);
+            } else {
+                str = milliliterstotal / 1000 + " l";
+                totalliterstxtv.setText(str);
+            }
+        } catch (Exception ignored) {}
 
         historyGraph(graph);
         typePie(pie);

@@ -1,5 +1,6 @@
 package com.fexed.coffeecounter.ui.adapters;
 
+import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
@@ -23,7 +24,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.fexed.coffeecounter.R;
 import com.fexed.coffeecounter.data.Coffeetype;
 import com.fexed.coffeecounter.data.Cup;
-import com.fexed.coffeecounter.db.AppDatabase;
+import com.fexed.coffeecounter.db.DBAccess;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -31,49 +32,40 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Created by Federico Matteoni on 19/01/2018.
  */
 public class CupRecviewAdapter extends RecyclerView.Adapter<CupRecviewAdapter.ViewHolder> {
-    AppDatabase db;
+    DBAccess db;
     private List<Cup> mDataset;
     private List<Coffeetype> types;
     private Context context;
 
-    public CupRecviewAdapter(AppDatabase db, int filter) {
+    public CupRecviewAdapter(DBAccess db, int filter) throws ExecutionException, InterruptedException {
+        this.types = db.getTypes().get();
         List<Cup> allcups = new ArrayList<>();
         if (filter == -1) {
-            this.types = db.coffetypeDao().getAll();
             for (Coffeetype type : this.types) {
-                List<Cup> typecups = db.cupDAO().getAll(type.getKey());
+                List<Cup> typecups = db.getCups(type.getKey()).get();
                 Collections.reverse(typecups);
                 allcups.addAll(typecups);
             }
         } else if (filter == -2) {
-            this.types = db.coffetypeDao().getAll();
             for (Coffeetype type : this.types) {
-                List<Cup> typecups = db.cupDAO().getAll(type.getKey());
+                List<Cup> typecups = db.getCups(type.getKey()).get();
                 Collections.reverse(typecups);
                 if (typecups.size() > 0) allcups.add(typecups.get(0));
             }
         } else {
-            this.types = db.coffetypeDao().getAll();
-            List<Cup> typecups = db.cupDAO().getAll(types.get(filter).getKey());
+            List<Cup> typecups = db.getCups(types.get(filter).getKey()).get();
             Collections.reverse(typecups);
             allcups.addAll(typecups);
         }
         this.mDataset = allcups;
         this.db = db;
     }
-
-    /*public static Bitmap getBitmapFromView(View view) {
-        Bitmap bitmap = Bitmap.createBitmap(view.getWidth(), view.getHeight(), Bitmap.Config.ARGB_8888);
-        Canvas c = new Canvas(bitmap);
-        view.layout(view.getLeft(), view.getTop(), view.getRight(), view.getBottom());
-        view.draw(c);
-        return bitmap;
-    }*/
 
     @Override
     @NonNull
@@ -92,6 +84,7 @@ public class CupRecviewAdapter extends RecyclerView.Adapter<CupRecviewAdapter.Vi
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
         String str;
         View.OnLongClickListener onLongClickListener = new View.OnLongClickListener() {
+            @SuppressLint("StringFormatInvalid")
             @Override
             public boolean onLongClick(View v) {
                 switch (v.getId()) {
@@ -186,7 +179,7 @@ public class CupRecviewAdapter extends RecyclerView.Adapter<CupRecviewAdapter.Vi
                                 switch (v.getId()) {
                                     case R.id.editcupconfirmbtn:
                                         mDataset.set(holder.getAdapterPosition(), thiscup);
-                                        db.cupDAO().update(thiscup);
+                                        db.updateCups(thiscup);
                                         notifyDataSetChanged();
                                         dialog.dismiss();
                                     case R.id.editcupcancelbtn:
@@ -219,11 +212,11 @@ public class CupRecviewAdapter extends RecyclerView.Adapter<CupRecviewAdapter.Vi
     }
 
     public void removeAt(int position) {
-        db.cupDAO().delete(mDataset.get(position));
-        for (Coffeetype type : db.coffetypeDao().getAll()) {
+        db.deleteCups(mDataset.get(position));
+        for (Coffeetype type : types) {
             if (type.getKey() == mDataset.get(position).getTypekey()) {
                 type.setQnt(type.getQnt() - 1);
-                db.coffetypeDao().update(type);
+                db.updateTypes(type);
             }
         }
         mDataset.remove(position);

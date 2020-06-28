@@ -6,7 +6,6 @@ import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.ContentResolver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -24,18 +23,14 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
-import androidx.sqlite.db.SimpleSQLiteQuery;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
 import com.fexed.coffeecounter.R;
-import com.fexed.coffeecounter.data.Coffeetype;
-import com.fexed.coffeecounter.data.Cup;
 import com.fexed.coffeecounter.db.AppDatabase;
-import com.fexed.coffeecounter.db.DBMigrations;
+import com.fexed.coffeecounter.db.DBAccess;
 import com.fexed.coffeecounter.sys.FileProvider;
 import com.fexed.coffeecounter.sys.notif.AlarmBroadcastReceiver;
 
@@ -147,29 +142,11 @@ public class PrefFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.resettutorialbtn:
-                MainActivity.state.edit().putBoolean("typestutorial", true).apply();
-                MainActivity.state.edit().putBoolean("cupstutorial", true).apply();
-                MainActivity.state.edit().putBoolean("qrtutorial", true).apply();
-                MainActivity.state.edit().putBoolean("addtypetutorial", true).apply();
-                MainActivity.state.edit().putBoolean("statstutorial", true).apply();
-                break;
             case R.id.backupbtn:
-            case R.id.exportdatabtn:
                 Intent sharefile = new Intent(Intent.ACTION_SEND);
                 try {
                     File file = saveDbToExternalStorage();
-                    MainActivity.db = Room.databaseBuilder(getContext(), AppDatabase.class, "typedb")
-                            .allowMainThreadQueries() //FIXME
-                            .setJournalMode(RoomDatabase.JournalMode.TRUNCATE)
-                            .addMigrations(DBMigrations.MIGRATION_19_20,
-                                    DBMigrations.MIGRATION_20_21,
-                                    DBMigrations.MIGRATION_21_22,
-                                    DBMigrations.MIGRATION_22_23,
-                                    DBMigrations.MIGRATION_23_24,
-                                    DBMigrations.MIGRATION_24_25,
-                                    DBMigrations.MIGRATION_25_26)
-                            .build();
+                    MainActivity.db = new DBAccess(getActivity().getApplication());
                     if (file != null && file.exists()) { //If not null should always exists
                         String type = "application/octet-stream"; //generic file
 
@@ -188,49 +165,6 @@ public class PrefFragment extends Fragment implements View.OnClickListener {
                 i.setType("file/*");
                 startActivityForResult(i, 10);
                 break;
-            case R.id.statbtn:
-                int milliliterstotal = 0;
-                int cupstotal = 0;
-                StringBuilder cupsstat = new StringBuilder();
-
-                for (Coffeetype type : MainActivity.db.coffetypeDao().getAll()) {
-                    cupsstat.append(type.getName()).append("\n");
-                    milliliterstotal += (type.getLiters() * type.getQnt());
-                    cupstotal += type.getQnt();
-                    for (Cup cup : MainActivity.db.cupDAO().getAll(type.getKey()))
-                        cupsstat.append("\t[").append(cup.toString()).append("]\n");
-                }
-
-                AlertDialog.Builder dialogbuilder = new AlertDialog.Builder(getContext());
-                dialogbuilder.setMessage("Bevuti in totale " + milliliterstotal + " ml in " + cupstotal + " tazzine.\n\n" + cupsstat)
-                        .setNeutralButton("OK", null);
-                dialogbuilder.create();
-                dialogbuilder.show();
-                break;
-            case R.id.resetdbbtn:
-                dialogbuilder = new AlertDialog.Builder(getContext());
-                dialogbuilder.setMessage(getString(R.string.resetdb) + "?")
-                        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                MainActivity.db.cupDAO().nuke();
-                                MainActivity.db.coffetypeDao().nuke();
-                                /*updateDefaultDatabase();
-                                cupsRecview.setAdapter(new CupRecviewAdapter(db, 0));
-                                typesRecview.setAdapter(new TypeRecviewAdapter(db, typesRecview, state));*/
-                                //Snackbar.make(findViewById(R.id.container), "Database resettato", Snackbar.LENGTH_LONG).show();
-                            }
-                        })
-                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                //Snackbar.make(findViewById(R.id.container), "Annullato", Snackbar.LENGTH_SHORT).show();
-                            }
-                        });
-                dialogbuilder.create();
-                dialogbuilder.show();
-                break;
-
         }
     }
 
@@ -257,8 +191,7 @@ public class PrefFragment extends Fragment implements View.OnClickListener {
     }
 
     public File saveDbToExternalStorage() throws IOException {
-        MainActivity.db.cupDAO().checkpoint(new SimpleSQLiteQuery("pragma wal_checkpoint(full)"));
-        MainActivity.db.coffetypeDao().checkpoint(new SimpleSQLiteQuery("pragma wal_checkpoint(full)"));
+        MainActivity.db.checkpoint();
         MainActivity.db.close();
         String currentDBPath = MainActivity.dbpath;
         File src = new File(currentDBPath);
@@ -362,17 +295,7 @@ public class PrefFragment extends Fragment implements View.OnClickListener {
                                 File dest = new File(MainActivity.dbpath, "backupdb");
                                 if (dest.exists()) dest.renameTo(new File(MainActivity.dbpath, "typedb.db"));
 
-                                MainActivity.db = Room.databaseBuilder(getContext(), AppDatabase.class, "typedb")
-                                        .allowMainThreadQueries() //FIXME
-                                        .setJournalMode(RoomDatabase.JournalMode.TRUNCATE)
-                                        .addMigrations(DBMigrations.MIGRATION_19_20,
-                                                DBMigrations.MIGRATION_20_21,
-                                                DBMigrations.MIGRATION_21_22,
-                                                DBMigrations.MIGRATION_22_23,
-                                                DBMigrations.MIGRATION_23_24,
-                                                DBMigrations.MIGRATION_24_25,
-                                                DBMigrations.MIGRATION_25_26)
-                                        .build();
+                                MainActivity.db = new DBAccess(getActivity().getApplication());
                                 Toast.makeText(getContext(), R.string.dbopened, Toast.LENGTH_LONG).show();
                             } else {
                                 Toast.makeText(getContext(), R.string.dbopenerror, Toast.LENGTH_LONG).show();

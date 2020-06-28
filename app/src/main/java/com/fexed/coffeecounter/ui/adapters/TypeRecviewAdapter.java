@@ -1,6 +1,7 @@
 package com.fexed.coffeecounter.ui.adapters;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.ContextWrapper;
@@ -41,7 +42,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.fexed.coffeecounter.R;
 import com.fexed.coffeecounter.data.Coffeetype;
 import com.fexed.coffeecounter.data.Cup;
-import com.fexed.coffeecounter.db.AppDatabase;
+import com.fexed.coffeecounter.db.DBAccess;
 import com.fexed.coffeecounter.sys.SaveImageToInternalTask;
 import com.fexed.coffeecounter.ui.MainActivity;
 import com.google.android.material.snackbar.Snackbar;
@@ -59,6 +60,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 
 /**
@@ -68,15 +70,15 @@ public class TypeRecviewAdapter extends RecyclerView.Adapter<TypeRecviewAdapter.
     public static int WHITE = 0xFFFFFFFF;
     public static int BLACK = 0xFF000000;
     public final static int WIDTH = 500;
-    AppDatabase db;
+    DBAccess db;
     private List<Coffeetype> mDataset;
     Context context;
     Activity parent;
     RecyclerView recv;
     SharedPreferences state;
 
-    public TypeRecviewAdapter(Activity parentActivity, AppDatabase db, RecyclerView recv, SharedPreferences state) {
-        this.mDataset = db.coffetypeDao().getAll();
+    public TypeRecviewAdapter(Activity parentActivity, DBAccess db, RecyclerView recv, SharedPreferences state) throws ExecutionException, InterruptedException {
+        this.mDataset = db.getTypes().get();
         this.db = db;
         this.recv = recv;
         this.state = state;
@@ -125,30 +127,32 @@ public class TypeRecviewAdapter extends RecyclerView.Adapter<TypeRecviewAdapter.
                 switch (v.getId()) {
                     case R.id.addbtn:
                         mDataset.get(position).setQnt(mDataset.get(position).getQnt() + 1);
-                        db.coffetypeDao().update(mDataset.get(position));
+                        db.updateTypes(mDataset.get(position));
                         Cup cup = new Cup(mDataset.get(position).getKey());
+                        db.insertCup(cup);
                         cup = geoTag(cup);
-                        db.cupDAO().insert(cup);
                         String str = "" + mDataset.get(position).getQnt();
                         cupstxtv.setText(str);
                         break;
                     case R.id.removebtn:
                         int n = mDataset.get(position).getQnt();
-                        mDataset.get(position).setQnt((n == 0) ? 0 : n-1);
-                        db.coffetypeDao().update(mDataset.get(position));
-                        List<Cup> typecups = db.cupDAO().getAll(mDataset.get(position).getKey());
-                        Collections.reverse(typecups);
-                        Cup todelete = null;
-                        if (typecups.size() > 0) {
-                            todelete = typecups.get(0);
-                            db.cupDAO().delete(todelete);
-                        }
-                        str = "" + mDataset.get(position).getQnt();
-                        cupstxtv.setText(str);
+                        try {
+                            List<Cup> typecups = db.getCups(mDataset.get(position).getKey()).get();
+                            mDataset.get(position).setQnt((n == 0) ? 0 : n - 1);
+                            db.updateTypes(mDataset.get(position));
+                            Collections.reverse(typecups);
+                            Cup todelete = null;
+                            if (typecups.size() > 0) {
+                                todelete = typecups.get(0);
+                                db.deleteCups(todelete);
+                            }
+                            str = "" + mDataset.get(position).getQnt();
+                            cupstxtv.setText(str);
+                        } catch (Exception ignored) {}
                         break;
                     case R.id.favbtn:
                         mDataset.get(position).setFav(!(mDataset.get(position).isFav()));
-                        db.coffetypeDao().update(mDataset.get(position));
+                        db.updateTypes(mDataset.get(position));
                         ImageButton btn = (ImageButton) v;
                         btn.setImageResource((mDataset.get(position).isFav()) ? R.drawable.ic_favstarfull : R.drawable.ic_favstarempty);
                         break;
@@ -273,8 +277,10 @@ public class TypeRecviewAdapter extends RecyclerView.Adapter<TypeRecviewAdapter.
                                         ((MainActivity) parent).currentbitmap = null;
                                     }
 
-                                    db.coffetypeDao().update(mDataset.get(position));
-                                    TypeRecviewAdapter.this.recv.setAdapter(new TypeRecviewAdapter(parent, db, TypeRecviewAdapter.this.recv, state));
+                                    db.updateTypes(mDataset.get(position));
+                                    try {
+                                        TypeRecviewAdapter.this.recv.setAdapter(new TypeRecviewAdapter(parent, db, TypeRecviewAdapter.this.recv, state));
+                                    } catch (Exception ignored) {}
                                     dialog.dismiss();
                                 }
                             }
@@ -334,6 +340,7 @@ public class TypeRecviewAdapter extends RecyclerView.Adapter<TypeRecviewAdapter.
         };
 
         View.OnLongClickListener longClickListener = new View.OnLongClickListener() {
+            @SuppressLint("StringFormatInvalid")
             @Override
             public boolean onLongClick(View v) {
                 switch (v.getId()) {
@@ -422,8 +429,8 @@ public class TypeRecviewAdapter extends RecyclerView.Adapter<TypeRecviewAdapter.
     }
 
     public void removeAt(int position) {
-        db.cupDAO().deleteAll(mDataset.get(position).getKey());
-        db.coffetypeDao().delete(mDataset.get(position));
+        db.deleteCups(mDataset.get(position).getKey());
+        db.deleteType(mDataset.get(position));
         mDataset.remove(position);
         notifyItemRemoved(position);
         notifyItemRangeChanged(position, mDataset.size());

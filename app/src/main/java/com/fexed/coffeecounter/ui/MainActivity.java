@@ -1,6 +1,7 @@
 package com.fexed.coffeecounter.ui;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Context;
@@ -15,6 +16,7 @@ import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -39,15 +41,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.room.Room;
 import androidx.viewpager.widget.ViewPager;
 
 import com.fexed.coffeecounter.R;
 import com.fexed.coffeecounter.data.Coffeetype;
 import com.fexed.coffeecounter.data.Cup;
-import com.fexed.coffeecounter.db.AppDatabase;
+import com.fexed.coffeecounter.db.DBAccess;
 import com.fexed.coffeecounter.db.DBDownloader;
-import com.fexed.coffeecounter.db.DBMigrations;
 import com.fexed.coffeecounter.sys.SaveImageToInternalTask;
 import com.fexed.coffeecounter.ui.adapters.CupRecviewAdapter;
 import com.fexed.coffeecounter.ui.adapters.TypeRecviewAdapter;
@@ -76,7 +76,7 @@ import java.util.concurrent.ExecutionException;
  */
 public class MainActivity extends AppCompatActivity {
     public static SharedPreferences state;
-    public static AppDatabase db;
+    public static DBAccess db;
     public static String dbpath;
 
     private ViewPager viewPager;
@@ -90,30 +90,26 @@ public class MainActivity extends AppCompatActivity {
 
         state = this.getSharedPreferences(getString(R.string.apppkg), MODE_PRIVATE);
         state.edit().putBoolean("isintypes", false).apply();
-        db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "typedb")
-                .allowMainThreadQueries() //FIXME
-                .addMigrations(DBMigrations.MIGRATION_19_20,
-                        DBMigrations.MIGRATION_20_21,
-                        DBMigrations.MIGRATION_21_22,
-                        DBMigrations.MIGRATION_22_23,
-                        DBMigrations.MIGRATION_23_24,
-                        DBMigrations.MIGRATION_24_25,
-                        DBMigrations.MIGRATION_25_26)
-                .build();
+        db = new DBAccess(getApplication());
         dbpath = getDatabasePath("typedb").getPath();
 
         Bundle bundle = getIntent().getExtras();
         if (bundle != null && bundle.getString("TYPENAME", null) != null ) {
             String typename = bundle.getString("TYPENAME", null);
             Log.d("WDGT", typename);
-            for (Coffeetype type : db.coffetypeDao().getAll()) {
-                if (type.getName().equals(typename)) {
-                    Cup cup = new Cup(type.getKey());
-                    cup = geoTag(cup);
-                    db.cupDAO().insert(cup);
-                    setResult(RESULT_OK);
-                    finish();
+            try {
+                List<Coffeetype> list = db.getTypes().get();
+                for (Coffeetype type : list) {
+                    if (type.getName().equals(typename)) {
+                        Cup cup = new Cup(type.getKey());
+                        cup = geoTag(cup);
+                        db.insertCup(cup);
+                        setResult(RESULT_OK);
+                        finish();
+                    }
                 }
+            } catch (Exception ex) {
+                ex.printStackTrace();
             }
             setResult(RESULT_CANCELED);
             finish();
@@ -234,29 +230,37 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.action_favs:
                 PopupMenu popup = new PopupMenu(findViewById(R.id.action_add).getContext(), findViewById(R.id.action_add));
-                final List<Coffeetype> list = db.coffetypeDao().getFavs();
-                for (Coffeetype type : list)
-                    popup.getMenu().add(1, list.indexOf(type), 0, type.getName());
-                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-                        int pos = item.getItemId();
-                        Coffeetype elem = list.get(pos);
-                        elem.setQnt(elem.getQnt() + 1);
-                        db.coffetypeDao().update(elem);
-                        Cup cup = new Cup(elem.getKey());
-                        cup = geoTag(cup);
-                        db.cupDAO().insert(cup);
-                        graphUpdater();
-                        RecyclerView cupsRecView = viewPager.findViewById(R.id.cupsrecview);
-                        if (cupsRecView != null) cupsRecView.setAdapter(new CupRecviewAdapter(db, -1));
-                        RecyclerView typesRecView = viewPager.findViewById(R.id.recview);
-                        if (typesRecView != null) typesRecView.setAdapter(new TypeRecviewAdapter(MainActivity.this, db, typesRecView, state));
+                try {
+                    final List<Coffeetype> list = db.getFavs().get();
+                    for (Coffeetype type : list)
+                        popup.getMenu().add(1, list.indexOf(type), 0, type.getName());
+                    popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                        @Override
+                        public boolean onMenuItemClick(MenuItem item) {
+                            int pos = item.getItemId();
+                            Coffeetype elem = list.get(pos);
+                            elem.setQnt(elem.getQnt() + 1);
+                            db.updateTypes(elem);
+                            Cup cup = new Cup(elem.getKey());
+                            cup = geoTag(cup);
+                            db.insertCup(cup);
+                            graphUpdater();
+                            RecyclerView cupsRecView = viewPager.findViewById(R.id.cupsrecview);
+                            if (cupsRecView != null)
+                                try {
+                                    cupsRecView.setAdapter(new CupRecviewAdapter(db, -1));
+                                } catch (Exception ignored) {}
+                            RecyclerView typesRecView = viewPager.findViewById(R.id.recview);
+                            if (typesRecView != null)
+                                try {
+                                    typesRecView.setAdapter(new TypeRecviewAdapter(MainActivity.this, db, typesRecView, state));
+                                } catch (Exception ignored) {}
 
-                        return true;
-                    }
-                });
-                popup.show();
+                            return true;
+                        }
+                    });
+                    popup.show();
+                } catch (ExecutionException | InterruptedException ignored) {}
                 break;
             case R.id.action_notifs:
                 final AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -413,7 +417,7 @@ public class MainActivity extends AppCompatActivity {
                                 }
                                 coffeetype.setDefaulttype(false);
 
-                                db.coffetypeDao().insert(coffeetype);
+                                db.insertType(coffeetype);
                                 dialog.dismiss();
                             }
                         }
@@ -603,10 +607,13 @@ public class MainActivity extends AppCompatActivity {
                     }
                     Coffeetype newtype = new Coffeetype(name, liters, desc, liquid, sostanza, price, bmpuri);
 
-                    db.coffetypeDao().insert(newtype);
+                    db.insertType(newtype);
 
                     RecyclerView typesRecView = viewPager.findViewById(R.id.recview);
-                    if (typesRecView != null) typesRecView.setAdapter(new TypeRecviewAdapter(MainActivity.this, db, typesRecView, state));
+                    if (typesRecView != null)
+                        try {
+                            typesRecView.setAdapter(new TypeRecviewAdapter(MainActivity.this, db, typesRecView, state));
+                        } catch (Exception ignored) {}
 
                     dialog.dismiss();
                 }
@@ -628,36 +635,42 @@ public class MainActivity extends AppCompatActivity {
                 String dbtxt = state.getString("defaultdb", null);
                 final ArrayList<Coffeetype> defaultlist = new ArrayList<>();
                 ArrayList<String> defaultindb = new ArrayList<>();
-                for (Coffeetype type : db.coffetypeDao().getAll()) {
-                    if (type.isDefaulttype()) defaultindb.add(type.getName());
-                }
-                ArrayList<String> namelist = new ArrayList<>();
-                if (dbtxt != null) {
-                    for (String str : dbtxt.split("\n")) {
-                        String[] strtype = str.split("::");
-                        if (strtype.length == 6) {
-                            Coffeetype type = new Coffeetype(strtype[0], Integer.parseInt(strtype[2]), strtype[1], Boolean.parseBoolean(strtype[3]), strtype[4], Float.parseFloat(strtype[5]), null, true);
-                            if (!defaultindb.contains(type.getName())) {
-                                defaultlist.add(type);
-                                namelist.add(strtype[0]);
+                try {
+                    List<Coffeetype> list = db.getTypes().get();
+                    for (Coffeetype type : list) {
+                        if (type.isDefaulttype()) defaultindb.add(type.getName());
+                    }
+                    ArrayList<String> namelist = new ArrayList<>();
+                    if (dbtxt != null) {
+                        for (String str : dbtxt.split("\n")) {
+                            String[] strtype = str.split("::");
+                            if (strtype.length == 6) {
+                                Coffeetype type = new Coffeetype(strtype[0], Integer.parseInt(strtype[2]), strtype[1], Boolean.parseBoolean(strtype[3]), strtype[4], Float.parseFloat(strtype[5]), null, true);
+                                if (!defaultindb.contains(type.getName())) {
+                                    defaultlist.add(type);
+                                    namelist.add(strtype[0]);
+                                }
                             }
                         }
+                        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                        builder.setTitle(R.string.defaultdbtitle);
+                        builder.setItems(namelist.toArray(new CharSequence[namelist.size()]), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                db.insertType(defaultlist.get(i));
+                                RecyclerView typesRecView = viewPager.findViewById(R.id.recview);
+                                if (typesRecView != null)
+                                    try {
+                                        typesRecView.setAdapter(new TypeRecviewAdapter(MainActivity.this, db, typesRecView, state));
+                                    } catch (Exception ignored) {}
+                                dialog.dismiss();
+                            }
+                        });
+                        builder.show();
+                    } else {
+                        Toast.makeText(getApplicationContext(), R.string.defaultdbnotavailalert, Toast.LENGTH_LONG).show();
                     }
-                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                    builder.setTitle(R.string.defaultdbtitle);
-                    builder.setItems(namelist.toArray(new CharSequence[namelist.size()]), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            db.coffetypeDao().insert(defaultlist.get(i));
-                            RecyclerView typesRecView = viewPager.findViewById(R.id.recview);
-                            if (typesRecView != null) typesRecView.setAdapter(new TypeRecviewAdapter(MainActivity.this, db, typesRecView, state));
-                            dialog.dismiss();
-                        }
-                    });
-                    builder.show();
-                } else {
-                    Toast.makeText(getApplicationContext(), R.string.defaultdbnotavailalert, Toast.LENGTH_LONG).show();
-                }
+                } catch (ExecutionException | InterruptedException ignored) {}
             }
         });
 
@@ -677,35 +690,41 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void addCup() {
+        AsyncTask<Void, Void, List<Coffeetype>> typeslist = db.getTypes();
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.selecttype);
-        final List<Coffeetype> list = db.coffetypeDao().getAll();
         Calendar cld = Calendar.getInstance();
-        final DatePickerDialog StartTime = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
-            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                Calendar newDate = Calendar.getInstance();
-                newDate.set(year, monthOfYear, dayOfMonth);
-                SimpleDateFormat sdf = new SimpleDateFormat("dd/MMM/yyy HH:mm:ss:SSS", Locale.getDefault());
-                final String date = sdf.format(newDate.getTime());
-                sdf = new SimpleDateFormat("yyy/MM/dd", Locale.getDefault());
-                final String day = sdf.format(newDate.getTime());
-                builder.setAdapter(new ArrayAdapter<>(getApplicationContext(), R.layout.type_element, list), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int pos) {
-                        list.get(pos).setQnt(list.get(pos).getQnt() + 1);
-                        db.coffetypeDao().update(list.get(pos));
-                        Cup cup = new Cup(list.get(pos).getKey(), date, day);
-                        cup = geoTag(cup);
-                        db.cupDAO().insert(cup);
-                        graphUpdater();
-                        RecyclerView cupsRecView = viewPager.findViewById(R.id.cupsrecview);
-                        if (cupsRecView != null) cupsRecView.setAdapter(new CupRecviewAdapter(db, -1));
-                    }
-                });
-                builder.show();
-            }
-        }, cld.get(Calendar.YEAR), cld.get(Calendar.MONTH), cld.get(Calendar.DAY_OF_MONTH));
-        StartTime.show();
+        try {
+            final List<Coffeetype> list = typeslist.get();
+            final DatePickerDialog StartTime = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
+                public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                    Calendar newDate = Calendar.getInstance();
+                    newDate.set(year, monthOfYear, dayOfMonth);
+                    SimpleDateFormat sdf = new SimpleDateFormat("dd/MMM/yyy HH:mm:ss:SSS", Locale.getDefault());
+                    final String date = sdf.format(newDate.getTime());
+                    sdf = new SimpleDateFormat("yyy/MM/dd", Locale.getDefault());
+                    final String day = sdf.format(newDate.getTime());
+                    builder.setAdapter(new ArrayAdapter<>(getApplicationContext(), R.layout.type_element, list), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int pos) {
+                            list.get(pos).setQnt(list.get(pos).getQnt() + 1);
+                            db.updateTypes(list.get(pos));
+                            Cup cup = new Cup(list.get(pos).getKey(), date, day);
+                            cup = geoTag(cup);
+                            db.insertCup(cup);
+                            graphUpdater();
+                            RecyclerView cupsRecView = viewPager.findViewById(R.id.cupsrecview);
+                            if (cupsRecView != null)
+                                try {
+                                    cupsRecView.setAdapter(new CupRecviewAdapter(db, -1));
+                                } catch (Exception ignored) {}
+                        }
+                    });
+                    builder.show();
+                }
+            }, cld.get(Calendar.YEAR), cld.get(Calendar.MONTH), cld.get(Calendar.DAY_OF_MONTH));
+            StartTime.show();
+        } catch (Exception ignored) {}
     }
 
     public Cup geoTag(Cup cup) {
@@ -733,15 +752,21 @@ public class MainActivity extends AppCompatActivity {
         if (fragment instanceof StatFragment) ((StatFragment) fragment).graphUpdater();
     }
 
+    @SuppressLint("StringFormatInvalid")
     public String generateTip() {
         int maxCupsPerDay = 5;
         //int maxCaffeinePerDay = 400;
-        int cupsToday = db.cupDAO().getAll(getStringFromLocalDate(Calendar.getInstance().getTime())).size();
+        AsyncTask<String, Void, List<Cup>> cupsTodayList = db.getCups(getStringFromLocalDate(Calendar.getInstance().getTime()));
+        int cupsToday = 0;
         int mlToday = 0;
-        for (Cup cup : db.cupDAO().getAll(getStringFromLocalDate(Calendar.getInstance().getTime()))) {
-            mlToday += db.coffetypeDao().get(cup.getTypekey()).getLiters();
-        }
         String tip = getString(R.string.tipsplaceholder);
+
+        try {
+            cupsToday = cupsTodayList.get().size();
+            for (Cup cup : cupsTodayList.get()) {
+                mlToday += db.getType(cup.getTypekey()).get().getLiters();
+            }
+        } catch (Exception ignored) {}
 
         if (cupsToday > maxCupsPerDay)
             tip = getString(R.string.summary, cupsToday, mlToday) + " ml\n\n" + getString(R.string.toomuchcupstip);
@@ -761,6 +786,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateDefaultDatabase() {
+        AsyncTask<Void, Void, List<Coffeetype>> typeslist = db.getTypes();
         try {
             Locale locale = Locale.getDefault();
             String dbtxt;
@@ -770,14 +796,14 @@ public class MainActivity extends AppCompatActivity {
                 dbtxt = new DBDownloader(state).execute("https://fexed.github.io/db/en/defaultcoffeetypes").get();
 
             if (dbtxt != null) {
-                if (db.coffetypeDao().getAll().size() == 0) {
+                if (typeslist.get().size() == 0) {
                     for (String str : dbtxt.split("\n")) {
                         String[] strtype = str.split("::");
-                        db.coffetypeDao().insert(new Coffeetype(strtype[0], Integer.parseInt(strtype[2]), strtype[1], Boolean.parseBoolean(strtype[3]), strtype[4], Float.parseFloat(strtype[5]), null, true));
+                        db.insertType(new Coffeetype(strtype[0], Integer.parseInt(strtype[2]), strtype[1], Boolean.parseBoolean(strtype[3]), strtype[4], Float.parseFloat(strtype[5]), null, true));
                     }
                     Toast.makeText(getApplicationContext(), R.string.dbupdated, Toast.LENGTH_SHORT).show();
                 } else {
-                    List<Coffeetype> coffeelist = db.coffetypeDao().getAll();
+                    List<Coffeetype> coffeelist = typeslist.get();
                     for (String str : dbtxt.split("\n")) {
                         String[] strtype = str.split("::");
                         Coffeetype type = null;
@@ -793,7 +819,7 @@ public class MainActivity extends AppCompatActivity {
                             type.setLiquido(Boolean.parseBoolean(strtype[3]));
                             type.setSostanza(strtype[4]);
                             type.setPrice(Float.parseFloat(strtype[5]));
-                            db.coffetypeDao().update(type);
+                            db.updateTypes(type);
                         }
                     }
                     Toast.makeText(getApplicationContext(), R.string.dbupdated, Toast.LENGTH_SHORT).show();
