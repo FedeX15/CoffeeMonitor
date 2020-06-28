@@ -138,4 +138,5 @@
     <string name="allisgood">Tutto apposto!</string>
     <string name="wdgtxfgprompt">Seleziona la tipologia gestita dal widget</string>
     <string name="loading">Caricamento</string>
+    <string name="dbopened">Database caricato con successo</string>
 </resources>

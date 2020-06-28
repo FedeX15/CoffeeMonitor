@@ -8,6 +8,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -28,6 +29,7 @@ import androidx.fragment.app.Fragment;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.sqlite.db.SimpleSQLiteQuery;
+import androidx.sqlite.db.SupportSQLiteDatabase;
 
 import com.fexed.coffeecounter.R;
 import com.fexed.coffeecounter.data.Coffeetype;
@@ -236,7 +238,6 @@ public class PrefFragment extends Fragment implements View.OnClickListener {
         AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(getActivity(), AlarmBroadcastReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), 0, intent, 0);
-        AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
         alarmManager.cancel(pendingIntent);
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
@@ -251,7 +252,6 @@ public class PrefFragment extends Fragment implements View.OnClickListener {
         AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(getActivity(), AlarmBroadcastReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), 0, intent, 0);
-        AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
         alarmManager.cancel(pendingIntent);
     }
 
@@ -263,7 +263,7 @@ public class PrefFragment extends Fragment implements View.OnClickListener {
         File src = new File(currentDBPath);
         File savepathfile = new File(getContext().getExternalFilesDir(null) + File.separator + "coffeemonitor");
         if (!savepathfile.exists()) savepathfile.mkdir();
-        String dstpath = savepathfile.getPath() + File.separator + "coffeemonitordb_" + new SimpleDateFormat("yyyMMddHHmmss").format(new Date()) + ".db";
+        String dstpath = savepathfile.getPath() + File.separator + "coffeemonitordb_" + new SimpleDateFormat("yyyMMddHHmmss", Locale.getDefault()).format(new Date()) + ".db";
         File savefile = new File(dstpath);
         savefile.createNewFile();
         try (FileChannel inch = new FileInputStream(src).getChannel(); FileChannel outch = new FileOutputStream(dstpath).getChannel()) {
@@ -276,6 +276,32 @@ public class PrefFragment extends Fragment implements View.OnClickListener {
         return savefile;
     }
 
+    public boolean checkDatabase(SupportSQLiteDatabase database) {
+        String query = "select * from coffeetype";
+        try (Cursor cursor = database.query(query, null)) {
+            Log.d("DBCHK", cursor.getColumnName(0) + " " + cursor.getCount());
+            if (cursor.getCount() <= 0) {
+                cursor.close();
+                return false;
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return false;
+        }
+        query = "select * from Cup";
+        try (Cursor cursor = database.query(query, null)) {
+            Log.d("DBCHK", cursor.getColumnName(0) + " " + cursor.getCount());
+            if (cursor.getCount() <= 0) {
+                cursor.close();
+                return false;
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -285,10 +311,11 @@ public class PrefFragment extends Fragment implements View.OnClickListener {
                 try {
                     ContentResolver cr = getContext().getContentResolver();
                     String mime = cr.getType(uri);
-                    if ("application/octet-stream".equals(mime)) {
+                    if ("application/octet-stream".equals(mime) && uri.toString().substring(uri.toString().lastIndexOf(".") + 1).equals("db") ) {
 
                         InputStream in = getContext().getContentResolver().openInputStream(uri);
                         File file = new File(getContext().getCacheDir(), "backupdb");
+                        if (file.exists()) file.delete();
                         try {
                             OutputStream output = new FileOutputStream(file);
                             byte[] buffer = new byte[1024];
@@ -300,24 +327,20 @@ public class PrefFragment extends Fragment implements View.OnClickListener {
 
                             output.flush();
                             in.close();
-                            AppDatabase testdb = Room.databaseBuilder(getContext(), AppDatabase.class, "testdbfrombackup")
+                            AppDatabase testdb = Room.databaseBuilder(getContext(), AppDatabase.class, "testdb" + System.currentTimeMillis())
                                     .allowMainThreadQueries()
                                     .createFromFile(file)
                                     .setJournalMode(RoomDatabase.JournalMode.TRUNCATE)
                                     .build();
-                            //TODO handle wrong file
-                            testdb.coffetypeDao().getAll();
-                            testdb.cupDAO().getDays();
-                            if (testdb.isOpen()) {
+                            if (checkDatabase(testdb.getOpenHelper().getReadableDatabase())) {
                                 testdb.close();
                                 MainActivity.db.close();
                                 String dstpath = MainActivity.dbpath + File.separator + "typedb.db";
 
-                                File src = file;
                                 Log.d("DBC", dstpath);
-                                Log.d("DBC", src.getAbsolutePath());
+                                Log.d("DBC", file.getAbsolutePath());
 
-                                in = new FileInputStream(src);
+                                in = new FileInputStream(file);
                                 try {
                                     output = new FileOutputStream(MainActivity.dbpath);
                                     try {
@@ -348,6 +371,7 @@ public class PrefFragment extends Fragment implements View.OnClickListener {
                                                 DBMigrations.MIGRATION_23_24,
                                                 DBMigrations.MIGRATION_24_25)
                                         .build();
+                                Toast.makeText(getContext(), R.string.dbopened, Toast.LENGTH_LONG).show();
                             } else {
                                 Toast.makeText(getContext(), R.string.dbopenerror, Toast.LENGTH_LONG).show();
                             }

@@ -138,4 +138,5 @@
     <string name="allisgood">大丈夫！</string>
     <string name="wdgtxfgprompt">ウィジェットが処理するタイプを選択します</string>
     <string name="loading">読み込み中</string>
+    <string name="dbopened">データベースが正常にロードされました</string>
 </resources>
