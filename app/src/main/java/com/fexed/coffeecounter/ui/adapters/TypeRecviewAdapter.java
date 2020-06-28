@@ -129,8 +129,8 @@ public class TypeRecviewAdapter extends RecyclerView.Adapter<TypeRecviewAdapter.
                         mDataset.get(position).setQnt(mDataset.get(position).getQnt() + 1);
                         db.updateTypes(mDataset.get(position));
                         Cup cup = new Cup(mDataset.get(position).getKey());
-                        db.insertCup(cup);
                         cup = geoTag(cup);
+                        db.insertCup(cup);
                         String str = "" + mDataset.get(position).getQnt();
                         cupstxtv.setText(str);
                         break;
