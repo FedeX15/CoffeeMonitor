@@ -258,7 +258,7 @@ public class MainActivity extends AppCompatActivity {
                 });
                 popup.show();
                 break;
-            case R.id.action_notifs: //TODO rework
+            case R.id.action_notifs:
                 final AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setTitle(getString(R.string.tips));
                 builder.setIcon(R.drawable.ic_info);

@@ -122,7 +122,7 @@ public class PrefFragment extends Fragment implements View.OnClickListener {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 MainActivity.state.edit().putBoolean("notifonoff", isChecked).apply();
 
-                if (isChecked) { //TODO
+                if (isChecked) {
                     startAlarmBroadcastReceiver();
                     notiftimetxtv.setText(String.format(Locale.getDefault(), "%d:%d", MainActivity.state.getInt("notifhour", 20), MainActivity.state.getInt("notifmin", 30)));
                 } else {
