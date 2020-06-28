@@ -1,8 +1,11 @@
 package com.fexed.coffeecounter.ui;
 
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -32,6 +35,7 @@ import com.fexed.coffeecounter.data.Cup;
 import com.fexed.coffeecounter.db.AppDatabase;
 import com.fexed.coffeecounter.db.DBMigrations;
 import com.fexed.coffeecounter.sys.FileProvider;
+import com.fexed.coffeecounter.sys.notif.AlarmBroadcastReceiver;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -79,7 +83,7 @@ public class PrefFragment extends Fragment implements View.OnClickListener {
 
         final TextView notiftimetxtv = root.findViewById(R.id.notiftimetxt);
         if (MainActivity.state.getBoolean("notifonoff", true))
-            notiftimetxtv.setText(String.format(Locale.getDefault(), "%d:%d", MainActivity.state.getInt("notifhour", 20), MainActivity.state.getInt("notifmin", 30)));
+            notiftimetxtv.setText(String.format(Locale.getDefault(), "%02d:%02d", MainActivity.state.getInt("notifhour", 20), MainActivity.state.getInt("notifmin", 30)));
         else notiftimetxtv.setText("--:--");
         notiftimetxtv.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
@@ -97,7 +101,7 @@ public class PrefFragment extends Fragment implements View.OnClickListener {
                             MainActivity.state.edit().putInt("notifhour", hourOfDay).apply();
                             MainActivity.state.edit().putInt("notifmin", minute).apply();
                             notiftimetxtv.setText(String.format(Locale.getDefault(), "%02d:%02d", MainActivity.state.getInt("notifhour", 20), MainActivity.state.getInt("notifmin", 30)));
-                            //startAlarmBroadcastReceiver(getApplicationContext()); //TODO
+                            startAlarmBroadcastReceiver();
                         }
                     }, mHour, mMinute, true);
                     timePickerDialog.show();
@@ -117,10 +121,10 @@ public class PrefFragment extends Fragment implements View.OnClickListener {
                 MainActivity.state.edit().putBoolean("notifonoff", isChecked).apply();
 
                 if (isChecked) { //TODO
-                    //startAlarmBroadcastReceiver(getApplicationContext());
+                    startAlarmBroadcastReceiver();
                     notiftimetxtv.setText(String.format(Locale.getDefault(), "%d:%d", MainActivity.state.getInt("notifhour", 20), MainActivity.state.getInt("notifmin", 30)));
                 } else {
-                    //stopAlarmBroadcastReceiver(getApplicationContext());
+                    stopAlarmBroadcastReceiver();
                     notiftimetxtv.setText("--:--");
                 }
             }
@@ -225,6 +229,26 @@ public class PrefFragment extends Fragment implements View.OnClickListener {
                 break;
 
         }
+    }
+
+    public void startAlarmBroadcastReceiver() {
+        Intent intent = new Intent(getActivity(), AlarmBroadcastReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), 0, intent, 0);
+        AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
+        alarmManager.cancel(pendingIntent);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        calendar.set(Calendar.HOUR_OF_DAY, MainActivity.state.getInt("notifhour", 20));
+        calendar.set(Calendar.MINUTE, MainActivity.state.getInt("notifmin", 30));
+        calendar.set(Calendar.SECOND, 0);
+        alarmManager.set(AlarmManager.RTC, calendar.getTimeInMillis(), pendingIntent);
+    }
+
+    public void stopAlarmBroadcastReceiver() {
+        Intent intent = new Intent(getActivity(), AlarmBroadcastReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), 0, intent, 0);
+        AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
+        alarmManager.cancel(pendingIntent);
     }
 
     public File saveDbToExternalStorage() throws IOException {
