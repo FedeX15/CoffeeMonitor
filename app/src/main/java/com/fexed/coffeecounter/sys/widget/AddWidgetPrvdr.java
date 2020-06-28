@@ -21,13 +21,13 @@ public class AddWidgetPrvdr extends AppWidgetProvider {
             RemoteViews view = new RemoteViews(context.getPackageName(), R.layout.widget_addlayout);
             Bundle cfg = appWidgetManager.getAppWidgetOptions(id);
             String str = cfg.getString("TYPENAME", "Err");
-            Log.d("WDGT", "Update: " + str);
+            Log.d("WDGT", "Update: " + str + "@" + id);
             if (!str.equals("Err")) {
                 view.setTextViewText(R.id.wdgttxtv, str);
                 Intent clickIntent = new Intent(context, MainActivity.class);
                 clickIntent.setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
                 clickIntent.putExtra("TYPENAME", str);
-                PendingIntent clickPendingIntent = PendingIntent.getActivity(context, 0, clickIntent, 0);
+                PendingIntent clickPendingIntent = PendingIntent.getActivity(context, id, clickIntent, PendingIntent.FLAG_UPDATE_CURRENT);
                 view.setOnClickPendingIntent(R.id.wdgtaddbtn, clickPendingIntent);
                 appWidgetManager.updateAppWidget(id, view);
             }

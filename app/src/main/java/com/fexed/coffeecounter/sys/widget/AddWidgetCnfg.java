@@ -53,11 +53,11 @@ public class AddWidgetCnfg extends Activity {
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("WDGT", "Create: " +  coffeetype.getName());
                 int appWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
                 Bundle extras = getIntent().getExtras();
                 if (extras != null) {
                     appWidgetId = extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
+                    Log.d("WDGT", "Create: " +  coffeetype.getName() + "@" + appWidgetId);
                     if (appWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID) {
                         setResult(RESULT_CANCELED);
                         finish();
@@ -71,7 +71,7 @@ public class AddWidgetCnfg extends Activity {
                     Intent clickIntent = new Intent(getApplicationContext(), MainActivity.class);
                     clickIntent.setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
                     clickIntent.putExtra("TYPENAME", coffeetype.getName());
-                    PendingIntent clickPendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, clickIntent, 0);
+                    PendingIntent clickPendingIntent = PendingIntent.getActivity(getApplicationContext(), appWidgetId, clickIntent, PendingIntent.FLAG_UPDATE_CURRENT);
                     views.setOnClickPendingIntent(id.wdgtaddbtn, clickPendingIntent);
                     appWidgetManager.updateAppWidget(appWidgetId, views);
 
