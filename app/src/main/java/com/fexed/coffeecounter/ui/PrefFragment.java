@@ -232,6 +232,8 @@ public class PrefFragment extends Fragment implements View.OnClickListener {
     }
 
     public void startAlarmBroadcastReceiver() {
+        assert getActivity() != null; //Fragment is always launched by MainActivity
+        AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(getActivity(), AlarmBroadcastReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), 0, intent, 0);
         AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
@@ -245,6 +247,8 @@ public class PrefFragment extends Fragment implements View.OnClickListener {
     }
 
     public void stopAlarmBroadcastReceiver() {
+        assert getActivity() != null; //Fragment is always launched by MainActivity
+        AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(getActivity(), AlarmBroadcastReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), 0, intent, 0);
         AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
