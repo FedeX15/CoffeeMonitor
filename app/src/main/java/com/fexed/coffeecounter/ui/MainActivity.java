@@ -10,8 +10,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.pm.ShortcutInfo;
+import android.content.pm.ShortcutManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Icon;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
@@ -115,6 +118,7 @@ public class MainActivity extends AppCompatActivity {
             finish();
         }
         updateDefaultDatabase();
+        createShortcuts();
 
         setContentView(R.layout.activity_main);
         SectionsPagerAdapter sectionsPagerAdapter =
@@ -828,6 +832,30 @@ public class MainActivity extends AppCompatActivity {
         } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
             Toast.makeText(getApplicationContext(), R.string.dbupdatefailed, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void createShortcuts() {
+        if (android.os.Build.VERSION.SDK_INT >= 26) {
+            ShortcutManager shortcutManager = getSystemService(ShortcutManager.class);
+            try {
+                List<Coffeetype> favs = db.getFavs().get();
+                ArrayList<ShortcutInfo> shortcuts = new ArrayList<>();
+                ShortcutInfo newShortcut;
+                for (Coffeetype type : favs) {
+                    newShortcut = new ShortcutInfo.Builder(this, type.getKey() + "")
+                            .setShortLabel(type.getName())
+                            .setIcon(Icon.createWithResource(this, R.drawable.ic_favstar))
+                            .setIntent(new Intent(this, MainActivity.class)
+                                    .setAction(Intent.ACTION_VIEW)
+                                    .setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS)
+                                    .putExtra("TYPENAME", type.getName()))
+                            .build();
+                    shortcuts.add(newShortcut);
+                    if (shortcuts.size() == 4) break;
+                }
+                shortcutManager.setDynamicShortcuts(shortcuts);
+            } catch (ExecutionException | InterruptedException ignored) {}
         }
     }
 }
