@@ -36,7 +36,6 @@
         android:id="@+id/nametxt"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:background="@color/transparent"
         android:hint="@string/name"
@@ -44,8 +43,8 @@
         android:textAlignment="center"
         android:textSize="30sp"
         app:layout_constraintEnd_toStartOf="@+id/defaultbtn"
-        app:layout_constraintStart_toEndOf="@+id/typeimage"
-        app:layout_constraintTop_toBottomOf="@+id/scanqrbtn" />
+        app:layout_constraintStart_toEndOf="@+id/scanqrbtn"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/typeimage"
@@ -95,42 +94,41 @@
         android:id="@+id/liquidcheck"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
+        android:layout_marginStart="32dp"
         android:checked="true"
         android:text="@string/liquid"
         android:textAlignment="center"
-        app:layout_constraintEnd_toEndOf="@+id/incrbtn"
-        app:layout_constraintStart_toStartOf="@+id/decrbtn"
-        app:layout_constraintTop_toBottomOf="@+id/ltrsmgtext" />
+        app:layout_constraintBottom_toBottomOf="@+id/ltrsmgtext"
+        app:layout_constraintStart_toEndOf="@+id/incrbtn"
+        app:layout_constraintTop_toTopOf="@+id/ltrsmgtext" />
 
     <EditText
         android:id="@+id/desctxt"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
         android:background="@drawable/rounded_edittext"
         android:hint="@string/desc"
         android:inputType="text|textMultiLine"
         android:singleLine="false"
         android:textAlignment="center"
-        app:layout_constraintEnd_toEndOf="@+id/nametxt"
-        app:layout_constraintStart_toStartOf="@+id/nametxt"
+        app:layout_constraintBottom_toBottomOf="@+id/typeimage"
+        app:layout_constraintEnd_toStartOf="@+id/liquidcheck"
+        app:layout_constraintStart_toEndOf="@+id/typeimage"
         app:layout_constraintTop_toBottomOf="@+id/liquidcheck" />
 
     <EditText
         android:id="@+id/sosttxt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginStart="32dp"
         android:background="#00000000"
         android:hint="@string/sostanza"
         android:inputType="text"
         android:textAlignment="center"
-        app:layout_constraintEnd_toEndOf="@+id/desctxt"
-        app:layout_constraintStart_toStartOf="@+id/desctxt"
-        app:layout_constraintTop_toBottomOf="@+id/desctxt" />
+        app:layout_constraintStart_toEndOf="@+id/desctxt"
+        app:layout_constraintTop_toTopOf="@+id/desctxt" />
 
 
     <EditText
@@ -164,23 +162,21 @@
         style="@style/Widget.AppCompat.Button.Borderless"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
         android:text="@string/annulla"
         android:textAppearance="@style/TextAppearance.AppCompat"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/pricetxt" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/desctxt" />
 
     <Button
         android:id="@+id/confirmbtn"
         style="@style/Widget.AppCompat.Button.Borderless"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
         android:text="@string/conferma"
         android:textAppearance="@style/TextAppearance.AppCompat"
         android:textSize="14sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/pricetxt" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
