@@ -28,6 +28,7 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
+import com.fexed.coffeecounter.BuildConfig;
 import com.fexed.coffeecounter.R;
 import com.fexed.coffeecounter.db.AppDatabase;
 import com.fexed.coffeecounter.db.DBAccess;
@@ -109,6 +110,9 @@ public class PrefFragment extends Fragment implements View.OnClickListener {
                 }
             }
         });
+
+        TextView vertxtv = root.findViewById(R.id.vertxt);
+        vertxtv.setText("v" + BuildConfig.VERSION_NAME + " (" + BuildConfig.VERSION_CODE + ")");
 
         final Switch dailynotifswitch = root.findViewById(R.id.dailynotifswitch);
         dailynotifswitch.setChecked(MainActivity.state.getBoolean("notifonoff", true));
