@@ -24,7 +24,7 @@
     <string name="tienipremutoedittipologia">編集するフィールドをロングタップ</string>
     <string name="si">はい</string>
     <string name="no">いいえ</string>
-    <string name="eliminarecup">\"％s\"を削除しますか？</string>
+    <string name="eliminarecup">\"%s\"を削除しますか？</string>
     <string name="tutorial_dashboard">これらは統計です。 一杯のコーヒーを加えるために右上隅のをタップしてください！</string>
     <string name="tipsplaceholder">これは助言です。うまく扱ってください</string>
     <string name="tutorial_cups">これらは登録されている様々なカップです。長押し - 削除するには、名前を押したままにして名前を変更します。</string>
@@ -143,6 +143,6 @@
     <string name="daysinfo">これらは1日あたりに登録されたカップの数です</string>
     <string name="historyinfo">これは履歴グラフであり、1日に登録されたカップの数が表示されます</string>
     <string name="typesinfo">このグラフは、タイプごとの登録済みカップの数を示しています</string>
-    <string name="summary">今日、％d杯、合計％d杯飲んだ</string>
-    <string name="added">％s　が追加されました</string>
+    <string name="summary">今日、%d杯、合計%d杯飲んだ</string>
+    <string name="added">%s　が追加されました</string>
 </resources>
