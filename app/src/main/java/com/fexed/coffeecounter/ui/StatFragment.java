@@ -89,14 +89,25 @@ public class StatFragment extends Fragment implements View.OnClickListener {
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
+    public void onStart() {
+        super.onStart();
         ImageButton historyinfobtn = getView().findViewById(R.id.historyinfotbn);
         ImageButton daysinfobtn = getView().findViewById(R.id.daysinfobtn);
         ImageButton typesinfobtn = getView().findViewById(R.id.typesinfobtn);
         historyinfobtn.setOnClickListener(this);
         daysinfobtn.setOnClickListener(this);
         typesinfobtn.setOnClickListener(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        ImageButton historyinfobtn = getView().findViewById(R.id.historyinfotbn);
+        ImageButton daysinfobtn = getView().findViewById(R.id.daysinfobtn);
+        ImageButton typesinfobtn = getView().findViewById(R.id.typesinfobtn);
+        historyinfobtn.setOnClickListener(null);
+        daysinfobtn.setOnClickListener(null);
+        typesinfobtn.setOnClickListener(null);
     }
 
     public void adInitializer() {
