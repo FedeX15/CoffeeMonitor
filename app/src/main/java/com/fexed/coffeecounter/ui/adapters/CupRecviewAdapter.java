@@ -30,6 +30,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.ExecutionException;
@@ -49,18 +51,57 @@ public class CupRecviewAdapter extends RecyclerView.Adapter<CupRecviewAdapter.Vi
         if (filter == -1) {
             for (Coffeetype type : this.types) {
                 List<Cup> typecups = db.getCups(type.getKey()).get();
-                Collections.reverse(typecups);
+                Collections.sort(typecups, new Comparator<Cup>() {
+                    @Override
+                    public int compare(Cup o1, Cup o2) {
+                        SimpleDateFormat sdf = new SimpleDateFormat("dd/MMM/yyy HH:mm:ss:SSS", Locale.getDefault());
+                        try {
+                            Date d1 = sdf.parse(o1.getDate());
+                            Date d2 = sdf.parse(o2.getDate());
+                            return -d1.compareTo(d2);
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                            return 0;
+                        }
+                    }
+                });
                 allcups.addAll(typecups);
             }
         } else if (filter == -2) {
             for (Coffeetype type : this.types) {
                 List<Cup> typecups = db.getCups(type.getKey()).get();
-                Collections.reverse(typecups);
+                Collections.sort(typecups, new Comparator<Cup>() {
+                    @Override
+                    public int compare(Cup o1, Cup o2) {
+                        SimpleDateFormat sdf = new SimpleDateFormat("dd/MMM/yyy HH:mm:ss:SSS", Locale.getDefault());
+                        try {
+                            Date d1 = sdf.parse(o1.getDate());
+                            Date d2 = sdf.parse(o2.getDate());
+                            return -d1.compareTo(d2);
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                            return 0;
+                        }
+                    }
+                });
                 if (typecups.size() > 0) allcups.add(typecups.get(0));
             }
         } else {
             List<Cup> typecups = db.getCups(types.get(filter).getKey()).get();
-            Collections.reverse(typecups);
+            Collections.sort(typecups, new Comparator<Cup>() {
+                @Override
+                public int compare(Cup o1, Cup o2) {
+                    SimpleDateFormat sdf = new SimpleDateFormat("dd/MMM/yyy HH:mm:ss:SSS", Locale.getDefault());
+                    try {
+                        Date d1 = sdf.parse(o1.getDate());
+                        Date d2 = sdf.parse(o2.getDate());
+                        return -d1.compareTo(d2);
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                        return 0;
+                    }
+                }
+            });
             allcups.addAll(typecups);
         }
         this.mDataset = allcups;
