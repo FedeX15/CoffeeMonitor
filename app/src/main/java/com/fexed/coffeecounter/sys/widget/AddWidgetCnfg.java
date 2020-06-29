@@ -17,7 +17,6 @@ import androidx.room.Room;
 import com.fexed.coffeecounter.R;
 import com.fexed.coffeecounter.data.Coffeetype;
 import com.fexed.coffeecounter.db.AppDatabase;
-import com.fexed.coffeecounter.ui.MainActivity;
 
 import static com.fexed.coffeecounter.R.id;
 import static com.fexed.coffeecounter.R.layout;
@@ -66,7 +65,7 @@ public class AddWidgetCnfg extends Activity {
                     appWidgetManager.updateAppWidgetOptions(appWidgetId, cfg);
                     RemoteViews views = new RemoteViews(getPackageName(), R.layout.widget_addlayout);
                     views.setTextViewText(R.id.wdgttxtv, coffeetype.getName());
-                    Intent clickIntent = new Intent(getApplicationContext(), MainActivity.class);
+                    Intent clickIntent = new Intent(getApplicationContext(), AddWidgetDialog.class);
                     clickIntent.setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
                     clickIntent.putExtra("TYPENAME", coffeetype.getName());
                     PendingIntent clickPendingIntent = PendingIntent.getActivity(getApplicationContext(), appWidgetId, clickIntent, PendingIntent.FLAG_UPDATE_CURRENT);

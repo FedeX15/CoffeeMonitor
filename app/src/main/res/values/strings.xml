@@ -14,6 +14,7 @@
     <string name="sostanza">Substance</string>
     <string name="price">Price</string>
     <string name="addtype">Add type</string>
+    <string name="added">%s added</string>
     <string name="placeholder">Various data placeholder</string>
     <string name="Tazzebevutepertipo">Drunk cups for each type</string>
 

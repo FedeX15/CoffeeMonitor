@@ -52,6 +52,7 @@ import com.fexed.coffeecounter.data.Cup;
 import com.fexed.coffeecounter.db.DBAccess;
 import com.fexed.coffeecounter.db.DBDownloader;
 import com.fexed.coffeecounter.sys.SaveImageToInternalTask;
+import com.fexed.coffeecounter.sys.widget.AddWidgetDialog;
 import com.fexed.coffeecounter.ui.adapters.CupRecviewAdapter;
 import com.fexed.coffeecounter.ui.adapters.TypeRecviewAdapter;
 import com.google.android.material.snackbar.Snackbar;
@@ -846,7 +847,7 @@ public class MainActivity extends AppCompatActivity {
                     newShortcut = new ShortcutInfo.Builder(this, type.getKey() + "")
                             .setShortLabel(type.getName())
                             .setIcon(Icon.createWithResource(this, R.drawable.ic_favstar))
-                            .setIntent(new Intent(this, MainActivity.class)
+                            .setIntent(new Intent(this, AddWidgetDialog.class)
                                     .setAction(Intent.ACTION_VIEW)
                                     .setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS)
                                     .putExtra("TYPENAME", type.getName()))

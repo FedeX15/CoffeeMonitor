@@ -31,6 +31,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".sys.widget.AddWidgetDialog" android:theme="@android:style/Theme.Material.Dialog.NoActionBar">
+            <intent-filter>
+                <action android:name="android.appwidget.action.VIEW" />
+            </intent-filter>
+        </activity>
 
         <receiver
             android:name=".sys.notif.NotifReceiver"

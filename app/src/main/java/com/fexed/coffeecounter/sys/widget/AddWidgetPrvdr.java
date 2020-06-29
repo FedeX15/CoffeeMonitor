@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.widget.RemoteViews;
 
 import com.fexed.coffeecounter.R;
-import com.fexed.coffeecounter.ui.MainActivity;
 
 /**
  * Created by Federico Matteoni on 10/06/2019
@@ -22,7 +21,7 @@ public class AddWidgetPrvdr extends AppWidgetProvider {
             String str = cfg.getString("TYPENAME", "Err");
             if (!str.equals("Err")) {
                 view.setTextViewText(R.id.wdgttxtv, str);
-                Intent clickIntent = new Intent(context, MainActivity.class);
+                Intent clickIntent = new Intent(context, AddWidgetDialog.class);
                 clickIntent.setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
                 clickIntent.putExtra("TYPENAME", str);
                 PendingIntent clickPendingIntent = PendingIntent.getActivity(context, id, clickIntent, PendingIntent.FLAG_UPDATE_CURRENT);
