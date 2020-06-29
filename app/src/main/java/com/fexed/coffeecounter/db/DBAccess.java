@@ -28,7 +28,7 @@ public class DBAccess {
                             DBMigrations.MIGRATION_24_25,
                             DBMigrations.MIGRATION_25_26)
                     .build();
-            new Thread(new Runnable() {
+            Thread t = new Thread(new Runnable() {
                 @Override
                 public void run() {
                     for (Coffeetype coffeetype : database.coffetypeDao().getAll()) {
@@ -36,7 +36,11 @@ public class DBAccess {
                        updateTypes(coffeetype);
                     }
                 }
-            }).start();
+            });
+            t.start();
+            try {
+                t.join();
+            } catch (Exception ignored){}
         }
     }
 
