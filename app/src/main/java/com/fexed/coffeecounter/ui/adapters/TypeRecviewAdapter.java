@@ -126,28 +126,27 @@ public class TypeRecviewAdapter extends RecyclerView.Adapter<TypeRecviewAdapter.
             public void onClick(View v) {
                 switch (v.getId()) {
                     case R.id.addbtn:
-                        mDataset.get(position).setQnt(mDataset.get(position).getQnt() + 1);
-                        db.updateTypes(mDataset.get(position));
                         Cup cup = new Cup(mDataset.get(position).getKey());
                         cup = geoTag(cup);
                         db.insertCup(cup);
-                        String str = "" + mDataset.get(position).getQnt();
+                        String str = "" + (mDataset.get(position).getQnt() + 1);
+                        mDataset.get(position).setQnt(mDataset.get(position).getQnt() + 1);
                         cupstxtv.setText(str);
                         break;
                     case R.id.removebtn:
                         int n = mDataset.get(position).getQnt();
                         try {
                             List<Cup> typecups = db.getCups(mDataset.get(position).getKey()).get();
-                            mDataset.get(position).setQnt((n == 0) ? 0 : n - 1);
-                            db.updateTypes(mDataset.get(position));
                             Collections.reverse(typecups);
                             Cup todelete = null;
                             if (typecups.size() > 0) {
                                 todelete = typecups.get(0);
-                                db.deleteCups(todelete);
+                                db.deleteCup(todelete);
+                                n = Math.max(0, n-1);
+                                mDataset.get(position).setQnt(n);
+                                str = "" + (n);
+                                cupstxtv.setText(str);
                             }
-                            str = "" + mDataset.get(position).getQnt();
-                            cupstxtv.setText(str);
                         } catch (Exception ignored) {}
                         break;
                     case R.id.favbtn:

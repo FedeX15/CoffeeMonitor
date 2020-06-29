@@ -212,13 +212,7 @@ public class CupRecviewAdapter extends RecyclerView.Adapter<CupRecviewAdapter.Vi
     }
 
     public void removeAt(int position) {
-        db.deleteCups(mDataset.get(position));
-        for (Coffeetype type : types) {
-            if (type.getKey() == mDataset.get(position).getTypekey()) {
-                type.setQnt(type.getQnt() - 1);
-                db.updateTypes(type);
-            }
-        }
+        db.deleteCup(mDataset.get(position));
         mDataset.remove(position);
         notifyItemRemoved(position);
         notifyItemRangeChanged(position, mDataset.size());

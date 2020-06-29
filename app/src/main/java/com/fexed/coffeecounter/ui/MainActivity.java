@@ -244,8 +244,6 @@ public class MainActivity extends AppCompatActivity {
                         public boolean onMenuItemClick(MenuItem item) {
                             int pos = item.getItemId();
                             Coffeetype elem = list.get(pos);
-                            elem.setQnt(elem.getQnt() + 1);
-                            db.updateTypes(elem);
                             Cup cup = new Cup(elem.getKey());
                             cup = geoTag(cup);
                             db.insertCup(cup);
@@ -712,8 +710,6 @@ public class MainActivity extends AppCompatActivity {
                     builder.setAdapter(new ArrayAdapter<>(getApplicationContext(), R.layout.type_element, list), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int pos) {
-                            list.get(pos).setQnt(list.get(pos).getQnt() + 1);
-                            db.updateTypes(list.get(pos));
                             Cup cup = new Cup(list.get(pos).getKey(), date, day);
                             cup = geoTag(cup);
                             db.insertCup(cup);
