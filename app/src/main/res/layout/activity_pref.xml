@@ -249,11 +249,11 @@
             android:id="@+id/vertxt"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
+            android:layout_marginEnd="24dp"
             android:gravity="center"
             android:textSize="12sp"
-            app:layout_constraintBaseline_toBaselineOf="@id/creditstitletextv"
-            app:layout_constraintStart_toEndOf="@+id/creditstitletextv"
+            app:layout_constraintBottom_toBottomOf="@+id/creditstitletextv"
+            app:layout_constraintEnd_toEndOf="parent"
             tools:text="V: 22" />
 
         <LinearLayout
