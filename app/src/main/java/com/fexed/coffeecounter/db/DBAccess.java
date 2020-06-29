@@ -16,7 +16,6 @@ import java.util.List;
  */
 public class DBAccess {
     private static AppDatabase database;
-    private getCupsPerDayTask getCupsPerDayTask;
     private getDaysTask getDaysTask;
     private getPerDayTask getPerDayTask;
     private getFavTypesTask getFavTypesTask;
@@ -47,7 +46,6 @@ public class DBAccess {
 
     //Cups access
     public void insertCup(final Cup cup) {
-        getCupsPerDayTask = null;
         getDaysTask = null;
         getPerDayTask = null;
         new Thread(new Runnable() {
@@ -59,7 +57,6 @@ public class DBAccess {
     }
 
     public void insertCups(final Cup... cups) {
-        getCupsPerDayTask = null;
         getDaysTask = null;
         getPerDayTask = null;
         new Thread(new Runnable() {
@@ -71,7 +68,6 @@ public class DBAccess {
     }
 
     public void deleteCup(final Cup cup) {
-        getCupsPerDayTask = null;
         getDaysTask = null;
         getPerDayTask = null;
         new Thread(new Runnable() {
@@ -83,7 +79,6 @@ public class DBAccess {
     }
 
     public void deleteCups(final Cup... cups) {
-        getCupsPerDayTask = null;
         getDaysTask = null;
         getPerDayTask = null;
         new Thread(new Runnable() {
@@ -95,7 +90,6 @@ public class DBAccess {
     }
 
     public void deleteCups(final int key) {
-        getCupsPerDayTask = null;
         getDaysTask = null;
         getPerDayTask = null;
         new Thread(new Runnable() {
@@ -107,7 +101,6 @@ public class DBAccess {
     }
 
     public void updateCups(final Cup... cups) {
-        getCupsPerDayTask = null;
         getDaysTask = null;
         getPerDayTask = null;
         new Thread(new Runnable() {
@@ -119,7 +112,6 @@ public class DBAccess {
     }
 
     public void nukeCups() {
-        getCupsPerDayTask = null;
         getDaysTask = null;
         getPerDayTask = null;
         new Thread(new Runnable() {
@@ -172,11 +164,7 @@ public class DBAccess {
     }
 
     public AsyncTask<String, Void, List<Cup>> getCups(String day) {
-        if (getCupsPerDayTask != null) return getCupsPerDayTask;
-        else {
-            getCupsPerDayTask = new getCupsPerDayTask();
-            return getCupsPerDayTask.execute(day);
-        }
+            return new getCupsPerDayTask().execute(day);
     }
 
     static class getCupsPerDayTask extends AsyncTask<String, Void, List<Cup>> {
