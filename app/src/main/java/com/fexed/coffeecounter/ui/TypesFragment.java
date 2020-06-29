@@ -81,7 +81,9 @@ public class TypesFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-
+        String[] funfacts = getResources().getStringArray(R.array.funfacts);
+        TextView funfactstxtv = getView().findViewById(R.id.funfacttxt);
+        funfactstxtv.setText(funfacts[new Random().nextInt(funfacts.length)]);
     }
 
     @Override
@@ -91,9 +93,6 @@ public class TypesFragment extends Fragment {
             typesRecview.setAdapter(new TypeRecviewAdapter(getActivity(), MainActivity.db, typesRecview, MainActivity.state));
             ProgressBar bar = getView().findViewById(R.id.typesbar);
             bar.setVisibility(View.GONE);
-            String[] funfacts = getResources().getStringArray(R.array.funfacts);
-            TextView funfactstxtv = getView().findViewById(R.id.funfacttxt);
-            funfactstxtv.setText(funfacts[new Random().nextInt(funfacts.length)]);
         } catch (Exception ignored) {}
     }
 

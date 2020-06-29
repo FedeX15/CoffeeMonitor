@@ -67,20 +67,20 @@ public class CupsFragment extends Fragment implements View.OnClickListener {
 
         Spinner filterspinner = getView().findViewById(R.id.filtersspinner);
         filterspinner.setAdapter(new ArrayAdapter<>(getContext(), android.R.layout.simple_dropdown_item_1line, new String[] {getString(R.string.loading)}));
+
+        String[] funfacts = getResources().getStringArray(R.array.funfacts);
+        TextView funfactstxtv = getView().findViewById(R.id.cupsfunfacttxt);
+        funfactstxtv.setText(funfacts[new Random().nextInt(funfacts.length)]);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-
-        String[] funfacts = getResources().getStringArray(R.array.funfacts);
-        TextView funfactstxtv = getView().findViewById(R.id.cupsfunfacttxt);
-        funfactstxtv.setText(funfacts[new Random().nextInt(funfacts.length)]);
         try {
             cupsRecview.setAdapter(new CupRecviewAdapter(MainActivity.db, -1));
+            ProgressBar bar = getView().findViewById(R.id.cupsbar);
+            bar.setVisibility(View.GONE);
         } catch (Exception ignored) {}
-        ProgressBar bar = getView().findViewById(R.id.cupsbar);
-        bar.setVisibility(View.GONE);
 
         Spinner filterspinner = getView().findViewById(R.id.filtersspinner);
         ArrayList<String> filters = new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.filters)));
