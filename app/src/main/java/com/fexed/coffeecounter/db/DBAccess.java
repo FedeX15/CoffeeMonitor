@@ -33,6 +33,15 @@ public class DBAccess {
                             DBMigrations.MIGRATION_24_25,
                             DBMigrations.MIGRATION_25_26)
                     .build();
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    for (Coffeetype coffeetype : database.coffetypeDao().getAll()) {
+                       coffeetype.setQnt(database.cupDAO().getAll(coffeetype.getKey()).size());
+                       updateTypes(coffeetype);
+                    }
+                }
+            }).start();
         }
     }
 
