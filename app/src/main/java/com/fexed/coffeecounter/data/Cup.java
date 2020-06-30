@@ -9,11 +9,11 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
-/**
- * Created by fexed on 05/12/2017.
- */
-
 @Entity(foreignKeys = @ForeignKey(entity = Coffeetype.class, parentColumns = "key", childColumns = "typekey"))
+/**
+ * A single assumption of a {@link Coffeetype}
+ * Created by Federico Matteoni on 05/12/2017
+ */
 public class Cup {
     @NonNull
     @PrimaryKey(autoGenerate = true)
