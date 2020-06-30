@@ -96,28 +96,6 @@ public class MainActivity extends AppCompatActivity {
         state.edit().putBoolean("isintypes", false).apply();
         db = new DBAccess(getApplication());
         dbpath = getDatabasePath("typedb").getPath();
-
-        Bundle bundle = getIntent().getExtras();
-        if (bundle != null && bundle.getString("TYPENAME", null) != null ) {
-            String typename = bundle.getString("TYPENAME", null);
-            Log.d("WDGT", typename);
-            try {
-                List<Coffeetype> list = db.getTypes().get();
-                for (Coffeetype type : list) {
-                    if (type.getName().equals(typename)) {
-                        Cup cup = new Cup(type.getKey());
-                        cup = geoTag(cup);
-                        db.insertCup(cup);
-                        setResult(RESULT_OK);
-                        finish();
-                    }
-                }
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-            setResult(RESULT_CANCELED);
-            finish();
-        }
         updateDefaultDatabase();
         createShortcuts();
 

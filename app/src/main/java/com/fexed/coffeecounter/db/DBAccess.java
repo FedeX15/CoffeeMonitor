@@ -135,7 +135,7 @@ public class DBAccess {
             public void run() {
                 database.cupDAO().deleteAll(key);
                 Coffeetype type = database.coffetypeDao().get(key);
-                type.setQnt(0);
+                if (type != null) type.setQnt(0);
                 database.coffetypeDao().update(type);
             }
         }).start();
