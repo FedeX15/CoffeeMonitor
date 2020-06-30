@@ -27,14 +27,18 @@ import java.util.List;
 import java.util.Random;
 
 /**
+ * {@code Fragment} for the {@code Cup}s list
  * Created by Federico Matteoni on 22/06/2020
  */
 public class CupsFragment extends Fragment implements View.OnClickListener {
+
+    /**
+     * The {@code RecyclerView} with the {@code Cup} list
+     */
     private RecyclerView cupsRecview;
 
     public static CupsFragment newInstance() {
-        CupsFragment fragment = new CupsFragment();
-        return fragment;
+        return new CupsFragment();
     }
 
     @Override
