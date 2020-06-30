@@ -12,6 +12,7 @@ import java.net.URL;
 import java.net.URLConnection;
 
 /**
+ * Default database downloader
  * Created by Federico Matteoni on 17/06/2020
  */
 public class DBDownloader extends AsyncTask<String, Void, String> {
