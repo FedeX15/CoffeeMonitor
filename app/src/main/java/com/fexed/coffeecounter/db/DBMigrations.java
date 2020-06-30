@@ -5,6 +5,7 @@ import androidx.room.migration.Migration;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
 /**
+ * Database migrations
  * Created by Federico Matteoni on 22/06/2020
  */
 public class DBMigrations {
