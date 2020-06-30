@@ -20,6 +20,7 @@ import com.fexed.coffeecounter.ui.adapters.TypeRecviewAdapter;
 import java.util.Random;
 
 /**
+ * {@code Fragment} for the {@code Coffeetype}s list
  * Created by Federico Matteoni on 22/06/2020
  */
 public class TypesFragment extends Fragment {
