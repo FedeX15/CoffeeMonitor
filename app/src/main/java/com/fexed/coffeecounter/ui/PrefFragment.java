@@ -49,12 +49,12 @@ import java.util.Date;
 import java.util.Locale;
 
 /**
+ * Preferences {@code Fragment}
  * Created by Federico Matteoni on 22/06/2020
  */
 public class PrefFragment extends Fragment implements View.OnClickListener {
     public static PrefFragment newInstance() {
-        PrefFragment fragment = new PrefFragment();
-        return fragment;
+        return new PrefFragment();
     }
 
     @Override
@@ -67,16 +67,17 @@ public class PrefFragment extends Fragment implements View.OnClickListener {
                              Bundle savedInstancestate) {
         View root = inflater.inflate(R.layout.activity_pref, container, false);
         Button resettutorialbtn = root.findViewById(R.id.resettutorialbtn);
-        resettutorialbtn.setOnClickListener(this);
         Button backupbtn = root.findViewById(R.id.backupbtn);
-        backupbtn.setOnClickListener(this);
         Button exportdatabtn = root.findViewById(R.id.exportdatabtn);
-        exportdatabtn.setOnClickListener(this);
         Button restorebtn = root.findViewById(R.id.restorebtn);
-        restorebtn.setOnClickListener(this);
         Button statbtn = root.findViewById(R.id.statbtn);
-        statbtn.setOnClickListener(this);
         Button resetdbbtn = root.findViewById(R.id.resetdbbtn);
+
+        resettutorialbtn.setOnClickListener(this);
+        backupbtn.setOnClickListener(this);
+        exportdatabtn.setOnClickListener(this);
+        restorebtn.setOnClickListener(this);
+        statbtn.setOnClickListener(this);
         resetdbbtn.setOnClickListener(this);
 
         final TextView notiftimetxtv = root.findViewById(R.id.notiftimetxt);
@@ -149,6 +150,7 @@ public class PrefFragment extends Fragment implements View.OnClickListener {
             case R.id.backupbtn:
                 Intent sharefile = new Intent(Intent.ACTION_SEND);
                 try {
+                    assert getActivity() != null; //Fragment is always launched by MainActivity
                     File file = saveDbToExternalStorage();
                     MainActivity.db = new DBAccess(getActivity().getApplication());
                     if (file != null && file.exists()) { //If not null should always exists
@@ -172,6 +174,9 @@ public class PrefFragment extends Fragment implements View.OnClickListener {
         }
     }
 
+    /**
+     * Starts the BroadcastReceiver for the notification
+     */
     public void startAlarmBroadcastReceiver() {
         assert getActivity() != null; //Fragment is always launched by MainActivity
         AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
@@ -186,6 +191,9 @@ public class PrefFragment extends Fragment implements View.OnClickListener {
         alarmManager.set(AlarmManager.RTC, calendar.getTimeInMillis(), pendingIntent);
     }
 
+    /**
+     * Stops the BroadcastReceiver for the notification
+     */
     public void stopAlarmBroadcastReceiver() {
         assert getActivity() != null; //Fragment is always launched by MainActivity
         AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
@@ -194,6 +202,11 @@ public class PrefFragment extends Fragment implements View.OnClickListener {
         alarmManager.cancel(pendingIntent);
     }
 
+    /**
+     * Saves the app database to the internal storage
+     * @return the saved database
+     * @throws IOException
+     */
     public File saveDbToExternalStorage() throws IOException {
         MainActivity.db.checkpoint();
         MainActivity.db.close();
@@ -214,10 +227,15 @@ public class PrefFragment extends Fragment implements View.OnClickListener {
         return savefile;
     }
 
+    /**
+     * Checks if the provided database if a {@code Coffee Monitor} database.
+     * @param database the database to be checked
+     * @return {@code true} if it's a {@code Coffee Monitor} database and has at least
+     * a {@code Coffeetype} and a {@code Cup}, {@code false} otherwise
+     */
     public boolean checkDatabase(SupportSQLiteDatabase database) {
-        String query = "select * from coffeetype";
+        String query = "select * from coffeetype"; //Checks the existence of the Coffetype table
         try (Cursor cursor = database.query(query, null)) {
-            Log.d("DBCHK", cursor.getColumnName(0) + " " + cursor.getCount());
             if (cursor.getCount() <= 0) {
                 cursor.close();
                 return false;
@@ -226,9 +244,8 @@ public class PrefFragment extends Fragment implements View.OnClickListener {
             ex.printStackTrace();
             return false;
         }
-        query = "select * from Cup";
+        query = "select * from Cup"; //Checks the existence of the Cups table
         try (Cursor cursor = database.query(query, null)) {
-            Log.d("DBCHK", cursor.getColumnName(0) + " " + cursor.getCount());
             if (cursor.getCount() <= 0) {
                 cursor.close();
                 return false;
@@ -243,7 +260,7 @@ public class PrefFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 10) { //database
+        if (requestCode == 10) { //new database picked
             if (resultCode == Activity.RESULT_OK) {
                 final Uri uri = data.getData();
                 try {
