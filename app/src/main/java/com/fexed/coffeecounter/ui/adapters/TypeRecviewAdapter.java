@@ -428,7 +428,6 @@ public class TypeRecviewAdapter extends RecyclerView.Adapter<TypeRecviewAdapter.
     }
 
     public void removeAt(int position) {
-        db.deleteCups(mDataset.get(position).getKey());
         db.deleteType(mDataset.get(position));
         mDataset.remove(position);
         notifyItemRemoved(position);

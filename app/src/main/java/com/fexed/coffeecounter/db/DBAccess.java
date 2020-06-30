@@ -135,8 +135,10 @@ public class DBAccess {
             public void run() {
                 database.cupDAO().deleteAll(key);
                 Coffeetype type = database.coffetypeDao().get(key);
-                if (type != null) type.setQnt(0);
-                database.coffetypeDao().update(type);
+                if (type != null) {
+                    type.setQnt(0);
+                    database.coffetypeDao().update(type);
+                }
             }
         }).start();
     }
@@ -258,12 +260,16 @@ public class DBAccess {
      * @param type the {@link Coffeetype} to be added
      */
     public void insertType(final Coffeetype type) {
-        new Thread(new Runnable() {
+        Thread t = new Thread(new Runnable() {
             @Override
             public void run() {
                 database.coffetypeDao().insert(type);
             }
-        }).start();
+        });
+        t.start();
+        try {
+            t.join();
+        } catch (InterruptedException ignored) {}
     }
 
     /**
@@ -287,6 +293,7 @@ public class DBAccess {
         new Thread(new Runnable() {
             @Override
             public void run() {
+                database.cupDAO().deleteAll(type.getKey());
                 database.coffetypeDao().delete(type);
             }
         }).start();
