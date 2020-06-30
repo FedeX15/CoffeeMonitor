@@ -1,7 +1,6 @@
 package com.fexed.coffeecounter.ui;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Context;
@@ -21,7 +20,6 @@ import android.location.LocationManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -76,27 +74,53 @@ import java.util.Random;
 import java.util.concurrent.ExecutionException;
 
 /**
+ * Main activity of the app. Initializes the AppDatabase, SharedPreferences and the ViewPager
  * Created by Federico Matteoni on 22/06/2020
  */
 public class MainActivity extends AppCompatActivity {
+    /**
+     * App state, for keeping tracks of user's preferences
+     */
     public static SharedPreferences state;
+
+    /**
+     * Used to access the AppDatabase trough AsyncTasks and Threads
+     */
     public static DBAccess db;
+
+    /**
+     * Stores the path where the typedb.db file is stored, for backup
+     */
     public static String dbpath;
 
+    /**
+     * The app's ViewPager
+     */
     private ViewPager viewPager;
 
+    /**
+     * ImageView where to show the choosen image
+     */
     public ImageView currentimageview;
+
+    /**
+     * The current choosen image
+     */
     public Bitmap currentbitmap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        //SharedPreferences
         state = this.getSharedPreferences(getString(R.string.apppkg), MODE_PRIVATE);
         state.edit().putBoolean("isintypes", false).apply();
+
+        //Database
         db = new DBAccess(getApplication());
         dbpath = getDatabasePath("typedb").getPath();
         updateDefaultDatabase();
+
         createShortcuts();
 
         setContentView(R.layout.activity_main);
@@ -274,14 +298,22 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
-        if (result != null) {
+        if (result != null) { //QR
             if (result.getContents() == null) {
                 Toast.makeText(this, R.string.annulla, Toast.LENGTH_SHORT).show();
             } else {
                 try {
                     String str = result.getContents();
                     String[] strtype = str.split("::");
-                    final Coffeetype coffeetype = new Coffeetype(strtype[0], Integer.parseInt(strtype[2]), strtype[1], Boolean.parseBoolean(strtype[3]), strtype[4], Float.parseFloat(strtype[5]), null, false);
+                    final Coffeetype coffeetype = new Coffeetype(
+                            strtype[0],
+                            Integer.parseInt(strtype[2]),
+                            strtype[1],
+                            Boolean.parseBoolean(strtype[3]),
+                            strtype[4],
+                            Float.parseFloat(strtype[5]),
+                            null,
+                            false);
                     final AlertDialog.Builder dialogbuilder = new AlertDialog.Builder(this);
                     final View form = View.inflate(this, R.layout.dialog_addtype, null);
                     final TextView literstxt = form.findViewById(R.id.ltrsmgtext);
@@ -419,7 +451,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         } else {
-            if (requestCode == 9) {
+            if (requestCode == 9) { //Image selected
                 if (resultCode == Activity.RESULT_OK) {
                     final Uri uri = data.getData();
                     InputStream in;
@@ -437,41 +469,194 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Prompts the user with a custom {@code Dialog} for adding a new {@link Coffeetype} into the
+     * database. The user can fill the dialog with custom informations, scan a QR code or pick a
+     * {@link Coffeetype} from the default list
+     */
     public void addNewType() {
-        final AlertDialog.Builder dialogbuilder = new AlertDialog.Builder(findViewById(R.id.action_favs).getContext());
+        final AlertDialog.Builder dialogbuilder =
+                new AlertDialog.Builder(this);
+
         final View form = getLayoutInflater().inflate(R.layout.dialog_addtype, null);
         final TextView literstxt = form.findViewById(R.id.ltrsmgtext);
         CheckBox liquidckbx = form.findViewById(R.id.liquidcheck);
         final ImageView typeimage = form.findViewById(R.id.typeimage);
+        ImageButton rmvbtn = form.findViewById(R.id.decrbtn);
+        ImageButton addbtn = form.findViewById(R.id.incrbtn);
+        Button positive = form.findViewById(R.id.confirmbtn);
+        Button negative = form.findViewById(R.id.cancelbtn);
+        ImageButton fromdefaultbtn = form.findViewById(R.id.defaultbtn);
+        ImageButton qrscan = form.findViewById(R.id.scanqrbtn);
 
+        //Cleaning the state
         state.edit().putInt("qnt", 0).apply();
         state.edit().putString("suffix", (liquidckbx.isChecked()) ? " ml" : " mg").apply();
         String str = state.getInt("qnt", 0) + state.getString("suffix", " ml");
         literstxt.setText(str);
 
-        ImageButton addbtn = form.findViewById(R.id.incrbtn);
-        addbtn.setOnClickListener(new View.OnClickListener() {
+        dialogbuilder.setView(form);
+        dialogbuilder.create();
+        final AlertDialog dialog = dialogbuilder.show();
+        View.OnClickListener clickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int qnt = state.getInt("qnt", 0);
-                qnt += 5;
-                state.edit().putInt("qnt", qnt).apply();
-                String str = qnt + state.getString("suffix", " ml");
-                literstxt.setText(str);
-            }
-        });
+                switch (v.getId()) {
+                    case R.id.incrbtn:
+                        int qnt = state.getInt("qnt", 0);
+                        qnt += 5;
+                        state.edit().putInt("qnt", qnt).apply();
+                        String str = qnt + state.getString("suffix", " ml");
+                        literstxt.setText(str);
+                        break;
+                    case R.id.decrbtn:
+                        qnt = state.getInt("qnt", 0);
+                        qnt = (qnt == 0) ? 0 : qnt - 5;
+                        state.edit().putInt("qnt", qnt).apply();
+                        str = qnt + state.getString("suffix", " ml");
+                        literstxt.setText(str);
+                        break;
+                    case R.id.defaultbtn:
+                        String dbtxt = state.getString("defaultdb", null);
+                        final ArrayList<Coffeetype> defaultlist = new ArrayList<>();
+                        ArrayList<String> defaultindb = new ArrayList<>();
+                        try {
+                            List<Coffeetype> list = db.getTypes().get();
+                            for (Coffeetype type : list) {
+                                if (type.isDefaulttype()) defaultindb.add(type.getName());
+                            }
+                            ArrayList<String> namelist = new ArrayList<>();
+                            if (dbtxt != null) {
+                                for (String str2 : dbtxt.split("\n")) {
+                                    String[] strtype = str2.split("::");
+                                    if (strtype.length == 6) {
+                                        Coffeetype type = new Coffeetype(
+                                                strtype[0],
+                                                Integer.parseInt(strtype[2]),
+                                                strtype[1],
+                                                Boolean.parseBoolean(strtype[3]),
+                                                strtype[4],
+                                                Float.parseFloat(strtype[5]),
+                                                null,
+                                                true
+                                        );
+                                        if (!defaultindb.contains(type.getName())) {
+                                            defaultlist.add(type);
+                                            namelist.add(strtype[0]);
+                                        }
+                                    }
+                                }
+                                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                                builder.setTitle(R.string.defaultdbtitle);
+                                builder.setItems(namelist.toArray(new CharSequence[namelist.size()]), new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        db.insertType(defaultlist.get(i));
+                                        RecyclerView typesRecView = null;
+                                        Fragment fragment = getSupportFragmentManager()
+                                                .findFragmentByTag("android:switcher:" + viewPager.getId() + ":" + 1);
+                                        if (fragment instanceof TypesFragment) typesRecView = fragment.getView().findViewById(R.id.recview);
+                                        if (typesRecView != null) {
+                                            try {
+                                                typesRecView.setAdapter(new TypeRecviewAdapter(MainActivity.this, db, typesRecView, state));
+                                            } catch (InterruptedException | ExecutionException ignored) {
+                                            }
+                                        }
+                                        dialog.dismiss();
+                                    }
+                                });
+                                builder.show();
+                            } else {
+                                Toast.makeText(getApplicationContext(), R.string.defaultdbnotavailalert, Toast.LENGTH_LONG).show();
+                            }
+                        } catch (ExecutionException | InterruptedException ignored) {}
+                        break;
+                    case R.id.scanqrbtn:
+                        IntentIntegrator integrator = new IntentIntegrator(MainActivity.this);
+                        integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE);
+                        integrator.setPrompt(getString(R.string.scanqr));
+                        integrator.setOrientationLocked(true);
+                        integrator.setCaptureActivity(CaptureActivityPortrait.class);
+                        integrator.initiateScan();
+                        dialog.dismiss();
+                        break;
+                    case R.id.cancelbtn:
+                        dialog.dismiss();
+                        break;
+                    case R.id.confirmbtn:
+                        EditText nameedittxt = form.findViewById(R.id.nametxt);
+                        EditText descedittxt = form.findViewById(R.id.desctxt);
+                        EditText sostedittxt = form.findViewById(R.id.sosttxt);
+                        EditText pricetedittxt = form.findViewById(R.id.pricetxt);
+                        CheckBox liquidckbx = form.findViewById(R.id.liquidcheck);
 
-        ImageButton rmvbtn = form.findViewById(R.id.decrbtn);
-        rmvbtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int qnt = state.getInt("qnt", 0);
-                qnt = (qnt == 0) ? 0 : qnt - 5;
-                state.edit().putInt("qnt", qnt).apply();
-                String str = qnt + state.getString("suffix", " ml");
-                literstxt.setText(str);
+                        String name = nameedittxt.getText().toString();
+                        if (name.isEmpty()) { //Error if the type name is empty
+                            final Balloon balloon = new Balloon.Builder(MainActivity.this)
+                                    .setText(MainActivity.this.getString(R.string.nameemptyalert))
+                                    .setBackgroundColorResource(R.color.colorAccent)
+                                    .setWidthRatio(0.75f)
+                                    .setBalloonAnimation(BalloonAnimation.FADE)
+                                    .setArrowVisible(true)
+                                    .setArrowOrientation(ArrowOrientation.TOP)
+                                    .build();
+                            balloon.setOnBalloonOutsideTouchListener(new OnBalloonOutsideTouchListener() {
+                                @Override
+                                public void onBalloonOutsideTouch(@NonNull View view, @NonNull MotionEvent motionEvent) {
+                                    balloon.dismiss();
+                                }
+                            });
+                            balloon.showAlignBottom(nameedittxt);
+                        } else {
+                            //Retrieves informations and saves the new type
+                            int liters = state.getInt("qnt", 0);
+                            String desc = descedittxt.getText().toString();
+                            String sostanza = sostedittxt.getText().toString();
+                            float price = Float.parseFloat(pricetedittxt.getText().toString());
+                            boolean liquid = liquidckbx.isChecked();
+                            String bmpuri = "";
+                            if (currentbitmap != null) {
+                                SaveImageToInternalTask saveTask = (SaveImageToInternalTask) new SaveImageToInternalTask(getApplicationContext()).execute(currentbitmap);
+                                bmpuri = new ContextWrapper(getApplicationContext())
+                                        .getDir("images", Context.MODE_PRIVATE)
+                                        .getAbsolutePath() + "/" + currentbitmap.hashCode() + ".png";
+                                currentbitmap = null;
+                            }
+                            Coffeetype newtype = new Coffeetype(
+                                    name,
+                                    liters,
+                                    desc,
+                                    liquid,
+                                    sostanza,
+                                    price,
+                                    bmpuri);
+
+                            db.insertType(newtype);
+
+                            RecyclerView typesRecView = null;
+                            Fragment fragment = getSupportFragmentManager()
+                                    .findFragmentByTag("android:switcher:" + viewPager.getId() + ":" + 1);
+                            if (fragment instanceof TypesFragment) typesRecView = fragment.getView().findViewById(R.id.recview);
+                            if (typesRecView != null) {
+                                try {
+                                    typesRecView.setAdapter(new TypeRecviewAdapter(MainActivity.this, db, typesRecView, state));
+                                } catch (InterruptedException | ExecutionException ignored) {
+                                }
+                            }
+                            dialog.dismiss();
+                        }
+                        break;
+
+                }
             }
-        });
+        };
+
+        addbtn.setOnClickListener(clickListener);
+        rmvbtn.setOnClickListener(clickListener);
+        positive.setOnClickListener(clickListener);
+        negative.setOnClickListener(clickListener);
+        fromdefaultbtn.setOnClickListener(clickListener);
+        qrscan.setOnClickListener(clickListener);
 
         liquidckbx.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -492,10 +677,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        dialogbuilder.setView(form);
-        dialogbuilder.create();
-        final AlertDialog dialog = dialogbuilder.show();
-
+        //Tutorial balloons
         if (state.getBoolean("addtypetutorial", true)) {
             final Balloon qrballoon = new Balloon.Builder(this)
                     .setText(getString(R.string.scanqr))
@@ -546,130 +728,12 @@ public class MainActivity extends AppCompatActivity {
             databalloon.showAlignTop(form.findViewById(R.id.nametxt));
             //editor.putBoolean("addtypetutorial", false).apply();
         }
-
-        Button positive = form.findViewById(R.id.confirmbtn);
-        positive.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                EditText nameedittxt = form.findViewById(R.id.nametxt);
-                EditText descedittxt = form.findViewById(R.id.desctxt);
-                EditText sostedittxt = form.findViewById(R.id.sosttxt);
-                EditText pricetedittxt = form.findViewById(R.id.pricetxt);
-                CheckBox liquidckbx = form.findViewById(R.id.liquidcheck);
-
-                String name = nameedittxt.getText().toString();
-                if (name.isEmpty()) {
-                    final Balloon balloon = new Balloon.Builder(MainActivity.this)
-                            .setText(MainActivity.this.getString(R.string.nameemptyalert))
-                            .setBackgroundColorResource(R.color.colorAccent)
-                            .setWidthRatio(0.75f)
-                            .setBalloonAnimation(BalloonAnimation.FADE)
-                            .setArrowVisible(true)
-                            .setArrowOrientation(ArrowOrientation.TOP)
-                            .build();
-                    balloon.setOnBalloonOutsideTouchListener(new OnBalloonOutsideTouchListener() {
-                        @Override
-                        public void onBalloonOutsideTouch(@NonNull View view, @NonNull MotionEvent motionEvent) {
-                            balloon.dismiss();
-                        }
-                    });
-                    balloon.showAlignBottom(nameedittxt);
-                } else {
-                    int liters = state.getInt("qnt", 0);
-                    String desc = descedittxt.getText().toString();
-                    String sostanza = sostedittxt.getText().toString();
-                    float price = Float.parseFloat(pricetedittxt.getText().toString());
-                    boolean liquid = liquidckbx.isChecked();
-                    String bmpuri = "";
-                    if (currentbitmap != null) {
-                        SaveImageToInternalTask saveTask = (SaveImageToInternalTask) new SaveImageToInternalTask(getApplicationContext()).execute(currentbitmap);
-                        bmpuri = new ContextWrapper(getApplicationContext()).getDir("images", Context.MODE_PRIVATE).getAbsolutePath() + "/" + currentbitmap.hashCode() + ".png";
-                        currentbitmap = null;
-                    }
-                    Coffeetype newtype = new Coffeetype(name, liters, desc, liquid, sostanza, price, bmpuri);
-
-                    db.insertType(newtype);
-
-                    RecyclerView typesRecView = viewPager.findViewById(R.id.recview);
-                    if (typesRecView != null)
-                        try {
-                            typesRecView.setAdapter(new TypeRecviewAdapter(MainActivity.this, db, typesRecView, state));
-                        } catch (Exception ignored) {}
-
-                    dialog.dismiss();
-                }
-            }
-        });
-
-        Button negative = form.findViewById(R.id.cancelbtn);
-        negative.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
-
-        ImageButton fromdefaultbtn = form.findViewById(R.id.defaultbtn);
-        fromdefaultbtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String dbtxt = state.getString("defaultdb", null);
-                final ArrayList<Coffeetype> defaultlist = new ArrayList<>();
-                ArrayList<String> defaultindb = new ArrayList<>();
-                try {
-                    List<Coffeetype> list = db.getTypes().get();
-                    for (Coffeetype type : list) {
-                        if (type.isDefaulttype()) defaultindb.add(type.getName());
-                    }
-                    ArrayList<String> namelist = new ArrayList<>();
-                    if (dbtxt != null) {
-                        for (String str : dbtxt.split("\n")) {
-                            String[] strtype = str.split("::");
-                            if (strtype.length == 6) {
-                                Coffeetype type = new Coffeetype(strtype[0], Integer.parseInt(strtype[2]), strtype[1], Boolean.parseBoolean(strtype[3]), strtype[4], Float.parseFloat(strtype[5]), null, true);
-                                if (!defaultindb.contains(type.getName())) {
-                                    defaultlist.add(type);
-                                    namelist.add(strtype[0]);
-                                }
-                            }
-                        }
-                        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                        builder.setTitle(R.string.defaultdbtitle);
-                        builder.setItems(namelist.toArray(new CharSequence[namelist.size()]), new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                db.insertType(defaultlist.get(i));
-                                RecyclerView typesRecView = viewPager.findViewById(R.id.recview);
-                                if (typesRecView != null)
-                                    try {
-                                        typesRecView.setAdapter(new TypeRecviewAdapter(MainActivity.this, db, typesRecView, state));
-                                    } catch (Exception ignored) {}
-                                dialog.dismiss();
-                            }
-                        });
-                        builder.show();
-                    } else {
-                        Toast.makeText(getApplicationContext(), R.string.defaultdbnotavailalert, Toast.LENGTH_LONG).show();
-                    }
-                } catch (ExecutionException | InterruptedException ignored) {}
-            }
-        });
-
-        ImageButton qrscan = form.findViewById(R.id.scanqrbtn);
-        qrscan.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                IntentIntegrator integrator = new IntentIntegrator(MainActivity.this);
-                integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE);
-                integrator.setPrompt(getString(R.string.scanqr));
-                integrator.setOrientationLocked(true);
-                integrator.setCaptureActivity(CaptureActivityPortrait.class);
-                integrator.initiateScan();
-                dialog.dismiss();
-            }
-        });
     }
 
+    /**
+     * Prompts the user with a {@code Dialog} to pick a date and then a type. Then, it adds a
+     * {@link Cup} of the chosen {@link Coffeetype} and the chosen date into the database.
+     */
     private void addCup() {
         AsyncTask<Void, Void, List<Coffeetype>> typeslist = db.getTypes();
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -677,15 +741,18 @@ public class MainActivity extends AppCompatActivity {
         Calendar cld = Calendar.getInstance();
         try {
             final List<Coffeetype> list = typeslist.get();
-            final DatePickerDialog StartTime = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
+            final DatePickerDialog StartTime = new DatePickerDialog(this,
+                    new DatePickerDialog.OnDateSetListener() {
                 public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                     Calendar newDate = Calendar.getInstance();
                     newDate.set(year, monthOfYear, dayOfMonth);
-                    SimpleDateFormat sdf = new SimpleDateFormat("dd/MMM/yyy HH:mm:ss:SSS", Locale.getDefault());
+                    SimpleDateFormat sdf =new SimpleDateFormat("dd/MMM/yyy HH:mm:ss:SSS", Locale.getDefault());
                     final String date = sdf.format(newDate.getTime());
                     sdf = new SimpleDateFormat("yyy/MM/dd", Locale.getDefault());
                     final String day = sdf.format(newDate.getTime());
-                    builder.setAdapter(new ArrayAdapter<>(getApplicationContext(), R.layout.type_element, list), new DialogInterface.OnClickListener() {
+                    builder.setAdapter(
+                            new ArrayAdapter<>(getApplicationContext(), R.layout.type_element, list),
+                            new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int pos) {
                             Cup cup = new Cup(list.get(pos).getKey(), date, day);
@@ -696,19 +763,27 @@ public class MainActivity extends AppCompatActivity {
                             if (cupsRecView != null)
                                 try {
                                     cupsRecView.setAdapter(new CupRecviewAdapter(db, -1));
-                                } catch (Exception ignored) {}
+                                } catch (InterruptedException | ExecutionException ignored) {}
                         }
                     });
                     builder.show();
                 }
             }, cld.get(Calendar.YEAR), cld.get(Calendar.MONTH), cld.get(Calendar.DAY_OF_MONTH));
             StartTime.show();
-        } catch (Exception ignored) {}
+        } catch (InterruptedException | ExecutionException ignored) {}
     }
 
+    /**
+     * If the user has granted permission, retrieves the last location of the device and applies it
+     * to the {@link Cup}. Otherwise, it does nothing.
+     * @param cup the {@link Cup} to be geotagged
+     * @return the geotagged {@link Cup} if the user granted permission and no exception occurred,
+     * otherwise does nothing and simply returns the parameter.
+     */
     public Cup geoTag(Cup cup) {
         if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            LocationManager locationManager =
+                    (LocationManager) getSystemService(Context.LOCATION_SERVICE);
             Criteria criteria = new Criteria();
             criteria.setPowerRequirement(Criteria.POWER_LOW);
             criteria.setCostAllowed(false);
@@ -719,23 +794,35 @@ public class MainActivity extends AppCompatActivity {
                 cup.setLatitude(location.getLatitude());
             } catch (Exception ex) {
                 ex.printStackTrace();
-                Toast.makeText(this, R.string.locationerror, Toast.LENGTH_SHORT).show();
+                Toast.makeText(this,
+                        R.string.locationerror, Toast.LENGTH_SHORT).show();
             }
             return cup;
         }
         return cup;
     }
 
+    /**
+     * Looks for the {@link StatFragment} and updates its graphs
+     */
     public void graphUpdater() {
-        Fragment fragment = getSupportFragmentManager().findFragmentByTag("android:switcher:" + viewPager.getId() + ":" + 0);
+        Fragment fragment = getSupportFragmentManager()
+                .findFragmentByTag("android:switcher:" + viewPager.getId() + ":" + 0);
         if (fragment instanceof StatFragment) ((StatFragment) fragment).graphUpdater();
     }
 
-    @SuppressLint("StringFormatInvalid")
+    /**
+     * Generates a {@code String} with some quick stats and a tip. The tip will be a "be careful"
+     * message if the user registered more than 5 cups today, otherwise it will be a fun fact
+     *
+     * {@code www.fda.gov/consumers/consumer-updates/spilling-beans-how-much-caffeine-too-much}
+     * @return the generated {@code String}
+     */
     public String generateTip() {
         int maxCupsPerDay = 5;
         //int maxCaffeinePerDay = 400;
-        AsyncTask<String, Void, List<Cup>> cupsTodayList = db.getCups(getStringFromLocalDate(Calendar.getInstance().getTime()));
+        AsyncTask<String, Void, List<Cup>> cupsTodayList =
+                db.getCups(getStringFromLocalDate(Calendar.getInstance().getTime()));
         int cupsToday = 0;
         int mlToday = 0;
         String tip = getString(R.string.tipsplaceholder);
@@ -748,12 +835,15 @@ public class MainActivity extends AppCompatActivity {
         } catch (Exception ignored) {}
 
         if (cupsToday > maxCupsPerDay)
-            tip = getString(R.string.summary, cupsToday, mlToday) + " ml\n\n" + getString(R.string.toomuchcupstip);
+            tip = getString(R.string.summary, cupsToday, mlToday) + " ml\n\n" +
+                    getString(R.string.toomuchcupstip);
         else {
             String[] funfacts = getResources().getStringArray(R.array.funfacts);
             Random rnd = new Random();
             int i = rnd.nextInt(funfacts.length);
-            tip = getString(R.string.allisgood) + "\n" + getString(R.string.summary, cupsToday, mlToday) + " ml\n\n" + funfacts[i];
+            tip = getString(R.string.allisgood) + "\n" +
+                    getString(R.string.summary, cupsToday, mlToday) + " ml\n\n" +
+                    funfacts[i];
         }
 
         return tip;
@@ -764,23 +854,40 @@ public class MainActivity extends AppCompatActivity {
         return format.format(date);
     }
 
+    /**
+     * Retrieves the default database from the internet if it's been updated, then stores in the
+     * {@code state} of the app
+     */
     private void updateDefaultDatabase() {
         AsyncTask<Void, Void, List<Coffeetype>> typeslist = db.getTypes();
         try {
             Locale locale = Locale.getDefault();
             String dbtxt;
-            if (locale.getLanguage().equals("it"))
-                dbtxt = new DBDownloader(state).execute("https://fexed.github.io/db/it/defaultcoffeetypes").get();
-            else
-                dbtxt = new DBDownloader(state).execute("https://fexed.github.io/db/en/defaultcoffeetypes").get();
+            if (locale.getLanguage().equals("it")) {
+                dbtxt = new DBDownloader(state)
+                        .execute("https://fexed.github.io/db/it/defaultcoffeetypes").get();
+            } else {
+                dbtxt = new DBDownloader(state)
+                        .execute("https://fexed.github.io/db/en/defaultcoffeetypes").get();
+            }
 
             if (dbtxt != null) {
                 if (typeslist.get().size() == 0) {
                     for (String str : dbtxt.split("\n")) {
                         String[] strtype = str.split("::");
-                        db.insertType(new Coffeetype(strtype[0], Integer.parseInt(strtype[2]), strtype[1], Boolean.parseBoolean(strtype[3]), strtype[4], Float.parseFloat(strtype[5]), null, true));
+                        db.insertType(new Coffeetype(
+                                strtype[0], //Name
+                                Integer.parseInt(strtype[2]), //Liters
+                                strtype[1], //Description
+                                Boolean.parseBoolean(strtype[3]), //Is liquid
+                                strtype[4], //Substance
+                                Float.parseFloat(strtype[5]), //Price
+                                null, //Image
+                                true) //Is default
+                        );
                     }
-                    Toast.makeText(getApplicationContext(), R.string.dbupdated, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(
+                            getApplicationContext(),R.string.dbupdated, Toast.LENGTH_SHORT).show();
                 } else {
                     List<Coffeetype> coffeelist = typeslist.get();
                     for (String str : dbtxt.split("\n")) {
@@ -801,17 +908,24 @@ public class MainActivity extends AppCompatActivity {
                             db.updateTypes(type);
                         }
                     }
-                    Toast.makeText(getApplicationContext(), R.string.dbupdated, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(),
+                            R.string.dbupdated, Toast.LENGTH_SHORT).show();
                 }
             }
         } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
-            Toast.makeText(getApplicationContext(), R.string.dbupdatefailed, Toast.LENGTH_SHORT).show();
+            Toast.makeText(
+                    getApplicationContext(), R.string.dbupdatefailed, Toast.LENGTH_SHORT).show();
         }
     }
 
+    /**
+     * Creates the app shortcuts (quick actions accessible by long pressing the app icon on the home
+     * screen.
+     * As per guidelines, adds a max number of 4 shortcuts from the favourite types of the user
+     */
     private void createShortcuts() {
-        if (android.os.Build.VERSION.SDK_INT >= 26) {
+        if (android.os.Build.VERSION.SDK_INT >= 26) { //Only available on SDK >= 26
             ShortcutManager shortcutManager = getSystemService(ShortcutManager.class);
             try {
                 List<Coffeetype> favs = db.getFavs().get();
