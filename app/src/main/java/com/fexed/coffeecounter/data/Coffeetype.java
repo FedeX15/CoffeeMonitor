@@ -7,6 +7,10 @@ import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 @Entity
+/**
+ * A type of drink or other to be monitored
+ * Created by Federico Matteoni on 05/12/2017
+ */
 public class Coffeetype {
     @ColumnInfo(name = "qnt")
     private int qnt;
@@ -129,7 +133,8 @@ public class Coffeetype {
 
     /**
      * Returns a formatted string with all the infos about this type
-     * @return {@code codedString}: name::desc::liters::isLiquido::sostanza::price
+     * @return {@code codedString} formed as such:
+     * {@code name::desc::liters::isLiquido::sostanza::price}
      */
     public String codedString() {
         return getName().replace("::", "") + "::" +
