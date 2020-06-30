@@ -50,8 +50,10 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.ExecutionException;
 
 /**
+ * {@code Fragment} with graphs and stats
  * Created by Federico Matteoni on 22/06/2020
  */
 public class StatFragment extends Fragment implements View.OnClickListener {
@@ -63,8 +65,7 @@ public class StatFragment extends Fragment implements View.OnClickListener {
     private TextView totalliterstxtv;
 
     public static StatFragment newInstance() {
-        StatFragment fragment = new StatFragment();
-        return fragment;
+        return new StatFragment();
     }
 
     @Override
@@ -110,6 +111,9 @@ public class StatFragment extends Fragment implements View.OnClickListener {
         typesinfobtn.setOnClickListener(null);
     }
 
+    /**
+     * Initializes the ads
+     */
     public void adInitializer() {
         MobileAds.initialize(getContext(), new OnInitializationCompleteListener() {
             @Override
@@ -124,6 +128,10 @@ public class StatFragment extends Fragment implements View.OnClickListener {
         });
     }
 
+    /**
+     * Initialiazes the history graph
+     * @param graph the history graph
+     */
     public void historyGraphInitializer(GraphView graph) {
         graph.getViewport().setMaxXAxisSize(30);
         graph.getViewport().setScrollable(true);
@@ -131,6 +139,10 @@ public class StatFragment extends Fragment implements View.OnClickListener {
         graph.getViewport().setMinY(0);
     }
 
+    /**
+     * Initialiazes the day graph
+     * @param daygraph the day graph
+     */
     public void daygraphInitializer(GraphView daygraph) {
         daygraph.getViewport().setMaxXAxisSize(7);
         StaticLabelsFormatter staticLabelsFormatter = new StaticLabelsFormatter(daygraph);
@@ -146,11 +158,19 @@ public class StatFragment extends Fragment implements View.OnClickListener {
         daygraph.getViewport().setMinY(0);
     }
 
+    /**
+     * Initializes the graphs
+     */
     public void graphInitializer() {
         historyGraphInitializer(graph);
         daygraphInitializer(daygraph);
     }
 
+    /**
+     * Returns a {@code Date} from a {@code yyyy/MM/dd} string
+     * @param date the {@code String} to be parsed
+     * @return the parsed {@code Date}, or {@code null} if and incorrect {@code String} was given
+     */
     public Date getLocalDateFromString(String date) {
         SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd", Locale.getDefault());
         try {
@@ -160,11 +180,22 @@ public class StatFragment extends Fragment implements View.OnClickListener {
         }
     }
 
+    /**
+     * Returns a {@code yyyy/MM/dd} string from a {@code Date}
+     * @param date the {@code Date} to be formatted
+     * @return the formatted {@code String}
+     */
     public String getStringFromLocalDate(Date date) {
         SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd", Locale.getDefault());
         return format.format(date);
     }
 
+    /**
+     * Adds {@code toadd} days to a {@code Date}
+     * @param from the starting {@code Date}
+     * @param toadd the number of days to be added
+     * @return the new {@code Date}
+     */
     public Date plusDays(Date from, int toadd) {
         Calendar c = Calendar.getInstance();
         try {
@@ -176,8 +207,12 @@ public class StatFragment extends Fragment implements View.OnClickListener {
         return c.getTime();
     }
 
+    /**
+     * Fills the history graph
+     * @param graph the history graph
+     */
     public void historyGraph(final GraphView graph) {
-        //days[0] è sempre il primo giorno nel MainActivity.db
+        //days[0] is always the first day in the db
         //days.length = cups.length
         AsyncTask<Void, Void, List<String>> daystask = MainActivity.db.getDays();
         AsyncTask<Void, Void, List<Integer>> cupsTask = MainActivity.db.perDay();
@@ -299,9 +334,14 @@ public class StatFragment extends Fragment implements View.OnClickListener {
                 graph.getGridLabelRenderer().setHumanRounding(false);
                 graph.getViewport().setXAxisBoundsManual(true);
             }
-        } catch (Exception ignored) {}
+        } catch (InterruptedException | ExecutionException ignored) {}
     }
 
+
+    /**
+     * Fills the pie graph
+     * @param pie the pie graph
+     */
     @SuppressLint("ClickableViewAccessibility")
     public void typePie(final PieChart pie) {
         pie.clear();
@@ -369,7 +409,14 @@ public class StatFragment extends Fragment implements View.OnClickListener {
         pie.redraw();
     }
 
-    public String dayFromNumber(int n) { //Get localized day name
+    /**
+     * Gets the localized name of the {@code n+1} day of the week
+     *
+     * Could be probably done way better
+     * @param n the day of the week
+     * @return the localized name
+     */
+    public String dayFromNumber(int n) {
         Date date = null;
         SimpleDateFormat sdf = new SimpleDateFormat("E", Locale.getDefault());
         SimpleDateFormat sdf1 = new SimpleDateFormat("yyy/MM/dd", Locale.getDefault());
@@ -406,6 +453,10 @@ public class StatFragment extends Fragment implements View.OnClickListener {
 
     }
 
+    /**
+     * Fills the day graph
+     * @param daygraph the day graph
+     */
     public void dayGraph(final GraphView daygraph) {
         try {
             List<Cup> allcups = new ArrayList<>();
@@ -464,9 +515,12 @@ public class StatFragment extends Fragment implements View.OnClickListener {
             daygraph.removeAllSeries();
             daygraph.addSeries(dayseries);
             daygraph.getViewport().setMaxY(max);
-        } catch (Exception ignored) {}
+        } catch (InterruptedException | ExecutionException ignored) {}
     }
 
+    /**
+     * Updates graphs and stats
+     */
     public void graphUpdater() {
         Calendar c = Calendar.getInstance();
         int curmonth = c.get(Calendar.MONTH);
@@ -502,7 +556,7 @@ public class StatFragment extends Fragment implements View.OnClickListener {
                 str = milliliterstotal / 1000 + " l";
                 totalliterstxtv.setText(str);
             }
-        } catch (Exception ignored) {}
+        } catch (InterruptedException | ExecutionException ignored) {}
 
         historyGraph(graph);
         typePie(pie);
